@@ -1,5 +1,5 @@
 /**
- * CompliRules - Client Application Logic (Free, Open-Source & Informative)
+ * CompliRules - Client Application Logic (Free-to-Use & Informative)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -47,7 +47,7 @@ function initTerminalSimulator() {
     { text: "📊 Summary: 2 Errors, 1 Warning found.", delay: 2500, color: "text-red-300 font-bold" },
     { text: "💡 Auto-remediation available: Run 'npx complirules scaffold' to generate local font proxy & CMP gate.", delay: 2800, color: "text-emerald-400" },
     { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", delay: 3000, color: "text-gray-600" },
-    { text: "ℹ️  CompliRules is an open-source automated AST heuristic tool (See DISCLAIMER.md - Not legal/security advice).", delay: 3200, color: "text-gray-400 italic" },
+    { text: "ℹ️  CompliRules is a free-to-use automated AST heuristic tool (See DISCLAIMER.md - Not legal/security advice).", delay: 3200, color: "text-gray-400 italic" },
     { text: "   Documentation & Rule Catalog: https://halilyilmz.github.io/complirules/", delay: 3400, color: "text-cyan-400 font-medium" }
   ];
 
