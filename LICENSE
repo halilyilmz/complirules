@@ -1,0 +1,44 @@
+MIT License & Liability Disclaimer
+
+Copyright (c) 2026 CompliRules Authors & Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+### IMPORTANT REGULATORY & COMPLIANCE ADDENDUM
+
+1. NOT LEGAL COUNSEL:
+   CompliRules is an automated Abstract Syntax Tree (AST) heuristic and developer
+   guardrail tool. It does NOT constitute legal, financial, accounting, or
+   certified cybersecurity advice. Use of CompliRules does not create an
+   attorney-client or auditor-client relationship.
+
+2. ZERO LIABILITY FOR FINES & BREACHES:
+   Under no circumstances shall the authors, maintainers, or contributors be held
+   liable for any administrative fines, regulatory sanctions (including but not
+   limited to penalties levied under GDPR, KVKK, HIPAA, BIPA, CCPA, or EU AI Act),
+   data breaches, security incidents, loss of goodwill, or legal costs arising from
+   reliance upon the heuristic checks, primitives, or documentation provided herein.
+
+3. MANDATORY INDEPENDENT AUDIT:
+   Automated rules cannot replace mandatory Data Protection Officer (DPO) audits,
+   formal Penetration Testing (Pentest), or statutory regulatory filings (such as
+   VERBİS or ROPA registers). Production systems processing sensitive personal data
+   MUST be reviewed and certified by licensed human professionals.

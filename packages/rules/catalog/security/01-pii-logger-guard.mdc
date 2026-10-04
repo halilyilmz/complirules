@@ -7,6 +7,8 @@ alwaysApply: true
 # [CompliRules] AppSec & DevSecOps Log Sanitization and PII/PHI Scrubber Standard
 **Severity:** `CRITICAL` | **Jurisdiction:** `GLOBAL_SEC`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **GDPR / KVKK / HIPAA Ortak İlkesi (Veri Minimizasyonu & Gizlilik Güvenliği)**: Üçüncü parti log sunucularına (Datadog, CloudWatch, Sentry) kimlik, parola, token veya TCKN sızdırılamaz.
 

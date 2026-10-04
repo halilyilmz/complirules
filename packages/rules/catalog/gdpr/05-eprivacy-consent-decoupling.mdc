@@ -7,6 +7,8 @@ alwaysApply: true
 # [CompliRules] ePrivacy Directive Art. 5(3) Terminal Access Decoupling & Planet49 Standard
 **Severity:** `CRITICAL` | **Jurisdiction:** `GDPR_EU`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **Directive 2002/58/EC (ePrivacy Directive) (Article 5(3))**: Storing information, or gaining access to information stored, in terminal equipment requires affirmative consent. *[Sanction: GDPR Art. 83 fines up to €20M or 4% of global turnover.]*
 - **Court of Justice of the European Union (CJEU) (Case C-673/17 (Planet49 GmbH))**: Pre-ticked checkboxes or implicit consent are legally invalid.

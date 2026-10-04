@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] GDPR Article 17 Right to Erasure (Right to be Forgotten) & Downstream Purge Pipeline
 **Severity:** `CRITICAL` | **Jurisdiction:** `GDPR_EU`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **General Data Protection Regulation (GDPR) (Article 17 & 25)**: Right to erasure ("right to be forgotten") and Data protection by design and by default. *[Sanction: İhlal durumunda 20 milyon Euro veya küresel cironun %4üne varan idari para cezası.]*
 - **General Data Protection Regulation (GDPR) (Article 17(3)(b) & (e))**: Hukuki saklama yükümlülüğü (vergi/muhasebe) ve hukuki taleplerin savunulması istisnası. Fatura ve mali kayıtlar fiziksel olarak silinemez; kullanıcı ile ilişkisi koparılmalıdır.

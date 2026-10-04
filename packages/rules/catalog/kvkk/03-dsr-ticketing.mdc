@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] KVKK Data Subject Access Requests (DSR) & 30-Day SLA Ticketing Workflow
 **Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **6698 Sayılı KVKK (Madde 13)**: Veri sorumlusuna başvuru taleplerinin en kısa sürede ve en geç otuz gün içinde ücretsiz olarak sonuçlandırılması zorunluluğu (Uzatılamaz kesin süre). *[Sanction: KVKK Md. 18 uyarınca ağır idari para cezası.]*
 - **6698 Sayılı KVKK (Madde 11 & Md. 11/1-f)**: İlgili kişinin hakları ve düzeltme/silme işlemlerinin verilerin aktarıldığı üçüncü kişilere bildirilmesi yükümlülüğü (Downstream Notification).

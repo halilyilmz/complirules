@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] KVKK & Commercial Electronic Communication (ETK) Granular Consent and Pre-ticked Box Prohibition
 **Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **6698 Sayılı KVKK (Madde 3 & Md. 5 (Kurul İlke Kararı 2019/09))**: Açık rızanın belirli bir konuya ilişkin olması ve hizmet şartına bağlanamaması (Bundled Consent yasağı).
 - **6563 Sayılı Elektronik Ticaretin Düzenlenmesi Hakkında Kanun (ETK) (Madde 6)**: Ticari elektronik ileti gönderimi için alıcının önceden onayının alınması (İYS uyumu).

@@ -1,13 +1,18 @@
 # 🛡️ CompliRules: Compliance-as-Code & Legal AI Guardrail Engine
 
 [![CI](https://github.com/halilyilmz/complirules/actions/workflows/ci.yml/badge.svg)](https://github.com/halilyilmz/complirules/actions/workflows/ci.yml)
+[![Website](https://img.shields.io/badge/Website-Live%20Demo-blue.svg)](https://halilyilmz.github.io/complirules/)
+[![Security Partners](https://img.shields.io/badge/Security%20Partners-Verified%20Directory-cyan.svg)](https://halilyilmz.github.io/complirules/#partners)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)
-![Tests](https://img.shields.io/badge/Tests-121%20Passing-success.svg)
+![Tests](https://img.shields.io/badge/Tests-129%20Passing-success.svg)
 ![MDC Rules](https://img.shields.io/badge/MDC%20Rules-24%20Active-purple.svg)
 ![MCP Tools](https://img.shields.io/badge/MCP%20Tools-16%20Live-orange.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+![License](https://img.shields.io/badge/License-MIT%20%2B%20Disclaimer-green.svg)
 
 > **The enterprise-grade compliance guardrail engine, deterministic AST linter, and Model Context Protocol (MCP) server that keeps AI coding assistants ("Vibe Coders", Cursor, Claude Code, Windsurf) and engineering teams strictly compliant with global privacy laws, statutory retention mandates, and judicial precedents.**
+> 
+> 🌐 **Live Website & Partners Hub:** [https://halilyilmz.github.io/complirules/](https://halilyilmz.github.io/complirules/)  
+> ⚖️ **Binding Legal Terms & Disclaimer:** [`DISCLAIMER.md`](DISCLAIMER.md)
 
 ---
 
@@ -165,17 +170,40 @@ complirules/
 ├── docs/audit/         # Independent Forensic Audit Report (170+ compliance remediations)
 ├── examples/           # Vulnerable vs Compliant SaaS comparative reference implementations
 ├── tests/              # 121 Vitest unit and integration tests (100% passing across 10 suites)
-└── partners.json       # Centralized partner network and discount configuration
+├── site/               # Static GitHub Pages Landing Page & Verified Partners Directory
+├── docs/audit/         # Independent Forensic Audit Report (170+ compliance remediations)
+├── examples/           # Vulnerable vs Compliant SaaS comparative reference implementations
+├── tests/              # 129 Vitest unit and integration tests (100% passing across 11 suites)
+└── DISCLAIMER.md       # Binding dual-language Zero-Liability & Regulatory Waiver
 ```
 
 ---
 
-## ⚖️ Legal Disclaimer
+## 🛡️ Verified Security & Compliance Partners Directory
 
-*CompliRules is an open-source technical compliance automation and Privacy-by-Design guardrail system. The rule sets, audit reports, linter warnings, and code templates provided by this software do NOT constitute formal legal advice. Compliance with automated technical rules does not guarantee absolute exemption from statutory obligations under KVKK, GDPR, HIPAA, or other legal frameworks. Organizations must validate their legal instruments, Records of Processing Activities (RoPA), and statutory policies with qualified legal counsel or a designated Data Protection Officer (DPO).*
+Automated AST heuristics and AI prompt guardrails catch **90% of code regressions** before they leave the IDE. However, statutory compliance mandates that production systems undergo independent human audits, accredited penetration testing, and formal Data Protection Officer (DPO) sign-offs.
+
+CompliRules maintains a curated, verified directory of specialized cybersecurity and regulatory audit partners tailored for fast-moving startups and vibe-coders:
+
+- 🛡️ **Web & API Penetration Testing:** Rapid vulnerability assessments, offensive security, and red-teaming.
+- ⚖️ **KVKK & GDPR Regulatory Counsel:** VERBİS filings, RoPA drafting, Schrems II Transfer Impact Assessments (TIA), and 72-hour breach response.
+- 📜 **SOC 2 & ISO 27001 Certification:** Audit-readiness, continuous evidence collection, and security policies.
+- ☁️ **Cloud Infrastructure Hardening:** AWS/GCP IAM least-privilege policies, Kubernetes security, and cross-border geo-fencing.
+
+👉 **Browse Partners or Apply to Join the Network:** [https://halilyilmz.github.io/complirules/#partners](https://halilyilmz.github.io/complirules/#partners)
+
+---
+
+## ⚖️ Legal Disclaimer & Zero-Liability Policy
+
+CompliRules is an open-source engineering heuristic and automated Privacy-by-Design guardrail system. The rule sets, linter checks, MCP tools, and code templates provided herein **DO NOT constitute legal counsel, formal penetration testing, or official regulatory certification**.
+
+Under no legal theory (contract, tort, negligence, or strict liability) shall the authors, copyright holders, or contributors be held liable for any direct or indirect damages, data compromise, or statutory administrative fines (under KVKK, GDPR, HIPAA, BIPA, CCPA, or FTC orders) arising from the use of this software.
+
+By downloading, installing, or referencing this repository, you explicitly accept the binding waiver conditions detailed in [**`DISCLAIMER.md`**](DISCLAIMER.md).
 
 ---
 
 ## 📄 License
 
-MIT © 2026 CompliRules Contributors
+MIT © 2026 CompliRules Contributors (See [LICENSE](LICENSE) and [DISCLAIMER.md](DISCLAIMER.md))

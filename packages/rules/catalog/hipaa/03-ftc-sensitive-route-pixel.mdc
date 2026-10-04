@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] HIPAA & FTC Prohibition of Commercial Ad Trackers on Sensitive Health Routes (GoodRx & BetterHelp)
 **Severity:** `CRITICAL` | **Jurisdiction:** `HIPAA_US`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **FTC v. GoodRx Holdings (2023) (FTC Act Sec. 5 & Health Breach Notification Rule (16 CFR Part 318))**: İlaç ve sağlık bilgisinin Meta ve Google reklam sistemlerine pikselle aktarılması; HBNR kapsamındaki ilk yaptırım. *[Sanction: 1,5 milyon $ sivil ceza ve sağlık verisini reklam amaçlı paylaşma yasağı.]*
 - **FTC v. BetterHelp (2023) & FTC v. Flo Health (2021) (FTC Act Sec. 5)**: Terapi anketi yanıtları ve e-posta/IP'nin reklam ağlarıyla paylaşılması aldatıcı ve haksız uygulamadır. *[Sanction: BetterHelp: 7,8 milyon $ tüketici iadesi.]*

@@ -7,6 +7,8 @@ alwaysApply: true
 # [CompliRules] Multi-Jurisdiction Collision Resolution: GDPR Erasure vs Statutory Tax/Clinical Retentions
 **Severity:** `CRITICAL` | **Jurisdiction:** `GDPR_EU`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **Regulation (EU) 2016/679 (GDPR) (Article 17(3)(b) & Article 18)**: Right to erasure does not apply to the extent processing is necessary for compliance with a legal obligation.
 - **Turkish Tax Procedure Law & Commercial Code (VUK Madde 253 & TTK Madde 82)**: Mandatory 5-year (VUK) and 10-year (TTK) retention of accounting books and invoice records.

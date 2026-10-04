@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] KVKK Article 12(5) 72-Hour Personal Data Breach Notification Workflow
 **Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **6698 Sayılı KVKK (Madde 12/5)**: Kişisel verilerin kanuni olmayan yollarla başkaları tarafından elde edilmesi halinde en geç 72 saat içinde Kurul'a ve ilgili kişiye bildirim zorunluluğu. *[Sanction: KVKK Md. 18/1-b uyarınca ağır idari para cezası.]*
 - **KVKK Kurul İlke Kararı (24.01.2019 - 2019/10)**: Kişisel Veri İhlali Bildirim Formu standartları ve 6 zorunlu alanın eksiksiz doldurulması.

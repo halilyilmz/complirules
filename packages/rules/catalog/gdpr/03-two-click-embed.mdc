@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] GDPR & TDDDG § 25 Two-Click Solution for Video and Map Embeds (CJEU Fashion ID)
 **Severity:** `HIGH` | **Jurisdiction:** `GDPR_EU`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **CJEU C-40/17 Fashion ID (29.07.2019) (GDPR Md. 26 — Ortak Veri Sorumluluğu)**: Facebook Beğen gibi bir eklentiyi gömen site sahibi, verinin toplanması ve aktarımı aşamasında eklenti sağlayıcısıyla ortak veri sorumlusudur; eklenti yüklenirken ziyaretçi tıklamasa bile IP ve tarayıcı verisi aktarılır. *[Sanction: Hukuki dayanak (rıza) ve aydınlatma eksikliğinde GDPR Md. 83 idari para cezaları ve Md. 82 tazminat.]*
 - **Alman DSK Telemedya Rehberi / TDDDG § 25 (Zwei-Klick-Lösung)**: YouTube, Vimeo ve Google Maps iframe'leri (youtube-nocookie.com dahil) sayfa açılır açılmaz IP ve Referer bilgisini iletir. Kullanıcı etkinleştirmeden önce harici sunucuya hiçbir istek atılmamalıdır.

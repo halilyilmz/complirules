@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] GDPR & CJEU Breyer C-582/14 Prohibition of Unproxied Remote Assets (LG München I)
 **Severity:** `HIGH` | **Jurisdiction:** `GDPR_EU`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **LG München I (3 O 17493/20) & CJEU Breyer (C-582/14) (IP Adreslerinin Üçüncü Taraflara Rızasız İletimi)**: Harici resimler (<img src="https://...">), Gravatar avatarları veya remote fontların doğrudan istemciye bağlanması (Hotlinking), ziyaretçi IP adresi ve Referer başlığını üçüncü taraf sunuculara sızdırır. Rıza olmaksızın veya güvenli proxy kullanılmaksızın yapılması tazminat ve idari yaptırım doğurur. *[Sanction: Almanya mahkemelerince ziyaretçi başına 100€+ manevi tazminat, ihtiyati tedbir ve GDPR Md. 83 idari para cezaları.]*
 - **General Data Protection Regulation (GDPR) (Article 6(1) & Article 44+)**: Hukuki dayanak olmaksızın kişisel veri (dinamik IP) işleme ve yeterlilik kararı bulunmayan üçüncü ülkelere sınır ötesi veri aktarımı yasağı.

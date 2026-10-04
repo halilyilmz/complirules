@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] European Accessibility Act (EAA 2025) & EN 301 549 / WCAG 2.1 AA UI Standards
 **Severity:** `HIGH` | **Jurisdiction:** `EAA_EU`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **European Accessibility Act (Directive 2019/882) (Annex I (Functional Accessibility Requirements))**: AB pazarında hizmet veren tüm e-ticaret, SaaS ve bankacılık arayüzlerinde zorunlu erişilebilirlik (Yürürlük: Haziran 2025).
 - **EN 301 549 & W3C WCAG 2.1 (Level AA)**: Algılanabilir, Çalıştırılabilir, Anlaşılabilir ve Sağlam web standartları.

@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] KVKK & Tax Procedure Code Data Retention and Tombstone Anonymization Standard
 **Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **6698 Sayılı KVKK (Madde 7)**: Kişisel verilerin silinmesi, yok edilmesi veya anonim hale getirilmesi yükümlülüğü. *[Sanction: Hukuka aykırı saklama durumunda TCK Md. 138 uyarınca hapis cezası ve idari para cezası.]*
 - **6698 Sayılı KVKK (Madde 9 (2024 Reformu))**: Yurt dışına veri aktarımı kısıtları. Standart Sözleşme (SCC) veya Kurul izni olmadan yurt dışı LLM (OpenAI, Anthropic) veya bulut (AWS, Vercel) servislerine açık PII aktarılamaz. *[Sanction: KVKK Md. 18 ağır idari para cezaları ve TCK Md. 136 hapis yaptırımı.]*

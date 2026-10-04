@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] Account Takeover Defense: Adaptive Sliding Window Rate Limiting and Mandatory MFA
 **Severity:** `HIGH` | **Jurisdiction:** `GLOBAL_SEC`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **6698 Sayılı KVKK (Madde 12(1))**: Teknolojinin ulaştığı seviyeye uygun teknik tedbir yükümlülüğü. Brute-force ve credential-stuffing ile hesap ele geçirilmesinde rate limit, hesap kilitleme ve çok faktörlü doğrulama eksikliği veri sorumlusunun kusuru sayılır.
 - **GDPR (Madde 32)**: Risk düzeyine uygun güvenlik: kimlik doğrulama saldırılarına karşı teknik önlemler.

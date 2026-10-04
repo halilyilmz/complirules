@@ -7,6 +7,8 @@ alwaysApply: false
 # [CompliRules] KVKK Cookie Guidelines & Category-Based Prior Consent Management Platform (CMP)
 **Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
+<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+
 ## Legal Citations
 - **KVKK Çerez Uygulamaları Hakkında Rehber (Haziran 2022)**: Zorunlu çerezler haricindeki tüm analitik ve pazarlama çerezlerinde önceden açık rıza (Prior Consent Gating) ve simetrik ret butonu zorunluluğu. *[Sanction: Hukuka aykırı veri işleme yaptırımları (KVKK Md. 18).]*
 - **6698 Sayılı KVKK (Madde 5/1)**: Kişisel verilerin ilgili kişinin açık rızası olmaksızın işlenemeyeceği temel kuralı.
