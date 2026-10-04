@@ -196,7 +196,7 @@ CompliRules provides a zero-build, static documentation website deployable direc
 ## 📄 License & Intellectual Property Protection
 
 **CompliRules Free-to-Use Software License**  
-Copyright (c) 2026 Halil Yılmaz & CompliRules. All Rights Reserved.
+Copyright (c) 2026 İbrahim Halil Yılmaz & CompliRules. All Rights Reserved.
 
 - ✅ **Free to Use:** Software developers, engineering teams, and enterprises are granted permission to download, install, and execute CompliRules within their own internal codebases completely free of charge.
 - 🚫 **No Forking, Resale, or White-Labeling:** Public redistribution, mirroring, commercial resale, white-labeling, or building competing commercial linters/guardrails using CompliRules rule datasets or AST code is strictly prohibited without prior written authorization.

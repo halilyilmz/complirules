@@ -37,7 +37,7 @@ describe('Legal Disclaimer & Proprietary Protection Invariants', () => {
 
     const content = fs.readFileSync(licensePath, 'utf8');
     expect(content).toContain('CompliRules Free-to-Use Software License');
-    expect(content).toContain('Halil Yılmaz');
+    expect(content).toContain('İbrahim Halil Yılmaz');
     expect(content).toContain('STRICT PROHIBITIONS & RESTRICTIONS');
     expect(content).toContain('NO RESALE OR COMMERCIALIZATION');
     expect(content).toContain('NO WHITE-LABELING & NO DERIVATIVE COMPETING PRODUCTS');
