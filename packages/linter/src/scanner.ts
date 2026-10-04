@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import * as ts from 'typescript';
 import { LinterRule, LintResult, LintViolation } from './types.js';
 import { noUnredactedLogsRule } from './rules/no-unredacted-logs.js';
 import { noPretickedConsentRule } from './rules/no-preticked-consent.js';
@@ -14,6 +15,50 @@ import { noPixelOnSensitiveRoutesRule } from './rules/no-pixel-on-sensitive-rout
 import { enforceBccBulkEmailRule } from './rules/enforce-bcc-bulk-email.js';
 import { noBundledOtpMarketingRule } from './rules/no-bundled-otp-marketing.js';
 import { enforceGpcOptoutRule } from './rules/enforce-gpc-optout.js';
+import { ComplianceRule } from './engine/runner.js';
+import { noExternalFontCdnRule } from './engine/rules/no-external-font-cdn.js';
+import { noPiiInLoggerRule } from './engine/rules/no-pii-in-logger.js';
+import { noPrecheckedConsentRule as astNoPrecheckedConsentRule } from './engine/rules/no-prechecked-consent.js';
+import { requireGpcHandlerRule } from './engine/rules/require-gpc-handler.js';
+
+export function astRuleToLinterRule(
+  rule: ComplianceRule,
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' = 'CRITICAL'
+): LinterRule {
+  return {
+    id: rule.id,
+    name: rule.description,
+    lawCitation: rule.statutoryBasis + (rule.precedentCitation ? ' | ' + rule.precedentCitation : ''),
+    severity,
+    filePattern: /\.(ts|tsx|js|jsx)$/,
+    check(filePath: string, fileContent: string): LintViolation[] {
+      const sourceFile = ts.createSourceFile(
+        filePath,
+        fileContent,
+        ts.ScriptTarget.Latest,
+        true,
+        filePath.endsWith('.tsx') || filePath.endsWith('.jsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS
+      );
+      const violations = rule.check(sourceFile);
+      const lines = fileContent.split(/\r?\n/);
+      return violations.map(v => ({
+        file: v.filePath,
+        line: v.line,
+        column: v.column,
+        ruleId: v.ruleId,
+        severity: v.severity === 'error' ? 'CRITICAL' : 'HIGH',
+        message: v.message,
+        lawCitation: v.statutoryBasis + (v.precedentCitation ? ' (' + v.precedentCitation + ')' : ''),
+        matchedSnippet: lines[v.line - 1]?.trim() ?? ''
+      }));
+    }
+  };
+}
+
+export const astExternalFontCdnLinterRule = astRuleToLinterRule(noExternalFontCdnRule, 'CRITICAL');
+export const astPiiLoggerLinterRule = astRuleToLinterRule(noPiiInLoggerRule, 'CRITICAL');
+export const astPrecheckedConsentLinterRule = astRuleToLinterRule(astNoPrecheckedConsentRule, 'CRITICAL');
+export const astGpcHandlerLinterRule = astRuleToLinterRule(requireGpcHandlerRule, 'HIGH');
 
 export const BUILT_IN_RULES: LinterRule[] = [
   noUnredactedLogsRule,
@@ -28,7 +73,11 @@ export const BUILT_IN_RULES: LinterRule[] = [
   noPixelOnSensitiveRoutesRule,
   enforceBccBulkEmailRule,
   noBundledOtpMarketingRule,
-  enforceGpcOptoutRule
+  enforceGpcOptoutRule,
+  astExternalFontCdnLinterRule,
+  astPiiLoggerLinterRule,
+  astPrecheckedConsentLinterRule,
+  astGpcHandlerLinterRule
 ];
 
 const IGNORED_DIRS = new Set([
