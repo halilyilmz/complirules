@@ -5,6 +5,16 @@ import { handleCheckUiDarkPatterns } from './tools/check-ui-dark-patterns.js';
 import { handleGenerateRopa } from './tools/generate-ropa.js';
 import { handleLookupLegalCitation } from './tools/lookup-legal-citation.js';
 import { handleLookupActivePartner } from './tools/lookup-active-partner.js';
+import { handleVerifyTransferAdequacy } from './tools/verify-transfer-adequacy.js';
+import { handleGenerateDPIA } from './tools/generate-dpia.js';
+import { handleCheckDependencyPrivacy } from './tools/check-dependency-privacy.js';
+import { handleCheckHIPAASafeHarbor } from './tools/check-hipaa-safeharbor.js';
+import { handleResolveJurisdictionConflict } from './tools/resolve-jurisdiction-conflict.js';
+import { handleGenerateBreachAssessment } from './tools/generate-breach-assessment.js';
+import { handleGenerateCookieDisclosure } from './tools/generate-cookie-disclosure.js';
+import { handleVerifyConsentImplementation } from './tools/verify-consent-implementation.js';
+import { handleGenerateDPATemplate } from './tools/generate-dpa-template.js';
+import { handleAuditAccessibilityCompliance } from './tools/audit-accessibility-compliance.js';
 
 export const MCP_TOOLS = [
   {
@@ -77,6 +87,157 @@ export const MCP_TOOLS = [
         topic: { type: 'string', description: 'Module/Topic (e.g., "auth", "payment", "pii")' }
       }
     }
+  },
+  {
+    name: 'verify_transfer_adequacy',
+    description: 'Evaluates international data transfer compliance under GDPR Chapter V (Schrems II) and KVKK Article 9. Checks recipient country adequacy, surveillance law risks (FISA 702, EO 12333), and required supplementary technical/contractual safeguards.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        exporterCountry: { type: 'string', description: 'ISO 3166-1 alpha-2 code of exporter (e.g. DE, FR, TR)' },
+        importerCountry: { type: 'string', description: 'ISO 3166-1 alpha-2 code of importer (e.g. US, CN, IN, GB)' },
+        serviceName: { type: 'string', description: 'Name of the service (e.g. AWS, Sentry, Google Analytics, PostHog)' },
+        isDpfCertified: { type: 'boolean', description: 'Whether importer is actively certified under EU-US Data Privacy Framework' },
+        dataCategories: { type: 'array', items: { type: 'string' }, description: 'Categories of data being transferred' }
+      },
+      required: ['exporterCountry', 'importerCountry', 'serviceName', 'dataCategories']
+    }
+  },
+  {
+    name: 'generate_dpia',
+    description: 'Determines whether a planned software architecture triggers a mandatory Data Protection Impact Assessment (GDPR Art. 35 / KVKK) and synthesizes a fully structured DPIA template.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectName: { type: 'string' },
+        processingDescription: { type: 'string' },
+        involvesSpecialCategories: { type: 'boolean' },
+        involvesAutomatedDecisionMaking: { type: 'boolean' },
+        involvesLargeScaleMonitoring: { type: 'boolean' },
+        involvesVulnerableSubjects: { type: 'boolean' }
+      },
+      required: ['projectName', 'processingDescription']
+    }
+  },
+  {
+    name: 'check_dependency_privacy',
+    description: 'Audits dependencies in package.json against a database of ad-tech, tracking, session-replay, and telemetry libraries that trigger statutory consent and transfer obligations.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        dependencies: { type: 'object', description: 'Key-value map of package names and versions' }
+      },
+      required: ['dependencies']
+    }
+  },
+  {
+    name: 'check_hipaa_safeharbor',
+    description: 'Audits database schemas or JSON payloads against all 18 HIPAA Safe Harbor identifiers (45 CFR §164.514(b)(2)).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        fields: { type: 'array', items: { type: 'string' }, description: 'Array of field names / schema columns to evaluate' }
+      },
+      required: ['fields']
+    }
+  },
+  {
+    name: 'resolve_jurisdiction_conflict',
+    description: 'Resolves conflicting legal obligations across multiple jurisdictions (e.g. GDPR Art. 17 Right to Erasure vs Turkish Tax Code VUK 253 / German AO §147 10-year retention, or HIPAA 6-year retention).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        requestedAction: { type: 'string', enum: ['erasure', 'export', 'retention'] },
+        dataCategory: { type: 'string', enum: ['financial_invoice', 'clinical_health', 'marketing_tracking', 'profile_credentials'] },
+        jurisdictions: { type: 'array', items: { type: 'string' } }
+      },
+      required: ['requestedAction', 'dataCategory']
+    }
+  },
+  {
+    name: 'generate_breach_assessment',
+    description: 'Evaluates security incidents against statutory breach notification criteria (KVKK 72h, GDPR Art. 33/34, HIPAA 60-day OCR threshold).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        incidentType: { type: 'string' },
+        affectedRecordsCount: { type: 'number' },
+        dataCategories: { type: 'array', items: { type: 'string' } },
+        isEncryptedWithCustomerKey: { type: 'boolean' },
+        jurisdiction: { type: 'string', enum: ['TR', 'EU', 'US', 'ALL'], default: 'ALL' }
+      },
+      required: ['incidentType', 'affectedRecordsCount', 'dataCategories', 'isEncryptedWithCustomerKey']
+    }
+  },
+  {
+    name: 'generate_cookie_disclosure',
+    description: 'Generates structured cookie and terminal access disclosures per ePrivacy Art. 5(3), Planet49, and KVKK 2022 Cookie Guidelines.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        appName: { type: 'string' },
+        cookies: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              provider: { type: 'string' },
+              category: { type: 'string', enum: ['strictly_necessary', 'functional', 'analytics', 'marketing'] },
+              purpose: { type: 'string' },
+              expiry: { type: 'string' }
+            },
+            required: ['name', 'provider', 'category', 'purpose', 'expiry']
+          }
+        }
+      },
+      required: ['appName', 'cookies']
+    }
+  },
+  {
+    name: 'verify_consent_implementation',
+    description: 'Verifies UI consent architecture against Planet49 (no pre-checked boxes), decoupled marketing/Terms, granular per-purpose switches, symmetric reject button, and easy withdrawal.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        hasRejectAllButton: { type: 'boolean' },
+        areCheckboxesPreChecked: { type: 'boolean' },
+        isBundledWithTermsOfService: { type: 'boolean' },
+        hasGranularPurposeSwitches: { type: 'boolean' },
+        hasRevocationInterface: { type: 'boolean' },
+        jurisdiction: { type: 'string', enum: ['EU', 'TR', 'US_CA', 'GLOBAL'], default: 'EU' }
+      },
+      required: ['hasRejectAllButton', 'areCheckboxesPreChecked', 'isBundledWithTermsOfService', 'hasGranularPurposeSwitches', 'hasRevocationInterface']
+    }
+  },
+  {
+    name: 'generate_dpa_template',
+    description: 'Generates compliant Data Processing Agreements (DPA) under GDPR Art. 28 and KVKK Art. 12 including security measures, audit rights, and sub-processor controls.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        controllerName: { type: 'string' },
+        processorName: { type: 'string' },
+        dataCategories: { type: 'array', items: { type: 'string' } },
+        governingLaw: { type: 'string', enum: ['GDPR', 'KVKK', 'DUAL'], default: 'GDPR' }
+      },
+      required: ['controllerName', 'processorName', 'dataCategories']
+    }
+  },
+  {
+    name: 'audit_accessibility_compliance',
+    description: 'Audits UI accessibility against European Accessibility Act (EAA Directive 2019/882) and WCAG 2.1 AA standards.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        hasAriaLabelsOnIconButtons: { type: 'boolean' },
+        colorContrastRatio: { type: 'number' },
+        isKeyboardNavigable: { type: 'boolean' },
+        supportsZoomWithoutClipping: { type: 'boolean' },
+        hasAccessibleForms: { type: 'boolean' }
+      },
+      required: ['hasAriaLabelsOnIconButtons', 'colorContrastRatio', 'isKeyboardNavigable', 'supportsZoomWithoutClipping', 'hasAccessibleForms']
+    }
   }
 ];
 
@@ -94,6 +255,26 @@ export function executeTool(name: string, args: Record<string, unknown>): string
       return handleLookupLegalCitation(args as any);
     case 'lookup_active_partner':
       return handleLookupActivePartner(args as any);
+    case 'verify_transfer_adequacy':
+      return handleVerifyTransferAdequacy(args as any);
+    case 'generate_dpia':
+      return handleGenerateDPIA(args as any);
+    case 'check_dependency_privacy':
+      return handleCheckDependencyPrivacy(args as any);
+    case 'check_hipaa_safeharbor':
+      return handleCheckHIPAASafeHarbor(args as any);
+    case 'resolve_jurisdiction_conflict':
+      return handleResolveJurisdictionConflict(args as any);
+    case 'generate_breach_assessment':
+      return handleGenerateBreachAssessment(args as any);
+    case 'generate_cookie_disclosure':
+      return handleGenerateCookieDisclosure(args as any);
+    case 'verify_consent_implementation':
+      return handleVerifyConsentImplementation(args as any);
+    case 'generate_dpa_template':
+      return handleGenerateDPATemplate(args as any);
+    case 'audit_accessibility_compliance':
+      return handleAuditAccessibilityCompliance(args as any);
     default:
       throw new Error(`Unknown tool: ${name}`);
   }

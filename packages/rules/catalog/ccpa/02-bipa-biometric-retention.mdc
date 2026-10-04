@@ -1,0 +1,33 @@
+---
+description: "Illinois BIPA & State Biometric Guardrail (740 ILCS 14/)"
+globs: ["src/**/*.{ts,tsx}","lib/auth/**/*.{ts,tsx}","app/**/*.{ts,tsx}"]
+alwaysApply: true
+---
+
+# [CompliRules] Illinois BIPA & State Biometric Guardrail (740 ILCS 14/)
+**Severity:** `CRITICAL` | **Jurisdiction:** `CCPA_US`
+
+## Legal Citations
+- **Illinois Biometric Information Privacy Act (740 ILCS 14/15(b))**: Written informed release must be executed prior to capturing biometric identifiers. *[Sanction: $1,000 to $5,000 statutory damages per scan (Cothron v. White Castle).]*
+
+## Rule Mandates
+- MUST: Require executed written informed release before processing face scans, voiceprints, or fingerprints.
+- MUST: Publish a publicly accessible biometric retention and destruction schedule.
+- MUST: Never transmit or monetize biometric data with third-party advertising or analytics networks.
+
+## Forbidden Anti-Patterns
+- NEVER: Face recognition auth without signed written release
+
+## Reference Compliant Code Snippets
+### BIPA Biometric Guard Check
+```typescript
+import { BIPABiometricGuard, BiometricIdentifierType } from '@complirules/primitives';
+
+const auth = await bipaGuard.authorizeOperation({
+  subjectId: user.id,
+  releaseId: user.biometricReleaseId,
+  identifierType: BiometricIdentifierType.FACE_GEOMETRY,
+  type: 'capture',
+  purpose: 'secure_login'
+});
+```

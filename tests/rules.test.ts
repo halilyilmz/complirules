@@ -62,4 +62,12 @@ describe('CompliRules Catalog & Rules Engine', () => {
     const claudeMd = renderClaudeMd(rules);
     expect(claudeMd).toContain('# CLAUDE.md — Regulatory Compliance Invariants');
   });
+
+  it('ePrivacy, Schrems II TIA, BIPA ve çoklu yetki alanı çatışma kurallarını yükler', () => {
+    const rules = getAllRules();
+    expect(rules.some(r => r.id === 'gdpr-eprivacy-consent-decoupling')).toBe(true);
+    expect(rules.some(r => r.id === 'schrems-ii-transfer-tia')).toBe(true);
+    expect(rules.some(r => r.id === 'bipa-biometric-retention')).toBe(true);
+    expect(rules.some(r => r.id === 'multi-jurisdiction-conflict-quarantine')).toBe(true);
+  });
 });

@@ -1,0 +1,35 @@
+---
+description: "ePrivacy Directive Art. 5(3) Terminal Access Decoupling & Planet49 Standard"
+globs: ["src/**/*.{ts,tsx,js,jsx}","pages/**/*.{ts,tsx}","app/**/*.{ts,tsx}"]
+alwaysApply: true
+---
+
+# [CompliRules] ePrivacy Directive Art. 5(3) Terminal Access Decoupling & Planet49 Standard
+**Severity:** `CRITICAL` | **Jurisdiction:** `GDPR_EU`
+
+## Legal Citations
+- **Directive 2002/58/EC (ePrivacy Directive) (Article 5(3))**: Storing information, or gaining access to information stored, in terminal equipment requires affirmative consent. *[Sanction: GDPR Art. 83 fines up to €20M or 4% of global turnover.]*
+- **Court of Justice of the European Union (CJEU) (Case C-673/17 (Planet49 GmbH))**: Pre-ticked checkboxes or implicit consent are legally invalid.
+
+## Rule Mandates
+- MUST: NEVER load tracking pixels, cookies, or font CDNs prior to affirmative user consent.
+- MUST: Decouple ePrivacy terminal storage consent from GDPR Art. 6 processing lawful bases.
+- MUST: Provide symmetric Accept and Reject controls with equal visual prominence.
+- MUST: Record consent with immutable audit logs and version hashes.
+- MUST: Support instantaneous withdrawal under GDPR Art. 7(3).
+
+## Forbidden Anti-Patterns
+- NEVER: <input type="checkbox" defaultChecked /> in consent modals
+- NEVER: document.cookie = "tracking=true" without prior consent verification
+
+## Reference Compliant Code Snippets
+### Consent Gate Pattern
+```tsx
+import { EPrivacyConsentEngine, EPrivacyPurpose } from '@complirules/primitives';
+
+export async function AnalyticsGate({ children, subjectId }: { children: React.ReactNode; subjectId: string }) {
+  const allowed = await consentEngine.checkConsent(subjectId, EPrivacyPurpose.ANALYTICS);
+  if (!allowed.allowed) return null;
+  return <>{children}</>;
+}
+```

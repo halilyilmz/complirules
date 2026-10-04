@@ -3,7 +3,7 @@ import { executeTool, MCP_TOOLS } from '../packages/mcp-server/src/index.js';
 
 describe('CompliRules MCP Server Tools', () => {
   it('tüm MCP araçlarını ve şemalarını eksiksiz listeler', () => {
-    expect(MCP_TOOLS.length).toBe(6);
+    expect(MCP_TOOLS.length).toBe(16);
     const names = MCP_TOOLS.map(t => t.name);
     expect(names).toContain('verify_schema_compliance');
     expect(names).toContain('audit_code_pii');

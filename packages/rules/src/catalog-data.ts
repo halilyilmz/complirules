@@ -1463,6 +1463,189 @@ export function middleware(req: Request) {
   ]
 };
 
+
+export const EPRIVACY_CONSENT_RULE: RuleDefinition = {
+  id: 'gdpr-eprivacy-consent-decoupling',
+  title: 'ePrivacy Directive Art. 5(3) Terminal Access Decoupling & Planet49 Standard',
+  jurisdiction: 'GDPR_EU',
+  severity: 'CRITICAL',
+  globs: ['src/**/*.{ts,tsx,js,jsx}', 'pages/**/*.{ts,tsx}', 'app/**/*.{ts,tsx}'],
+  alwaysApply: true,
+  legalCitations: [
+    {
+      law: 'Directive 2002/58/EC (ePrivacy Directive)',
+      article: 'Article 5(3)',
+      description: 'Storing information, or gaining access to information stored, in terminal equipment requires affirmative consent.',
+      penaltyContext: 'GDPR Art. 83 fines up to €20M or 4% of global turnover.'
+    },
+    {
+      law: 'Court of Justice of the European Union (CJEU)',
+      article: 'Case C-673/17 (Planet49 GmbH)',
+      description: 'Pre-ticked checkboxes or implicit consent are legally invalid.'
+    }
+  ],
+  summary: 'Terminal equipment access and non-essential cookies derive strictly from ePrivacy Art. 5(3) and require prior affirmative consent separate from GDPR Art. 6. Pre-ticked boxes are void.',
+  instructions: [
+    'NEVER load tracking pixels, cookies, or font CDNs prior to affirmative user consent.',
+    'Decouple ePrivacy terminal storage consent from GDPR Art. 6 processing lawful bases.',
+    'Provide symmetric Accept and Reject controls with equal visual prominence.',
+    'Record consent with immutable audit logs and version hashes.',
+    'Support instantaneous withdrawal under GDPR Art. 7(3).'
+  ],
+  forbiddenPatterns: [
+    '<input type="checkbox" defaultChecked /> in consent modals',
+    'document.cookie = "tracking=true" without prior consent verification'
+  ],
+  compliantCodeSnippets: [
+    {
+      title: 'Consent Gate Pattern',
+      language: 'tsx',
+      code: `import { EPrivacyConsentEngine, EPrivacyPurpose } from '@complirules/primitives';
+
+export async function AnalyticsGate({ children, subjectId }: { children: React.ReactNode; subjectId: string }) {
+  const allowed = await consentEngine.checkConsent(subjectId, EPrivacyPurpose.ANALYTICS);
+  if (!allowed.allowed) return null;
+  return <>{children}</>;
+}`
+    }
+  ]
+};
+
+export const SCHREMS_II_TIA_RULE: RuleDefinition = {
+  id: 'schrems-ii-transfer-tia',
+  title: 'Schrems II International Data Transfer & Transfer Impact Assessment (TIA) Guardrail',
+  jurisdiction: 'GDPR_EU',
+  severity: 'CRITICAL',
+  globs: ['src/**/*.{ts,tsx}', 'app/api/**/*.{ts,tsx}', 'lib/**/*.{ts,tsx}', 'server/**/*.{ts,tsx}'],
+  alwaysApply: true,
+  legalCitations: [
+    {
+      law: 'Regulation (EU) 2016/679 (GDPR)',
+      article: 'Chapter V (Articles 44-49)',
+      description: 'Transfers of personal data to third countries or international organisations.'
+    },
+    {
+      law: 'CJEU Landmark Precedent',
+      article: 'Case C-311/18 (Schrems II)',
+      description: 'Standard Contractual Clauses (SCCs) are invalid without supplementary technical measures in surveillance jurisdictions.'
+    }
+  ],
+  summary: 'Personal data cannot be routed to US cloud endpoints unless protected by DPF certification, client-side encryption with EEA keys, or reverse-proxy IP stripping.',
+  instructions: [
+    'Perform a documented Transfer Impact Assessment (TIA) before integrating US SaaS services.',
+    'Verify active EU-US Data Privacy Framework (DPF) certification for all US processors.',
+    'When using SCCs with US entities, apply supplementary measures: client-side envelope encryption with keys held in the EEA or self-hosted proxy IP scrubbing.'
+  ],
+  forbiddenPatterns: [
+    'fetch("https://api.mixpanel.com/track", { headers: { "X-Forwarded-For": userIp } })'
+  ],
+  compliantCodeSnippets: [
+    {
+      title: 'Schrems II TIA Evaluation',
+      language: 'typescript',
+      code: `import { SchremsIITIAEvaluator, DataCategory } from '@complirules/primitives';
+
+const tia = new SchremsIITIAEvaluator().evaluate({
+  dataCategories: [DataCategory.IDENTITY],
+  exporter: { name: 'Acme EU', country: 'DE', role: 'controller' },
+  importer: { name: 'Cloud US', country: 'US', role: 'processor', dpfCertified: true },
+  destinationCountry: 'US',
+  transferTool: { type: 'dpf', certified: true, certificationId: 'DPF-12345' },
+  purposes: ['Billing'],
+  dataSubjectVolume: 'medium',
+  includesSpecialCategories: false,
+  service: 'Accounting',
+  importerSubjectToUSLaw: false
+});`
+    }
+  ]
+};
+
+export const BIPA_BIOMETRIC_RULE: RuleDefinition = {
+  id: 'bipa-biometric-retention',
+  title: 'Illinois BIPA & State Biometric Guardrail (740 ILCS 14/)',
+  jurisdiction: 'CCPA_US',
+  severity: 'CRITICAL',
+  globs: ['src/**/*.{ts,tsx}', 'lib/auth/**/*.{ts,tsx}', 'app/**/*.{ts,tsx}'],
+  alwaysApply: true,
+  legalCitations: [
+    {
+      law: 'Illinois Biometric Information Privacy Act',
+      article: '740 ILCS 14/15(b)',
+      description: 'Written informed release must be executed prior to capturing biometric identifiers.',
+      penaltyContext: '$1,000 to $5,000 statutory damages per scan (Cothron v. White Castle).'
+    }
+  ],
+  summary: 'Prior written release, public retention schedule, and cryptographic destruction guarantee required before any biometric capture. Commercialization strictly prohibited.',
+  instructions: [
+    'Require executed written informed release before processing face scans, voiceprints, or fingerprints.',
+    'Publish a publicly accessible biometric retention and destruction schedule.',
+    'Never transmit or monetize biometric data with third-party advertising or analytics networks.'
+  ],
+  forbiddenPatterns: [
+    'Face recognition auth without signed written release'
+  ],
+  compliantCodeSnippets: [
+    {
+      title: 'BIPA Biometric Guard Check',
+      language: 'typescript',
+      code: `import { BIPABiometricGuard, BiometricIdentifierType } from '@complirules/primitives';
+
+const auth = await bipaGuard.authorizeOperation({
+  subjectId: user.id,
+  releaseId: user.biometricReleaseId,
+  identifierType: BiometricIdentifierType.FACE_GEOMETRY,
+  type: 'capture',
+  purpose: 'secure_login'
+});`
+    }
+  ]
+};
+
+export const JURISDICTION_CONFLICT_RULE: RuleDefinition = {
+  id: 'multi-jurisdiction-conflict-quarantine',
+  title: 'Multi-Jurisdiction Collision Resolution: GDPR Erasure vs Statutory Tax/Clinical Retentions',
+  jurisdiction: 'GDPR_EU',
+  severity: 'CRITICAL',
+  globs: ['src/**/*.{ts,tsx}', 'app/api/**/*.{ts,tsx}', 'lib/**/*.{ts,tsx}', '**/*.prisma'],
+  alwaysApply: true,
+  legalCitations: [
+    {
+      law: 'Regulation (EU) 2016/679 (GDPR)',
+      article: 'Article 17(3)(b) & Article 18',
+      description: 'Right to erasure does not apply to the extent processing is necessary for compliance with a legal obligation.'
+    },
+    {
+      law: 'Turkish Tax Procedure Law & Commercial Code',
+      article: 'VUK Madde 253 & TTK Madde 82',
+      description: 'Mandatory 5-year (VUK) and 10-year (TTK) retention of accounting books and invoice records.'
+    }
+  ],
+  summary: 'When data subjects invoke the Right to be Forgotten, commercial/tax and clinical records must not be hard deleted. Immediately isolate them in an audit-only quarantine with an automated statutory purge schedule.',
+  instructions: [
+    'Never execute hard SQL cascade deletes on invoices, tax records, or medical charts upon user erasure requests.',
+    'Quarantine retained financial and clinical rows into restricted, read-only tables.',
+    'Attach automated TTL destruction timers matching exact statutory retention durations.'
+  ],
+  forbiddenPatterns: [
+    'Hard CASCADE deletion between User and Invoice/Billing tables'
+  ],
+  compliantCodeSnippets: [
+    {
+      title: 'Jurisdiction Conflict Resolver',
+      language: 'typescript',
+      code: `import { JurisdictionConflictResolver } from '@complirules/primitives';
+
+const resolution = resolver.resolveErasureVsRetention({
+  subjectId: user.id,
+  dataCategories: ['invoices', 'profile_data'],
+  jurisdictions: ['TR', 'EU'],
+  erasureRequestDate: new Date().toISOString()
+});`
+    }
+  ]
+};
+
 export const ALL_RULES: RuleDefinition[] = [
   KVKK_RETENTION_RULE,
   KVKK_UI_CONSENT_RULE,
@@ -1483,7 +1666,11 @@ export const ALL_RULES: RuleDefinition[] = [
   CCPA_GPC_RULE,
   AI_ACT_TRANSPARENCY_RULE,
   SEC_AUTH_RATE_LIMIT_RULE,
-  PII_LOGGER_GUARD_RULE
+  PII_LOGGER_GUARD_RULE,
+  EPRIVACY_CONSENT_RULE,
+  SCHREMS_II_TIA_RULE,
+  BIPA_BIOMETRIC_RULE,
+  JURISDICTION_CONFLICT_RULE
 ];
 
 export const RULE_PACKS: RulePack[] = [
@@ -1537,7 +1724,7 @@ export const RULE_PACKS: RulePack[] = [
     jurisdiction: 'CCPA_US',
     description: 'California CCPA/CPRA Global Privacy Control automated opt-out enforcement and sensitive route tracking pixel protections.',
     version: '1.0.0',
-    rules: [CCPA_GPC_RULE, HIPAA_FTC_SENSITIVE_PIXEL_RULE]
+    rules: [CCPA_GPC_RULE, BIPA_BIOMETRIC_RULE, HIPAA_FTC_SENSITIVE_PIXEL_RULE]
   }
 ];
 

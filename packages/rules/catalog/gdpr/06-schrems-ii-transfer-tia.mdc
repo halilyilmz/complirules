@@ -1,0 +1,39 @@
+---
+description: "Schrems II International Data Transfer & Transfer Impact Assessment (TIA) Guardrail"
+globs: ["src/**/*.{ts,tsx}","app/api/**/*.{ts,tsx}","lib/**/*.{ts,tsx}","server/**/*.{ts,tsx}"]
+alwaysApply: true
+---
+
+# [CompliRules] Schrems II International Data Transfer & Transfer Impact Assessment (TIA) Guardrail
+**Severity:** `CRITICAL` | **Jurisdiction:** `GDPR_EU`
+
+## Legal Citations
+- **Regulation (EU) 2016/679 (GDPR) (Chapter V (Articles 44-49))**: Transfers of personal data to third countries or international organisations.
+- **CJEU Landmark Precedent (Case C-311/18 (Schrems II))**: Standard Contractual Clauses (SCCs) are invalid without supplementary technical measures in surveillance jurisdictions.
+
+## Rule Mandates
+- MUST: Perform a documented Transfer Impact Assessment (TIA) before integrating US SaaS services.
+- MUST: Verify active EU-US Data Privacy Framework (DPF) certification for all US processors.
+- MUST: When using SCCs with US entities, apply supplementary measures: client-side envelope encryption with keys held in the EEA or self-hosted proxy IP scrubbing.
+
+## Forbidden Anti-Patterns
+- NEVER: fetch("https://api.mixpanel.com/track", { headers: { "X-Forwarded-For": userIp } })
+
+## Reference Compliant Code Snippets
+### Schrems II TIA Evaluation
+```typescript
+import { SchremsIITIAEvaluator, DataCategory } from '@complirules/primitives';
+
+const tia = new SchremsIITIAEvaluator().evaluate({
+  dataCategories: [DataCategory.IDENTITY],
+  exporter: { name: 'Acme EU', country: 'DE', role: 'controller' },
+  importer: { name: 'Cloud US', country: 'US', role: 'processor', dpfCertified: true },
+  destinationCountry: 'US',
+  transferTool: { type: 'dpf', certified: true, certificationId: 'DPF-12345' },
+  purposes: ['Billing'],
+  dataSubjectVolume: 'medium',
+  includesSpecialCategories: false,
+  service: 'Accounting',
+  importerSubjectToUSLaw: false
+});
+```

@@ -17,3 +17,8 @@ export * from './sensitive-route-guard.js';
 export * from './gpc-evaluator.js';
 export * from './otp-consent-separator.js';
 export * from './rate-limit-shield.js';
+export * from './eprivacy-consent-engine.js';
+export * from './schrems-ii-tia-evaluator.js';
+export * from './true-anonymizer.js';
+export * from './bipa-biometric-guard.js';
+export * from './jurisdiction-conflict-resolver.js';

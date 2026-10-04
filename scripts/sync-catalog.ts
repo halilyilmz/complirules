@@ -28,7 +28,11 @@ const RULE_PATH_MAPPING: Record<string, string> = {
   'hipaa-ftc-sensitive-route-pixel': 'hipaa/03-ftc-sensitive-route-pixel.mdc',
   'ccpa-gpc-automated-optout': 'ccpa/01-gpc-automated-optout.mdc',
   'sec-auth-rate-limit-mfa': 'security/02-auth-rate-limit-mfa.mdc',
-  'sec-pii-logger-guard': 'security/01-pii-logger-guard.mdc'
+  'sec-pii-logger-guard': 'security/01-pii-logger-guard.mdc',
+  'gdpr-eprivacy-consent-decoupling': 'gdpr/05-eprivacy-consent-decoupling.mdc',
+  'schrems-ii-transfer-tia': 'gdpr/06-schrems-ii-transfer-tia.mdc',
+  'bipa-biometric-retention': 'ccpa/02-bipa-biometric-retention.mdc',
+  'multi-jurisdiction-conflict-quarantine': 'gdpr/07-multi-jurisdiction-conflict-quarantine.mdc'
 };
 
 console.log('🔄 CompliRules MDC Katalog Dosyaları Senkronize Ediliyor...');
