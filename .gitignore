@@ -6,3 +6,5 @@ dist/
 .env.*
 coverage/
 .cursor/rules/*.local.mdc
+
+.vercel
