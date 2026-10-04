@@ -1,183 +1,217 @@
 /**
- * CompliRules - Client Application Logic (Free-to-Use & Informative)
+ * CompliRules - Client Application Logic (Minimal, Fast & Developer-First)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
   initCopyButton();
-  initTerminalSimulator();
+  initTerminal();
   initRulesExplorer();
-  initModals();
+  initModal();
 });
 
-// 1. Copy Command to Clipboard
+// 1. One-Click CLI Copy
 function initCopyButton() {
-  const copyBtn = document.getElementById("copy-install-btn");
-  const copyText = document.getElementById("install-cmd-text");
-  const copyFeedback = document.getElementById("copy-feedback");
+  const btn = document.getElementById("copy-install-btn");
+  const text = document.getElementById("install-cmd-text");
+  const feedback = document.getElementById("copy-feedback");
 
-  if (!copyBtn || !copyText) return;
+  if (!btn || !text) return;
 
-  copyBtn.addEventListener("click", async () => {
+  btn.addEventListener("click", async () => {
     try {
-      await navigator.clipboard.writeText(copyText.innerText.trim());
-      if (copyFeedback) {
-        copyFeedback.classList.remove("hidden");
-        copyFeedback.innerText = "Kopyalandı!";
-        setTimeout(() => copyFeedback.classList.add("hidden"), 2000);
+      await navigator.clipboard.writeText(text.innerText.trim());
+      if (feedback) {
+        feedback.classList.remove("hidden");
+        setTimeout(() => feedback.classList.add("hidden"), 2000);
       }
-    } catch (err) {
-      console.error("Clipboard copy failed:", err);
+    } catch (e) {
+      console.error("Clipboard copy failed", e);
     }
   });
 }
 
-// 2. Interactive Terminal Simulator
-function initTerminalSimulator() {
+// 2. Minimalist Terminal Simulation
+function initTerminal() {
+  const terminal = document.getElementById("terminal-output-body");
   const replayBtn = document.getElementById("terminal-replay-btn");
-  const terminalBody = document.getElementById("terminal-output-body");
 
-  const terminalLines = [
-    { text: "🛡️  CompliRules AST Guardrail v1.0.0 — Scanning codebase...", delay: 200, color: "text-blue-400 font-bold" },
-    { text: "   Found 14 source files (.ts, .tsx, .js)...", delay: 500, color: "text-gray-400" },
-    { text: "   Running 24 MDC rules & TypeScript Compiler AST visitors...", delay: 800, color: "text-gray-400" },
-    { text: "❌ [FAIL] src/components/Header.tsx:12 — External Google Fonts CDN detected without local proxy (LG München I 3 O 17493/20 violation).", delay: 1200, color: "text-red-400" },
-    { text: "❌ [FAIL] src/pages/signup.tsx:48 — Pre-checked consent checkbox violates ePrivacy Art. 5(3) & Planet49 (C-673/17).", delay: 1600, color: "text-red-400" },
-    { text: "⚠️  [WARN] src/lib/analytics.ts:22 — Ungated Mixpanel tracker violates KVKK Çerez Rehberi & GPC opt-out.", delay: 2000, color: "text-amber-400" },
-    { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", delay: 2300, color: "text-gray-600" },
-    { text: "📊 Summary: 2 Errors, 1 Warning found.", delay: 2500, color: "text-red-300 font-bold" },
-    { text: "💡 Auto-remediation available: Run 'npx complirules scaffold' to generate local font proxy & CMP gate.", delay: 2800, color: "text-emerald-400" },
-    { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", delay: 3000, color: "text-gray-600" },
-    { text: "ℹ️  CompliRules is a free-to-use automated AST heuristic tool (See DISCLAIMER.md - Not legal/security advice).", delay: 3200, color: "text-gray-400 italic" },
-    { text: "   Documentation & Rule Catalog: https://halilyilmz.github.io/complirules/", delay: 3400, color: "text-cyan-400 font-medium" }
+  const lines = [
+    { text: "⚡ complirules check --path ./src", delay: 100, color: "text-gray-400 font-semibold" },
+    { text: "   Parsing AST across 28 files...", delay: 400, color: "text-gray-500" },
+    { text: "❌ [FAIL] Header.tsx:14 — Harici Google Fonts CDN tespit edildi (LG München I emsal ihlali - IP sızıntısı).", delay: 900, color: "text-rose-400" },
+    { text: "❌ [FAIL] RegisterForm.tsx:52 — Önceden işaretlenmiş rıza kutusu tespit edildi (KVKK & ePrivacy Art. 5(3) ihlali).", delay: 1400, color: "text-rose-400" },
+    { text: "⚠️  [WARN] logger.ts:18 — Ham kullanıcı token'ı loglanıyor (KVKK Md. 12 Veri Güvenliği).", delay: 1900, color: "text-amber-400" },
+    { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", delay: 2200, color: "text-gray-700" },
+    { text: "🛡️ 2 Hata, 1 Uyarı engellendi. Kodunuz yasal sınırlara çekildi.", delay: 2500, color: "text-emerald-400 font-bold" }
   ];
 
-  function runSimulation() {
-    if (!terminalBody) return;
-    terminalBody.innerHTML = "";
-    
-    terminalLines.forEach((line) => {
+  function run() {
+    if (!terminal) return;
+    terminal.innerHTML = "";
+    lines.forEach((l) => {
       setTimeout(() => {
-        const p = document.createElement("div");
-        p.className = `py-0.5 leading-relaxed text-sm ${line.color}`;
-        p.innerText = line.text;
-        terminalBody.appendChild(p);
-        terminalBody.scrollTop = terminalBody.scrollHeight;
-      }, line.delay);
+        const div = document.createElement("div");
+        div.className = `py-0.5 leading-relaxed text-xs sm:text-sm ${l.color}`;
+        div.textContent = l.text;
+        terminal.appendChild(div);
+        terminal.scrollTop = terminal.scrollHeight;
+      }, l.delay);
     });
   }
 
-  if (terminalBody) runSimulation();
-  if (replayBtn) replayBtn.addEventListener("click", runSimulation);
+  if (terminal) run();
+  if (replayBtn) replayBtn.addEventListener("click", run);
 }
 
-// 3. Interactive Rules & Statutory Frameworks Explorer
+// 3. Searchable & Filterable Rules Explorer
 function initRulesExplorer() {
-  const container = document.getElementById("rules-grid");
+  const grid = document.getElementById("rules-grid");
+  const searchInput = document.getElementById("rules-search-input");
   const filterBtns = document.querySelectorAll(".rule-filter-btn");
+  const countLabel = document.getElementById("rules-count-label");
 
-  if (!container || !window.RULES_DATA) return;
+  if (!grid || !window.RULES_DATA) return;
 
-  function renderRules(category = "all") {
-    container.innerHTML = "";
+  let currentCategory = "all";
+  let searchQuery = "";
 
-    const filtered = category === "all"
-      ? window.RULES_DATA
-      : window.RULES_DATA.filter((r) => r.category === category);
+  function render() {
+    grid.innerHTML = "";
+
+    const filtered = window.RULES_DATA.filter((rule) => {
+      const matchesCategory = currentCategory === "all" || rule.category === currentCategory;
+      const q = searchQuery.toLowerCase().trim();
+      const matchesSearch = !q || 
+        rule.title.toLowerCase().includes(q) ||
+        rule.summary.toLowerCase().includes(q) ||
+        rule.citation.toLowerCase().includes(q) ||
+        rule.jurisdiction.toLowerCase().includes(q);
+      
+      return matchesCategory && matchesSearch;
+    });
+
+    if (countLabel) {
+      countLabel.textContent = `${filtered.length} kural listeleniyor`;
+    }
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div class="col-span-full py-12 text-center text-gray-500 text-sm">
+          Aramanızla eşleşen kural bulunamadı.
+        </div>
+      `;
+      return;
+    }
 
     filtered.forEach((rule) => {
-      const card = document.createElement("article");
-      card.className = "glass-panel rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:border-gray-500 group";
-      
-      const isCritical = rule.severity === "CRITICAL";
-      const badgeColor = isCritical 
-        ? "bg-red-950/60 text-red-300 border-red-800/80" 
-        : "bg-amber-950/60 text-amber-300 border-amber-800/80";
+      const el = document.createElement("div");
+      el.className = "card-clean rounded-xl p-5 flex flex-col justify-between";
 
-      card.innerHTML = `
+      const isCritical = rule.severity === "CRITICAL";
+      const badgeStyle = isCritical
+        ? "bg-rose-500/10 text-rose-300 border-rose-500/30"
+        : "bg-amber-500/10 text-amber-300 border-amber-500/30";
+
+      el.innerHTML = `
         <div>
-          <div class="flex items-start justify-between gap-3 mb-3">
-            <span class="text-xs font-semibold text-cyan-400 flex items-center gap-1">
+          <div class="flex items-center justify-between gap-2 mb-2.5">
+            <span class="text-xs font-semibold text-cyan-400">
               ${rule.jurisdiction}
             </span>
-            <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${badgeColor}">
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border ${badgeStyle}">
               ${rule.severity}
             </span>
           </div>
-
-          <h3 class="font-bold text-base text-white group-hover:text-cyan-300 transition-colors mb-2 leading-snug">
+          <h3 class="font-bold text-sm sm:text-base text-white mb-2 leading-snug">
             ${rule.title}
           </h3>
-
-          <p class="text-xs text-gray-300 leading-relaxed mb-4">
+          <p class="text-xs text-gray-400 leading-relaxed mb-4">
             ${rule.summary}
           </p>
         </div>
 
-        <div class="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-gray-400">
-          <span class="truncate max-w-[240px] text-gray-400" title="${rule.citation}">⚖️ ${rule.citation}</span>
-          <span class="text-xs text-cyan-400 group-hover:translate-x-0.5 transition-transform font-bold">.mdc</span>
+        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-gray-500">
+          <span class="truncate max-w-[220px]" title="${rule.citation}">⚖️ ${rule.citation}</span>
+          <span class="text-cyan-400/80 font-bold">.mdc</span>
         </div>
       `;
 
-      container.appendChild(card);
+      grid.appendChild(el);
     });
   }
 
-  // Initial render
-  renderRules("all");
-
-  // Tab click handlers
+  // Filter clicks
   filterBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      filterBtns.forEach(b => {
+      filterBtns.forEach((b) => {
         b.classList.remove("bg-white/15", "text-white", "border-white/20");
         b.classList.add("text-gray-400", "border-transparent");
       });
       btn.classList.add("bg-white/15", "text-white", "border-white/20");
       btn.classList.remove("text-gray-400", "border-transparent");
 
-      const category = btn.getAttribute("data-category") || "all";
-      renderRules(category);
+      currentCategory = btn.getAttribute("data-category") || "all";
+      render();
     });
   });
-}
 
-// 4. Modals (Disclaimer)
-function initModals() {
-  const disclaimerModal = document.getElementById("disclaimer-modal");
-  const openDisclaimerBtns = document.querySelectorAll(".open-disclaimer-trigger");
-  const closeDisclaimerBtn = document.getElementById("close-disclaimer-btn");
-
-  function openModal(modal) {
-    if (!modal) return;
-    modal.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
+  // Search input
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      render();
+    });
   }
 
-  function closeModal(modal) {
+  // Initial render
+  render();
+}
+
+// 4. Accessible Legal Modal
+function initModal() {
+  const modal = document.getElementById("disclaimer-modal");
+  const openTriggers = document.querySelectorAll(".open-disclaimer-trigger");
+  const closeBtn = document.getElementById("close-disclaimer-btn");
+  const acceptBtn = document.getElementById("accept-disclaimer-btn");
+
+  let previousActiveElement = null;
+
+  function open() {
+    if (!modal) return;
+    previousActiveElement = document.activeElement;
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function close() {
     if (!modal) return;
     modal.classList.add("hidden");
     document.body.style.overflow = "";
+    if (previousActiveElement && typeof previousActiveElement.focus === "function") {
+      previousActiveElement.focus();
+    }
   }
 
-  openDisclaimerBtns.forEach(btn => btn.addEventListener("click", (e) => {
-    e.preventDefault();
-    openModal(disclaimerModal);
-  }));
+  openTriggers.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      open();
+    });
+  });
 
-  if (closeDisclaimerBtn) closeDisclaimerBtn.addEventListener("click", () => closeModal(disclaimerModal));
+  if (closeBtn) closeBtn.addEventListener("click", close);
+  if (acceptBtn) acceptBtn.addEventListener("click", close);
 
-  // Close on backdrop click
-  if (disclaimerModal) {
-    disclaimerModal.addEventListener("click", (e) => {
-      if (e.target === disclaimerModal) closeModal(disclaimerModal);
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) close();
     });
   }
 
-  // Close on Escape key
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeModal(disclaimerModal);
+    if (e.key === "Escape" && modal && !modal.classList.contains("hidden")) {
+      close();
     }
   });
 }
