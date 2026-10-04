@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark scroll-smooth">
+<html lang="en" class="dark scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#121110">
   <meta name="color-scheme" content="dark">
-  <title>CompliRules — KVKK & GDPR rules for Cursor and Claude Code</title>
-  <meta name="description" content="Free rules for Cursor and Claude Code that stop your AI from accidentally writing KVKK and GDPR violating code. One command to install.">
+  <title>CompliRules — Move fast. Break no laws.</title>
+  <meta name="description" content="Free KVKK & GDPR rules for Cursor and Claude Code that stop your AI from accidentally writing violating code.">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -40,14 +40,23 @@
         <span class="inline-block h-3 w-3 bg-[#E5484D]" aria-hidden="true"></span>
         CompliRules
       </a>
-      <nav class="flex items-center gap-6 text-xs font-bold uppercase tracking-[0.15em] text-[#EDEAE4]/60">
-        <a href="https://github.com/halilyilmz/complirules" target="_blank" rel="noreferrer" class="transition-colors hover:text-[#E5484D]">
-          GitHub
-        </a>
-        <button type="button" class="open-disclaimer-trigger transition-colors hover:text-[#E5484D] uppercase font-bold text-xs tracking-[0.15em]">
-          Disclaimer
-        </button>
-      </nav>
+      
+      <div class="flex items-center gap-6">
+        <!-- Language Switcher -->
+        <div class="flex items-center border border-[#EDEAE4]/20 rounded p-0.5 text-[11px] font-mono font-bold">
+          <button id="lang-btn-en" class="px-2 py-0.5 rounded bg-[#E5484D] text-[#121110] transition-colors">EN</button>
+          <button id="lang-btn-tr" class="px-2 py-0.5 rounded text-[#EDEAE4]/60 hover:text-white transition-colors">TR</button>
+        </div>
+
+        <nav class="flex items-center gap-5 text-xs font-bold uppercase tracking-[0.15em] text-[#EDEAE4]/60">
+          <a href="https://github.com/halilyilmz/complirules" target="_blank" rel="noreferrer" class="transition-colors hover:text-[#E5484D]">
+            GitHub
+          </a>
+          <button type="button" class="open-disclaimer-trigger transition-colors hover:text-[#E5484D] uppercase font-bold text-xs tracking-[0.15em]">
+            <span data-i18n="nav_disclaimer">Disclaimer</span>
+          </button>
+        </nav>
+      </div>
     </header>
 
     <!-- Main Content -->
@@ -58,12 +67,13 @@
         <div class="flex items-start justify-between gap-6">
           <div>
             <span class="inline-block -rotate-2 border-2 border-[#E5484D] px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-[#E5484D]">
-              Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)
+              <span data-i18n="hero_badge">Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)</span>
             </span>
             <h1 class="mt-6 max-w-2xl text-balance text-5xl font-black uppercase leading-[0.95] tracking-tight sm:text-7xl">
-              Stop your AI from writing <span class="text-[#E5484D]">illegal code.</span>
+              <span data-i18n="hero_title_1">Move fast.</span><br>
+              <span class="text-[#E5484D]" data-i18n="hero_title_2">Break no laws.</span>
             </h1>
-            <p class="mt-6 max-w-lg text-pretty text-base leading-relaxed text-[#EDEAE4]/65">
+            <p class="mt-6 max-w-lg text-pretty text-base leading-relaxed text-[#EDEAE4]/65" data-i18n="hero_sub">
               While your AI generates your project, it can silently violate KVKK or GDPR. CompliRules adds ready-made rules to Cursor and Claude Code that quietly block those risks in the background.
             </p>
           </div>
@@ -99,11 +109,11 @@
               class="shrink-0 bg-[#E5484D] px-3 py-1.5 text-xs font-black uppercase tracking-[0.15em] text-[#121110] transition-transform hover:-translate-y-0.5 active:scale-95"
               aria-label="Komutu Kopyala"
             >
-              Copy
+              <span data-i18n="copy_btn">Copy</span>
             </button>
           </div>
         </div>
-        <p class="mt-3 text-xs font-medium uppercase tracking-[0.15em] text-[#EDEAE4]/40">
+        <p class="mt-3 text-xs font-medium uppercase tracking-[0.15em] text-[#EDEAE4]/40" data-i18n="copy_caption">
           One command — rules land in .cursor/rules automatically
         </p>
       </section>
@@ -111,7 +121,7 @@
       <!-- 4 Mistakes Section -->
       <section class="border-t-2 border-[#EDEAE4]/15 py-16">
         <h2 class="text-3xl font-black uppercase tracking-tight sm:text-4xl">
-          4 legal mistakes <span class="text-[#E5484D]">your AI makes</span>
+          <span data-i18n="mistakes_title_1">4 legal mistakes</span> <span class="text-[#E5484D]" data-i18n="mistakes_title_2">your AI makes</span>
         </h2>
         <div class="mt-10 grid gap-4 sm:grid-cols-2">
           <!-- Card 1 -->
@@ -120,8 +130,8 @@
               <span class="font-mono text-xs font-bold text-[#E5484D]">01</span>
               <span aria-hidden="true" class="text-lg">🍪</span>
             </div>
-            <h3 class="mt-4 text-base font-black uppercase tracking-wide">No Consentless Cookies</h3>
-            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+            <h3 class="mt-4 text-base font-black uppercase tracking-wide" data-i18n="m1_title">No Consentless Cookies</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60" data-i18n="m1_body">
               Blocks Google Analytics and tracking scripts from firing before the visitor gives explicit consent.
             </p>
           </div>
@@ -132,8 +142,8 @@
               <span class="font-mono text-xs font-bold text-[#E5484D]">02</span>
               <span aria-hidden="true" class="text-lg">🔒</span>
             </div>
-            <h3 class="mt-4 text-base font-black uppercase tracking-wide">No Passwords in Logs</h3>
-            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+            <h3 class="mt-4 text-base font-black uppercase tracking-wide" data-i18n="m2_title">No Passwords in Logs</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60" data-i18n="m2_body">
               Stops passwords, tokens and national ID numbers from being written into server logs while debugging.
             </p>
           </div>
@@ -144,9 +154,9 @@
               <span class="font-mono text-xs font-bold text-[#E5484D]">03</span>
               <span aria-hidden="true" class="text-lg">🗑️</span>
             </div>
-            <h3 class="mt-4 text-base font-black uppercase tracking-wide">Real Account Deletion</h3>
-            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
-              When a user says “delete my account”, the database records actually get wiped — not just hidden.
+            <h3 class="mt-4 text-base font-black uppercase tracking-wide" data-i18n="m3_title">Real Account Deletion</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60" data-i18n="m3_body">
+              When a user says “delete my account”, database records actually get wiped — not just hidden.
             </p>
           </div>
 
@@ -156,8 +166,8 @@
               <span class="font-mono text-xs font-bold text-[#E5484D]">04</span>
               <span aria-hidden="true" class="text-lg">🌐</span>
             </div>
-            <h3 class="mt-4 text-base font-black uppercase tracking-wide">No Silent IP Leaks</h3>
-            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+            <h3 class="mt-4 text-base font-black uppercase tracking-wide" data-i18n="m4_title">No Silent IP Leaks</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60" data-i18n="m4_body">
               Bundles fonts locally instead of external CDNs, so visitor IPs never leak abroad without notice.
             </p>
           </div>
@@ -166,28 +176,28 @@
 
       <!-- How It Works Section -->
       <section class="border-t-2 border-[#EDEAE4]/15 py-16">
-        <h2 class="text-3xl font-black uppercase tracking-tight sm:text-4xl">
+        <h2 class="text-3xl font-black uppercase tracking-tight sm:text-4xl" data-i18n="how_title">
           How it works
         </h2>
         <ol class="mt-10 grid gap-8 sm:grid-cols-3">
           <li>
             <span class="block text-5xl font-black leading-none text-[#E5484D]">01</span>
-            <h3 class="mt-3 text-sm font-black uppercase tracking-[0.15em]">INSTALL</h3>
-            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+            <h3 class="mt-3 text-sm font-black uppercase tracking-[0.15em]" data-i18n="step1_title">INSTALL</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60" data-i18n="step1_body">
               Run <code class="text-[#E5484D] font-mono">npx complirules init</code> in your project.
             </p>
           </li>
           <li>
             <span class="block text-5xl font-black leading-none text-[#E5484D]">02</span>
-            <h3 class="mt-3 text-sm font-black uppercase tracking-[0.15em]">AUTO-DETECTED</h3>
-            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+            <h3 class="mt-3 text-sm font-black uppercase tracking-[0.15em]" data-i18n="step2_title">AUTO-DETECTED</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60" data-i18n="step2_body">
               Cursor or Claude picks the rules into context instantly.
             </p>
           </li>
           <li>
             <span class="block text-5xl font-black leading-none text-[#E5484D]">03</span>
-            <h3 class="mt-3 text-sm font-black uppercase tracking-[0.15em]">SAFE CODING</h3>
-            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+            <h3 class="mt-3 text-sm font-black uppercase tracking-[0.15em]" data-i18n="step3_title">SAFE CODING</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60" data-i18n="step3_body">
               Your AI can no longer produce code that breaks the law.
             </p>
           </li>
@@ -197,11 +207,11 @@
       <!-- Disclaimer Section -->
       <section class="border-t-2 border-[#EDEAE4]/15 py-16">
         <div class="border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6">
-          <p class="text-sm leading-relaxed text-[#EDEAE4]/65">
+          <p class="text-sm leading-relaxed text-[#EDEAE4]/65" data-i18n="disc_summary">
             CompliRules is a static rule set tool — not legal advice or an attorney service. The software is provided "AS IS".
           </p>
           <div class="mt-3">
-            <button type="button" class="open-disclaimer-trigger text-sm font-black uppercase tracking-[0.15em] text-[#E5484D] underline-offset-4 transition-colors hover:underline">
+            <button type="button" class="open-disclaimer-trigger text-sm font-black uppercase tracking-[0.15em] text-[#E5484D] underline-offset-4 transition-colors hover:underline" data-i18n="disc_link">
               Full Legal Disclaimer (EN/TR) →
             </button>
           </div>
@@ -219,7 +229,7 @@
     <footer class="border-t-2 border-[#EDEAE4]/15 py-8">
       <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <p class="text-xs font-medium uppercase tracking-[0.12em] text-[#EDEAE4]/50">
-          © 2026 İbrahim Halil Yılmaz (CompliRules). Free to Use for Vibe Coders & Engineering Teams.
+          © 2026 İbrahim Halil Yılmaz (CompliRules). Free to Use for Vibe Coders &amp; Engineering Teams.
         </p>
         <div class="flex items-center gap-5 text-xs font-bold uppercase tracking-[0.15em] text-[#EDEAE4]/60">
           <a href="https://github.com/halilyilmz/complirules" target="_blank" rel="noreferrer" class="transition-colors hover:text-[#E5484D]">
@@ -238,7 +248,7 @@
   <div id="disclaimer-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-[#121110]/85 px-4 backdrop-blur-sm hidden" role="dialog" aria-modal="true" aria-label="Legal Disclaimer">
     <div class="w-full max-w-lg border-2 border-[#EDEAE4]/25 bg-[#1A1917] p-6 brutalist-shadow-lg">
       <div class="flex items-start justify-between gap-4">
-        <h2 id="disclaimer-modal-title" class="text-lg font-black uppercase tracking-tight text-[#EDEAE4]">
+        <h2 id="disclaimer-modal-title" class="text-lg font-black uppercase tracking-tight text-[#EDEAE4]" data-i18n="modal_title">
           Legal Disclaimer
         </h2>
         <button id="close-disclaimer-btn" type="button" aria-label="Close" class="text-[#EDEAE4]/60 transition-colors hover:text-[#E5484D] text-lg font-bold">
@@ -246,60 +256,21 @@
         </button>
       </div>
       <div class="mt-4 space-y-4 text-sm leading-relaxed text-[#EDEAE4]/65">
-        <p>
+        <p data-i18n="modal_p1">
           CompliRules is a static rule set tool. It does not provide legal advice or attorney services. The software is provided "AS IS", without warranty of any kind. You remain responsible for the compliance of your own software.
         </p>
-        <p lang="tr">
+        <p data-i18n="modal_p2">
           CompliRules bir statik kural aracıdır; avukatlık veya resmi hukuki danışmanlık hizmeti değildir. Yazılım "OLDUĞU GİBİ" (AS-IS) sağlanır. Olası idari cezalardan kullanıcı sorumludur.
         </p>
       </div>
-      <button id="accept-disclaimer-btn" type="button" class="mt-6 w-full bg-[#E5484D] px-4 py-2.5 text-sm font-black uppercase tracking-[0.15em] text-[#121110] transition-transform hover:-translate-y-0.5">
+      <button id="accept-disclaimer-btn" type="button" class="mt-6 w-full bg-[#E5484D] px-4 py-2.5 text-sm font-black uppercase tracking-[0.15em] text-[#121110] transition-transform hover:-translate-y-0.5" data-i18n="modal_close_btn">
         Close / Kapat
       </button>
     </div>
   </div>
 
-  <script>
-    // Copy functionality
-    const copyBtn = document.getElementById("copy-install-btn");
-    const copyText = document.getElementById("install-cmd-text");
-    if (copyBtn && copyText) {
-      copyBtn.addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(copyText.innerText.trim());
-          const original = copyBtn.innerText;
-          copyBtn.innerText = "Copied!";
-          setTimeout(() => { copyBtn.innerText = original; }, 2000);
-        } catch (e) {
-          console.error(e);
-        }
-      });
-    }
-
-    // Modal functionality
-    const modal = document.getElementById("disclaimer-modal");
-    const openBtns = document.querySelectorAll(".open-disclaimer-trigger");
-    const closeBtn = document.getElementById("close-disclaimer-btn");
-    const acceptBtn = document.getElementById("accept-disclaimer-btn");
-
-    function openModal() {
-      if (modal) modal.classList.remove("hidden");
-    }
-    function closeModal() {
-      if (modal) modal.classList.add("hidden");
-    }
-
-    openBtns.forEach(b => b.addEventListener("click", openModal));
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
-    if (acceptBtn) acceptBtn.addEventListener("click", closeModal);
-    if (modal) {
-      modal.addEventListener("click", (e) => {
-        if (e.target === modal) closeModal();
-      });
-    }
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeModal();
-    });
-  </script>
+  <!-- Scripts -->
+  <script src="js/rules-data.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

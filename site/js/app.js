@@ -1,183 +1,185 @@
 /**
- * CompliRules - Client Application Logic (Simple, Fast & Clean)
+ * CompliRules - Bilingual Application Logic (EN / TR)
  */
 
+const DICTIONARY = {
+  en: {
+    nav_disclaimer: "Disclaimer",
+    hero_badge: "Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)",
+    hero_title_1: "Move fast.",
+    hero_title_2: "Break no laws.",
+    hero_sub: "While your AI generates your project, it can silently violate KVKK or GDPR. CompliRules adds ready-made rules to Cursor and Claude Code that quietly block those risks in the background.",
+    copy_btn: "Copy",
+    copy_btn_done: "Copied!",
+    copy_caption: "One command — rules land in .cursor/rules automatically",
+    mistakes_title_1: "4 legal mistakes",
+    mistakes_title_2: "your AI makes",
+    m1_title: "No Consentless Cookies",
+    m1_body: "Blocks Google Analytics and tracking scripts from firing before the visitor gives explicit consent.",
+    m2_title: "No Passwords in Logs",
+    m2_body: "Stops passwords, tokens and national ID numbers from being written into server logs while debugging.",
+    m3_title: "Real Account Deletion",
+    m3_body: "When a user says “delete my account”, database records actually get wiped — not just hidden.",
+    m4_title: "No Silent IP Leaks",
+    m4_body: "Bundles fonts locally instead of external CDNs, so visitor IPs never leak abroad without notice.",
+    how_title: "How it works",
+    step1_title: "INSTALL",
+    step1_body: "Run npx complirules init in your project.",
+    step2_title: "AUTO-DETECTED",
+    step2_body: "Cursor or Claude picks the rules into context instantly.",
+    step3_title: "SAFE CODING",
+    step3_body: "Your AI can no longer produce code that breaks the law.",
+    disc_summary: "CompliRules is a static rule set tool — not legal advice or an attorney service. The software is provided \"AS IS\".",
+    disc_link: "Full Legal Disclaimer (EN/TR) →",
+    modal_title: "Legal Disclaimer",
+    modal_p1: "CompliRules is a static rule set tool. It does not provide legal advice or attorney services. The software is provided \"AS IS\", without warranty of any kind. You remain responsible for the compliance of your own software.",
+    modal_p2: "CompliRules bir statik kural aracıdır; avukatlık veya resmi hukuki danışmanlık hizmeti değildir. Yazılım \"OLDUĞU GİBİ\" (AS-IS) sağlanır. Olası idari cezalardan kullanıcı sorumludur.",
+    modal_close_btn: "Close / Kapat"
+  },
+  tr: {
+    nav_disclaimer: "Yasal Sorumluluk Reddi",
+    hero_badge: "Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)",
+    hero_title_1: "Hızlı ilerle.",
+    hero_title_2: "Kanunları çiğneme.",
+    hero_sub: "Yapay zekanız projenizi üretirken farkında olmadan KVKK veya GDPR'ı ihlal edebilir. CompliRules, Cursor ve Claude Code'a eklenen hazır kurallarla bu riskleri arka planda sessizce engeller.",
+    copy_btn: "Kopyala",
+    copy_btn_done: "Kopyalandı!",
+    copy_caption: "Tek komutla çalıştırın, kurallar .cursor/rules içine otomatik insin",
+    mistakes_title_1: "Yapay zekanızın yaptığı",
+    mistakes_title_2: "4 yasal hata",
+    m1_title: "İzinsiz Çerez Yüklemez",
+    m1_body: "Ziyaretçi açıkça onay vermeden Google Analytics veya takip scriptlerinin çalışmasını engeller.",
+    m2_title: "Loglara Şifre Basmaz",
+    m2_body: "Hata ayıklarken şifre, token veya kimlik numaralarının sunucu loglarına açıkça yazılmasını durdurur.",
+    m3_title: "Hesabı Gerçekten Siler",
+    m3_body: "Kullanıcı “Hesabımı sil” dediğinde veritabanındaki kayıtların kalıcı olarak temizlenmesini sağlar.",
+    m4_title: "Habersiz IP Sızdırmaz",
+    m4_body: "Google Fonts gibi harici CDN'ler yerine fontları yerel pakete alarak ziyaretçi IP'lerinin yurt dışına çıkmasını önler.",
+    how_title: "Nasıl Çalışır?",
+    step1_title: "KURULUM",
+    step1_body: "Projenizde npx complirules init komutunu çalıştırın.",
+    step2_title: "OTOMATİK TANIMA",
+    step2_body: "Cursor veya Claude kuralları anında bağlamına alır.",
+    step3_title: "GÜVENLİ KODLAMA",
+    step3_body: "Yapay zekanız mevzuata aykırı kod üretemez.",
+    disc_summary: "CompliRules bir statik kural aracıdır; avukatlık veya resmi hukuki danışmanlık hizmeti değildir. Yazılım \"OLDUĞU GİBİ\" (AS-IS) sağlanır.",
+    disc_link: "Tam Yasal Sorumluluk Reddi (TR/EN) →",
+    modal_title: "Yasal Sorumluluk Reddi",
+    modal_p1: "CompliRules bir statik kural aracıdır; avukatlık veya resmi hukuki danışmanlık hizmeti değildir. Yazılım \"OLDUĞU GİBİ\" (AS-IS) sunulur.",
+    modal_p2: "CompliRules is a static rule set tool. It does not provide legal advice or attorney services. The software is provided \"AS IS\", without warranty of any kind.",
+    modal_close_btn: "Kapat / Close"
+  }
+};
+
+let currentLang = "en";
+
 document.addEventListener("DOMContentLoaded", () => {
+  initLanguageSwitcher();
   initCopyButton();
-  initRulesExplorer();
   initModal();
 });
 
-// 1. One-Click CLI Copy
+function initLanguageSwitcher() {
+  const btnEn = document.getElementById("lang-btn-en");
+  const btnTr = document.getElementById("lang-btn-tr");
+
+  // Load saved preference or browser lang
+  const saved = localStorage.getItem("complirules_lang");
+  if (saved && (saved === "tr" || saved === "en")) {
+    currentLang = saved;
+  } else {
+    currentLang = navigator.language && navigator.language.startsWith("tr") ? "tr" : "en";
+  }
+
+  applyLanguage(currentLang);
+
+  if (btnEn && btnTr) {
+    btnEn.addEventListener("click", () => {
+      applyLanguage("en");
+      localStorage.setItem("complirules_lang", "en");
+    });
+    btnTr.addEventListener("click", () => {
+      applyLanguage("tr");
+      localStorage.setItem("complirules_lang", "tr");
+    });
+  }
+}
+
+function applyLanguage(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+
+  const btnEn = document.getElementById("lang-btn-en");
+  const btnTr = document.getElementById("lang-btn-tr");
+
+  if (btnEn && btnTr) {
+    if (lang === "en") {
+      btnEn.className = "px-2 py-0.5 rounded bg-[#E5484D] text-[#121110] transition-colors";
+      btnTr.className = "px-2 py-0.5 rounded text-[#EDEAE4]/60 hover:text-white transition-colors";
+    } else {
+      btnTr.className = "px-2 py-0.5 rounded bg-[#E5484D] text-[#121110] transition-colors";
+      btnEn.className = "px-2 py-0.5 rounded text-[#EDEAE4]/60 hover:text-white transition-colors";
+    }
+  }
+
+  const dict = DICTIONARY[lang] || DICTIONARY.en;
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (dict[key]) {
+      el.textContent = dict[key];
+    }
+  });
+}
+
 function initCopyButton() {
-  const btn = document.getElementById("copy-install-btn");
-  const text = document.getElementById("install-cmd-text");
-  const feedback = document.getElementById("copy-feedback");
+  const copyBtn = document.getElementById("copy-install-btn");
+  const copyText = document.getElementById("install-cmd-text");
+  const btnSpan = copyBtn ? copyBtn.querySelector("[data-i18n]") : null;
 
-  if (!btn || !text) return;
+  if (copyBtn && copyText) {
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(copyText.innerText.trim());
+        const dict = DICTIONARY[currentLang] || DICTIONARY.en;
+        const originalText = dict.copy_btn || "Copy";
+        if (btnSpan) btnSpan.textContent = dict.copy_btn_done || "Copied!";
+        else copyBtn.textContent = dict.copy_btn_done || "Copied!";
 
-  btn.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(text.innerText.trim());
-      if (feedback) {
-        feedback.classList.remove("hidden");
-        setTimeout(() => feedback.classList.add("hidden"), 2000);
+        setTimeout(() => {
+          if (btnSpan) btnSpan.textContent = originalText;
+          else copyBtn.textContent = originalText;
+        }, 2000);
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error("Clipboard copy failed", e);
-    }
-  });
-}
-
-// 2. Searchable & Filterable Rules Explorer
-function initRulesExplorer() {
-  const grid = document.getElementById("rules-grid");
-  const searchInput = document.getElementById("rules-search-input");
-  const filterBtns = document.querySelectorAll(".rule-filter-btn");
-  const countLabel = document.getElementById("rules-count-label");
-
-  if (!grid || !window.RULES_DATA) return;
-
-  let currentCategory = "all";
-  let searchQuery = "";
-
-  function render() {
-    grid.innerHTML = "";
-
-    const filtered = window.RULES_DATA.filter((rule) => {
-      const matchesCategory = currentCategory === "all" || rule.category === currentCategory;
-      const q = searchQuery.toLowerCase().trim();
-      const matchesSearch = !q || 
-        rule.title.toLowerCase().includes(q) ||
-        rule.summary.toLowerCase().includes(q) ||
-        rule.citation.toLowerCase().includes(q) ||
-        rule.jurisdiction.toLowerCase().includes(q);
-      
-      return matchesCategory && matchesSearch;
-    });
-
-    if (countLabel) {
-      countLabel.textContent = `${filtered.length} kural listeleniyor`;
-    }
-
-    if (filtered.length === 0) {
-      grid.innerHTML = `
-        <div class="col-span-full py-8 text-center text-zinc-500 text-xs">
-          Aramanızla eşleşen kural bulunamadı.
-        </div>
-      `;
-      return;
-    }
-
-    filtered.forEach((rule) => {
-      const el = document.createElement("div");
-      el.className = "p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-white/20 transition-all flex flex-col justify-between";
-
-      const isCritical = rule.severity === "CRITICAL";
-      const badgeStyle = isCritical
-        ? "bg-rose-500/10 text-rose-300 border-rose-500/30"
-        : "bg-amber-500/10 text-amber-300 border-amber-500/30";
-
-      el.innerHTML = `
-        <div>
-          <div class="flex items-center justify-between gap-2 mb-1.5">
-            <span class="text-[11px] font-semibold text-cyan-400">
-              ${rule.jurisdiction}
-            </span>
-            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded border ${badgeStyle}">
-              ${rule.severity}
-            </span>
-          </div>
-          <h4 class="font-bold text-xs text-white mb-1 leading-snug">
-            ${rule.title}
-          </h4>
-          <p class="text-[11px] text-zinc-400 leading-relaxed mb-2 line-clamp-2" title="${rule.summary}">
-            ${rule.summary}
-          </p>
-        </div>
-
-        <div class="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
-          <span class="truncate max-w-[200px]" title="${rule.citation}">⚖️ ${rule.citation}</span>
-          <span class="text-cyan-400/80 font-bold">.mdc</span>
-        </div>
-      `;
-
-      grid.appendChild(el);
     });
   }
-
-  // Filter clicks
-  filterBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      filterBtns.forEach((b) => {
-        b.classList.remove("bg-white/15", "text-white");
-        b.classList.add("text-zinc-400");
-      });
-      btn.classList.add("bg-white/15", "text-white");
-      btn.classList.remove("text-zinc-400");
-
-      currentCategory = btn.getAttribute("data-category") || "all";
-      render();
-    });
-  });
-
-  // Search input
-  if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      searchQuery = e.target.value;
-      render();
-    });
-  }
-
-  // Initial render
-  render();
 }
 
-// 3. Accessible Legal Modal
 function initModal() {
   const modal = document.getElementById("disclaimer-modal");
-  const openTriggers = document.querySelectorAll(".open-disclaimer-trigger");
+  const openBtns = document.querySelectorAll(".open-disclaimer-trigger");
   const closeBtn = document.getElementById("close-disclaimer-btn");
   const acceptBtn = document.getElementById("accept-disclaimer-btn");
 
-  let previousActiveElement = null;
-
-  function open() {
-    if (!modal) return;
-    previousActiveElement = document.activeElement;
-    modal.classList.remove("hidden");
+  function openModal() {
+    if (modal) modal.classList.remove("hidden");
     document.body.style.overflow = "hidden";
-    if (closeBtn) closeBtn.focus();
   }
-
-  function close() {
-    if (!modal) return;
-    modal.classList.add("hidden");
+  function closeModal() {
+    if (modal) modal.classList.add("hidden");
     document.body.style.overflow = "";
-    if (previousActiveElement && typeof previousActiveElement.focus === "function") {
-      previousActiveElement.focus();
-    }
   }
 
-  openTriggers.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      open();
-    });
-  });
-
-  if (closeBtn) closeBtn.addEventListener("click", close);
-  if (acceptBtn) acceptBtn.addEventListener("click", close);
-
+  openBtns.forEach((b) => b.addEventListener("click", openModal));
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+  if (acceptBtn) acceptBtn.addEventListener("click", closeModal);
   if (modal) {
     modal.addEventListener("click", (e) => {
-      if (e.target === modal) close();
+      if (e.target === modal) closeModal();
     });
   }
-
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modal && !modal.classList.contains("hidden")) {
-      close();
-    }
+    if (e.key === "Escape") closeModal();
   });
 }
