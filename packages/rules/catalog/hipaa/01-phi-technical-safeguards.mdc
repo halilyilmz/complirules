@@ -1,0 +1,68 @@
+---
+description: "HIPAA Security Rule (45 CFR § 164.312) Teknik Güvenceler ve PHI İzolasyonu"
+globs: ["**/api/**/*.ts","**/models/**/*.ts","**/services/**/*.ts","**/models.py","**/models/**/*.py","**/models/**/*.go","**/Models/**/*.php"]
+alwaysApply: false
+---
+
+# [CompliRules] HIPAA Security Rule (45 CFR § 164.312) Teknik Güvenceler ve PHI İzolasyonu
+**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `HIPAA_US`
+
+## Yasal Dayanaklar (Legal Citations)
+- **Health Insurance Portability and Accountability Act (HIPAA) (45 CFR § 164.312)**: Korumalı Sağlık Bilgileri (PHI) için Erişim Kontrolü, Denetim İzleri (Audit Controls) ve İletim Güvenliği.
+- **Health Insurance Portability and Accountability Act (HIPAA) (45 CFR § 164.502(b))**: Minimum Necessary Standard. Sağlık verilerine erişimde personelin yalnızca o anki klinik veya idari görevi için asgari düzeyde gerekli olan alanlara erişimini kısıtlama zorunluluğu.
+- **Health Insurance Portability and Accountability Act (HIPAA) (45 CFR § 164.312(a)(2)(iii))**: Automatic Logoff. Terminal ve klinik web oturumlarında yetkisiz erişimi önlemek için maksimum 15 dakikalık hareketsizlik sonrası otomatik oturum kapatma.
+
+## Kural Direktifleri
+- MUST: Hasta sağlık bilgileri (teşhis, reçete, lab sonucu) ile kimlik bilgilerini (ad, SSN) aynı açık tabloda tutmayın; şifreli veya takma adlı (pseudonymized) bağlayın.
+- MUST: BAA (Business Associate Agreement) imzalanmamış açık LLM APIlerine (OpenAI public tier, Anthropic public tier) asla ham PHI göndermeyin.
+- MUST: ASLA PHI modellerinde `SELECT *` veya projectsiz sorgu çalıştırmayın; yalnızca o anki işlem için gerekli alanları kısıtlayın (`select: { vitals: true }`) (45 CFR § 164.502(b)).
+- MUST: Klinik portallarda 15 dakikalık maksimum hareketsizlik durumunda oturumu otomatik kapatan (`HIPAA_MAX_INACTIVITY_MS = 15 * 60 * 1000`) oturum düşürme denetleyicisi uygulayın (45 CFR § 164.312(a)(2)(iii)).
+- MUST: Her PHI erişimini (okuma/yazma/silme) `ImmutableAuditLog` tablosuna aktör ID, işlem zamanı ve hasta ID ile kaydedin.
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: openai.chat.completions.create({ messages: [{ content: patientMedicalNotes }] }) (BAAsız)
+- NEVER: logger.info({ diagnosis: patient.diagnosis })
+- NEVER: prisma.patient.findUnique({ where: { id } }) (Select projeksiyonu olmadan tüm PHI kaydını çekmek)
+- NEVER: SELECT * FROM medical_records / SELECT * FROM patients
+
+## Referans Uyumlu Kod Örnekleri
+### PHI Redacted Audit Logging
+```ts
+export async function logPhiAccess(actorId: string, patientId: string, action: 'VIEW' | 'EDIT') {
+  await prisma.phiAuditLog.create({
+    data: {
+      actorId,
+      patientId,
+      action,
+      ipHash: hashIp(requestIp),
+      accessedAt: new Date()
+    }
+  });
+}
+```
+
+### HIPAA Minimum Necessary (Alan Kısıtlı Projeksiyon) & 15 Dk Timeout
+```ts
+import { isHipaaSessionExpired, HIPAA_MAX_INACTIVITY_MS } from '@complirules/primitives';
+
+// 1. Minimum Necessary Sorgu (ASLA SELECT * KULLANMAYIN!)
+export async function getPatientVitals(patientId: string) {
+  return await prisma.patientRecord.findUnique({
+    where: { id: patientId },
+    select: {
+      id: true,
+      bloodPressure: true,
+      heartRate: true,
+      recordedAt: true
+      // Teşhis, psikiyatri notları veya SSN çekilmez!
+    }
+  });
+}
+
+// 2. 15 Dakika Hareketsizlik Oturum Denetimi (45 CFR § 164.312(a)(2)(iii))
+export function checkClinicSession(lastActivityTimestamp: number) {
+  if (isHipaaSessionExpired(lastActivityTimestamp)) {
+    throw new Error('HIPAA_SESSION_EXPIRED: 15 dakikalık hareketsizlik nedeniyle oturum kapatıldı.');
+  }
+}
+```

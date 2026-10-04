@@ -1,0 +1,86 @@
+---
+description: "Log ve Telemetri Katmanında Sıfır PII/PHI Sızıntısı Standardı"
+globs: ["**/api/**/*.ts","**/controllers/**/*.ts","**/lib/logger.ts","**/middleware/**/*.ts","**/*.py","**/*.go","**/*.php"]
+alwaysApply: true
+---
+
+# [CompliRules] Log ve Telemetri Katmanında Sıfır PII/PHI Sızıntısı Standardı
+**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `GLOBAL_SEC`
+
+## Yasal Dayanaklar (Legal Citations)
+- **GDPR / KVKK / HIPAA Ortak İlkesi (Veri Minimizasyonu & Gizlilik Güvenliği)**: Üçüncü parti log sunucularına (Datadog, CloudWatch, Sentry) kimlik, parola, token veya TCKN sızdırılamaz.
+
+## Kural Direktifleri
+- MUST: ASLA `console.log(req.body)`, `console.log(user)`, `print(request.body)` veya `logger.info(user)` yazmayın.
+- MUST: Merkezi bir redaksiyon filtresi (`pino` redaction, Python `structlog` veya Go `slog`) kullanın.
+- MUST: E-posta, TCKN, IBAN, parola ve yetkilendirme token alanlarını her zaman maskeleyin (`j***@example.com`, `123*****789`).
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: console.log(req.body) / print(request.body) / Log::info($request->all())
+- NEVER: console.log(user) / logger.info(user) / log.Printf("%+v", user)
+- NEVER: Sentry.captureException(err, { extra: { payload: req.body } })
+
+## Referans Uyumlu Kod Örnekleri
+### TypeScript / Node.js (Redaksiyonlu Logger)
+```ts
+import { createRedactedLogger } from '@complirules/primitives';
+
+export const logger = createRedactedLogger({
+  redactKeys: ['password', 'tckn', 'creditCard', 'token', 'authorization']
+});
+
+logger.info('Kullanıcı girişi başarılı', { userId: user.id });
+```
+
+### Python (structlog / logging.Filter PII Redaction)
+```python
+import logging
+
+class PiiMaskingFilter(logging.Filter):
+    SENSITIVE_KEYS = {'password', 'tckn', 'credit_card', 'token', 'authorization'}
+
+    def filter(self, record):
+        if isinstance(record.msg, dict):
+            record.msg = {
+                k: '[REDACTED_PII]' if k.lower() in self.SENSITIVE_KEYS else v 
+                for k, v in record.msg.items()
+            }
+        return True
+
+logger = logging.getLogger('complirules_app')
+logger.addFilter(PiiMaskingFilter())
+logger.info({'event': 'user_login', 'user_id': user.id})
+```
+
+### Go (slog.Handler with PII Masking)
+```go
+package logger
+
+import (
+    "log/slog"
+    "os"
+    "strings"
+)
+
+func NewCompliantLogger() *slog.Logger {
+    opts := &slog.HandlerOptions{
+        ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+            key := strings.ToLower(a.Key)
+            if key == "password" || key == "tckn" || key == "token" {
+                return slog.String(a.Key, "[REDACTED_PII]")
+            }
+            return a
+        },
+    }
+    return slog.New(slog.NewJSONHandler(os.Stdout, opts))
+}
+```
+
+### PHP / Laravel (Log Context Redaction)
+```php
+// app/Logging/SanitizedLogger.php
+Log::info('User login successful', [
+    'user_id' => $user->id,
+    // Asla $request->all() basmayın!
+]);
+```

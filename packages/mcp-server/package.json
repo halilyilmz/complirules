@@ -1,0 +1,31 @@
+{
+  "name": "@complirules/mcp-server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) server providing real-time compliance checks for Cursor, Claude Code, and Windsurf",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "complirules-mcp": "./dist/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node ./dist/index.js"
+  },
+  "dependencies": {
+    "@complirules/rules": "*",
+    "@complirules/linter": "*",
+    "@complirules/primitives": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

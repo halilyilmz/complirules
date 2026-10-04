@@ -1,0 +1,44 @@
+---
+description: "Almanya & AB Uzak Resim Hotlink ve IP Sızıntısı Yasağı (LG München I & CJEU Breyer)"
+globs: ["**/*.tsx","**/*.jsx","**/*.html","**/*.vue","**/*.php","**/components/**/*.ts"]
+alwaysApply: false
+---
+
+# [CompliRules] Almanya & AB Uzak Resim Hotlink ve IP Sızıntısı Yasağı (LG München I & CJEU Breyer)
+**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `GDPR_EU`
+
+## Yasal Dayanaklar (Legal Citations)
+- **LG München I (3 O 17493/20) & CJEU Breyer (C-582/14) (IP Adreslerinin Üçüncü Taraflara Rızasız İletimi)**: Harici resimler (<img src="https://...">), Gravatar avatarları veya remote fontların doğrudan istemciye bağlanması (Hotlinking), ziyaretçi IP adresi ve Referer başlığını üçüncü taraf sunuculara sızdırır. Rıza olmaksızın veya güvenli proxy kullanılmaksızın yapılması tazminat ve idari yaptırım doğurur. *[Yaptırım: Almanya mahkemelerince ziyaretçi başına 100€+ manevi tazminat, ihtiyati tedbir ve GDPR Md. 83 idari para cezaları.]*
+- **General Data Protection Regulation (GDPR) (Article 6(1) & Article 44+)**: Hukuki dayanak olmaksızın kişisel veri (dinamik IP) işleme ve yeterlilik kararı bulunmayan üçüncü ülkelere sınır ötesi veri aktarımı yasağı.
+
+## Kural Direktifleri
+- MUST: ASLA harici resim ve avatarları (`<img src="https://external.com/..."/>`, Gravatar) doğrudan istemci DOM içine un-proxied olarak bağlamayın (Hotlinking yasağı).
+- MUST: Kullanıcı veya üçüncü taraftan gelen harici görselleri sunucu taraflı güvenli bir ters vekil / önbellek (`createSecureAssetProxyUrl`) üzerinden sunarak kullanıcının gerçek IP adresini gizleyin.
+- MUST: Asset proxy uç noktasında SSRF (Server-Side Request Forgery) koruması uygulayın; yerel ve özel ağ IPlerine (`127.0.0.1`, `192.168.*`, `10.*`) erişimi kesin olarak engelleyin.
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: <img src="https://gravatar.com/avatar/..." /> (Almanya LG München I ihlali)
+- NEVER: <img src="https://external-domain.com/..." /> (Un-proxied doğrudan hotlink)
+- NEVER: style={{ backgroundImage: "url(https://external...)" }} (Proxy olmadan harici CSS arka planı)
+
+## Referans Uyumlu Kod Örnekleri
+### Güvenli Resim Proxy Entegrasyonu (React / Next.js & @complirules/primitives)
+```tsx
+import { createSecureAssetProxyUrl } from '@complirules/primitives';
+
+export function SafeUserAvatar({ rawAvatarUrl, userName }: { rawAvatarUrl: string; userName: string }) {
+  // Kullanıcının IP adresini korumak için doğrudan Gravatar/Unsplash URL'i yerine imzalı yerel proxy kullanılır
+  const safeProxyUrl = createSecureAssetProxyUrl(rawAvatarUrl, {
+    proxyEndpoint: '/api/compliance/proxy-image'
+  });
+
+  return (
+    <img
+      src={safeProxyUrl}
+      alt={userName}
+      className="w-10 h-10 rounded-full object-cover"
+      loading="lazy"
+    />
+  );
+}
+```

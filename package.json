@@ -1,0 +1,25 @@
+{
+  "name": "complirules-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Compliance-as-Code & Legal AI Guardrail Engine for Vibe Coding & Agentic SWE",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run --workspaces --if-present build",
+    "test": "vitest run",
+    "typecheck": "npm run --workspaces --if-present typecheck",
+    "lint": "node packages/cli/dist/index.js check",
+    "cli": "node packages/cli/dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "type": "module"
+}

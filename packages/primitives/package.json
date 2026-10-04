@@ -1,0 +1,21 @@
+{
+  "name": "@complirules/primitives",
+  "version": "1.0.0",
+  "description": "Production-ready compliance primitives for crypto-shredding, PII scrubbing, and consent storage",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

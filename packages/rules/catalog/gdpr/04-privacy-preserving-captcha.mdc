@@ -1,0 +1,37 @@
+---
+description: "Gizlilik Dostu Bot Koruması: reCAPTCHA Ön Rıza Şartı (CNIL Cityscoot)"
+globs: ["**/*.tsx","**/*.jsx","**/*.html","**/*.vue","**/*.php"]
+alwaysApply: false
+---
+
+# [CompliRules] Gizlilik Dostu Bot Koruması: reCAPTCHA Ön Rıza Şartı (CNIL Cityscoot)
+**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `GDPR_EU`
+
+## Yasal Dayanaklar (Legal Citations)
+- **CNIL Karar SAN-2023-003 Cityscoot (16.03.2023) (ePrivacy Md. 5(3) / Fransız Veri Koruma Kanunu Md. 82)**: reCAPTCHA terminal cihazdan bilgi okur/yazar ve telemetri Google'a akar; "kesinlikle gerekli" muafiyeti kapsamında sayılmadığı için ön rıza gerekir. Aynı kararda aşırı konum takibi (Md. 5/1-c) ve alt işleyen sözleşmeleri (Md. 28) de ihlal sayılmıştır.
+- **CJEU C-252/21 Meta v. Bundeskartellamt (04.07.2023) (GDPR Md. 6(1))**: Üçüncü taraf izleme, sözleşme (6/1-b) veya meşru menfaat (6/1-f) ile haklı gösterilemez; rıza gerekir.
+
+## Kural Direktifleri
+- MUST: Giriş/kayıt/iletişim formlarına reCAPTCHA scriptini rıza verilmeden yüklemeyin.
+- MUST: Öncelik: kendi sunucunuzda doğrulanan Proof-of-Work captcha (Altcha, mCaptcha) veya rate limit + honeypot.
+- MUST: Google reCAPTCHA zorunluysa yüklemeyi CMP "işlevsel/güvenlik" rızasına bağlayın ve rıza yoksa alternatif doğrulama (e-posta OTP) sunun.
+- MUST: Bot korumasını hizmete erişimin şartı yapıp rızayı zorunlu kılmayın (bağlı rıza yasağı).
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: <script src="https://www.google.com/recaptcha/api.js"> (Rızasız yükleme)
+- NEVER: <div class="g-recaptcha" data-sitekey="..."> (Gating olmadan)
+- NEVER: import ReCAPTCHA from "react-google-recaptcha" (Rıza kontrolü olmadan render)
+
+## Referans Uyumlu Kod Örnekleri
+### Rıza Kontrollü Captcha Yükleme
+```tsx
+import { CookieConsentManager } from '@complirules/primitives';
+
+export function Captcha({ prefs }: { prefs: Parameters<typeof CookieConsentManager.isCategoryAllowed>[0] }) {
+  // Rıza yoksa telemetri göndermeyen, yerel Proof-of-Work doğrulamasına düşülür
+  if (!CookieConsentManager.isCategoryAllowed(prefs, 'functional')) {
+    return <ProofOfWorkChallenge endpoint="/api/pow-challenge" />;
+  }
+  return <ThirdPartyCaptcha />;
+}
+```

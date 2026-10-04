@@ -1,0 +1,27 @@
+{
+  "name": "complirules",
+  "version": "1.0.0",
+  "description": "Compliance-as-Code & Legal AI Guardrail CLI for Cursor, Claude Code, and Windsurf",
+  "bin": {
+    "complirules": "./dist/index.js",
+    "legal-rules": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@complirules/rules": "*",
+    "@complirules/linter": "*",
+    "@complirules/primitives": "*",
+    "@complirules/mcp-server": "*",
+    "commander": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

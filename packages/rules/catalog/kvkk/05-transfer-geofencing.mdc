@@ -1,0 +1,45 @@
+---
+description: "KVKK Madde 9 (2024 Reformu) Yurt Dışı Veri Aktarımı ve Veri Yerleşimi Standardı"
+globs: ["**/api/**/*.ts","**/services/**/*.ts","**/infra/**/*.ts","**/config/**/*.ts","**/*transfer*.py","**/*router*.go"]
+alwaysApply: false
+---
+
+# [CompliRules] KVKK Madde 9 (2024 Reformu) Yurt Dışı Veri Aktarımı ve Veri Yerleşimi Standardı
+**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `KVKK_TR`
+
+## Yasal Dayanaklar (Legal Citations)
+- **6698 Sayılı KVKK (Madde 9 (12 Mart 2024 Reformu))**: Yurt dışına veri aktarımında Standart Sözleşme (SCC), BCR veya Kurul izni zorunluluğu. *[Yaptırım: KVKK Md. 18/1-e (1.000.000 TL - 5.000.000 TL idari para cezası) & TCK Md. 136 hapis yaptırımı.]*
+- **Yurt Dışına Kişisel Veri Aktarımına İlişkin Usul ve Esaslar Hakkında Yönetmelik (Madde 14 (10 Temmuz 2024))**: Standart Sözleşmelerin (SCC) imzalanmasından itibaren 5 İŞ GÜNÜ İÇİNDE Kurul'a bildirilmesi zorunluluğu.
+
+## Kural Direktifleri
+- MUST: Türkiye'deki kullanıcılara ait kimlik, finansal ve sağlık verilerini varsayılan olarak Türkiye bölgesi (TR Region) veritabanlarında saklayın (Data Residency / Geo-Fencing).
+- MUST: Yurt dışına veri aktarılacaksa Standart Sözleşme (SCC), Bağlayıcı Şirket Kuralları (BCR) veya Taahhütname/Kurul izni dayanağını doğrulayın.
+- MUST: Standart Sözleşme (SCC) imzalandıktan sonra en geç 5 İŞ GÜNÜ İÇİNDE Kurul'a fiziken veya KEP üzerinden bildirim yapılmasını sistemsel olarak takip edin.
+- MUST: Yurt dışı LLM ve analiz API'lerine (OpenAI, Anthropic, AWS US-East) doğrudan açık TCKN veya PII iletmeden önce yerel maskeleme uygulayın.
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: Uygun güvence (SCC/BCR/İzin) olmadan kullanıcı verilerini yurt dışı sunuculara veya LLM API'lerine aktarmak
+- NEVER: Standart Sözleşme 5 iş günü Kurul bildirim süresini kaçırmak veya kayıtsız aktarım yapmak
+- NEVER: Coğrafi yönlendirme (geo-routing) olmaksızın küresel tek bölge veritabanı kullanmak
+
+## Referans Uyumlu Kod Örnekleri
+### Geo-Routing ve SCC Bildirim Denetleyicisi
+```ts
+import { GeoRouter } from '@complirules/primitives';
+
+export function routeUserDataTransfer(userCountry: 'TR', destinationCountry: 'US', hasScc: boolean) {
+  const decision = GeoRouter.evaluateTransfer({
+    originCountry: userCountry,
+    destinationCountry,
+    hasExecutedScc: hasScc
+  });
+
+  if (!decision.allowed) {
+    throw new Error(`Yurt dışı aktarım engellendi: ${decision.reason}`);
+  }
+
+  if (decision.requiresKurulSccNotification) {
+    console.log(`⚠️ DİKKAT: Standart Sözleşme ${decision.sccNotificationDeadlineBusinessDays} iş günü içinde Kurul'a bildirilmelidir!`);
+  }
+}
+```

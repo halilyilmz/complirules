@@ -1,0 +1,48 @@
+---
+description: "Giriş Uç Noktalarında Rate Limit, Hesap Kilitleme ve MFA (KVKK Md. 12 / GDPR Md. 32)"
+globs: ["**/api/**/login*","**/api/**/auth/**","**/auth/**/*.ts","**/routes/auth*","**/controllers/auth*"]
+alwaysApply: false
+---
+
+# [CompliRules] Giriş Uç Noktalarında Rate Limit, Hesap Kilitleme ve MFA (KVKK Md. 12 / GDPR Md. 32)
+**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `GLOBAL_SEC`
+
+## Yasal Dayanaklar (Legal Citations)
+- **6698 Sayılı KVKK (Madde 12(1))**: Teknolojinin ulaştığı seviyeye uygun teknik tedbir yükümlülüğü. Brute-force ve credential-stuffing ile hesap ele geçirilmesinde rate limit, hesap kilitleme ve çok faktörlü doğrulama eksikliği veri sorumlusunun kusuru sayılır.
+- **GDPR (Madde 32)**: Risk düzeyine uygun güvenlik: kimlik doğrulama saldırılarına karşı teknik önlemler.
+
+## Kural Direktifleri
+- MUST: Giriş, parola sıfırlama ve OTP doğrulama uç noktalarını IP ve hesap anahtarı bazında ayrı ayrı sınırlayın (`RateLimitShield`).
+- MUST: Eşik aşıldığında hesabı geçici kilitleyin ve MFA'yı zorunlu kılın; başarılı girişte sayaçları sıfırlayın.
+- MUST: Yönetici ve sağlık/finans verisine erişen hesaplarda MFA zorunlu olsun.
+- MUST: Hata mesajları hesap varlığını ifşa etmesin ("E-posta veya parola hatalı"); başarısız denemeleri redakte edilmiş şekilde loglayın.
+- MUST: Parolaları bcrypt (maliyet ≥ 10) ile saklayın; sızdırılmış parola listelerine karşı kontrol uygulayın.
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: app.post("/login", ...) içinde rate limit/lockout olmaması (Sınırsız parola denemesi)
+- NEVER: return res.status(404).send("Kullanıcı bulunamadı") (Hesap numaralandırma)
+- NEVER: Yönetici paneli için MFA zorunluluğunun bulunmaması
+
+## Referans Uyumlu Kod Örnekleri
+### Rate Limit + Kilitleme (Express)
+```ts
+import { RateLimitShield } from '@complirules/primitives';
+
+const shield = new RateLimitShield({ maxAttempts: 5, windowMs: 15 * 60_000, lockoutMs: 15 * 60_000 });
+
+app.post('/api/login', async (req, res) => {
+  const keys = ['ip:' + req.ip, 'acct:' + String(req.body.email).toLowerCase()];
+  for (const key of keys) {
+    const decision = shield.check(key);
+    if (!decision.allowed) return res.status(429).set('Retry-After', String(Math.ceil(decision.retryAfterMs / 1000))).end();
+  }
+
+  const user = await authenticate(req.body.email, req.body.password);
+  if (!user) {
+    keys.forEach(k => shield.recordFailure(k));
+    return res.status(401).send('E-posta veya parola hatalı');
+  }
+  keys.forEach(k => shield.recordSuccess(k));
+  return issueSession(user);
+});
+```

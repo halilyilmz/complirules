@@ -1,0 +1,42 @@
+---
+description: "Sağlık, Checkout ve Çocuk Sayfalarında Ticari Piksel Yasağı (FTC GoodRx/BetterHelp, HIPAA, COPPA)"
+globs: ["**/health/**","**/patient*/**","**/therapy/**","**/conditions/**","**/symptoms/**","**/rx/**","**/checkout/**","**/kids/**","**/*.tsx","**/*.jsx"]
+alwaysApply: false
+---
+
+# [CompliRules] Sağlık, Checkout ve Çocuk Sayfalarında Ticari Piksel Yasağı (FTC GoodRx/BetterHelp, HIPAA, COPPA)
+**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `HIPAA_US`
+
+## Yasal Dayanaklar (Legal Citations)
+- **FTC v. GoodRx Holdings (2023) (FTC Act Sec. 5 & Health Breach Notification Rule (16 CFR Part 318))**: İlaç ve sağlık bilgisinin Meta ve Google reklam sistemlerine pikselle aktarılması; HBNR kapsamındaki ilk yaptırım. *[Yaptırım: 1,5 milyon $ sivil ceza ve sağlık verisini reklam amaçlı paylaşma yasağı.]*
+- **FTC v. BetterHelp (2023) & FTC v. Flo Health (2021) (FTC Act Sec. 5)**: Terapi anketi yanıtları ve e-posta/IP'nin reklam ağlarıyla paylaşılması aldatıcı ve haksız uygulamadır. *[Yaptırım: BetterHelp: 7,8 milyon $ tüketici iadesi.]*
+- **HIPAA 45 CFR § 164.502 / § 164.308(b) & AHA v. Becerra (N.D. Tex., 20.06.2024) (İzleme teknolojileri)**: Kimliği doğrulanmış hasta portallarında izleme teknolojileri BAA gerektirir. Mahkeme HHS bülteninin kimliksiz genel sayfa kısmını iptal etmiştir; ancak FTC yetkisi ve portal kuralları sürmektedir, bu yüzden koruma muhafazakâr tutulur.
+- **COPPA — 15 U.S.C. §§ 6501-6506, 16 CFR Part 312 (FTC v. Epic Games, 2022) (Kalıcı tanımlayıcılar)**: 13 yaş altı çocuklara yönelik hizmetlerde doğrulanabilir ebeveyn izni olmadan IP, cihaz ve çerez kimliği toplamak yasaktır. *[Yaptırım: Epic Games: COPPA için 275 milyon $ ceza.]*
+
+## Kural Direktifleri
+- MUST: Sağlık/terapi/semptom/reçete/hasta portalı, checkout ve çocuk rotalarına ticari reklam pikseli veya retargeting etiketi eklemeyin; rıza bu rotalarda tek başına yeterli sayılmaz.
+- MUST: Rota bazlı bir korumayı merkezi olarak uygulayın (`shouldBlockCommercialTracking`) ve etiket yöneticisi yapılandırmasında bu rotaları hariç tutun.
+- MUST: Sağlık verisi (durum, ilaç, semptom) URL parametresi, olay adı veya özellik olarak üçüncü tarafa gönderilmesin.
+- MUST: Çocuklara yönelik oturumlarda tüm analitiği ve kalıcı tanımlayıcıyı kapatın; sohbeti varsayılan kapalı başlatın.
+- MUST: Piksel sağlayıcısıyla BAA yoksa sağlık verisi akışına dahil etmeyin; ihlal şüphesinde HBNR bildirim sürelerini işletin.
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: fbq("track", "ViewContent", { content_name: condition }) (Sağlık sayfasında Meta Pixel)
+- NEVER: <script src="https://www.googletagmanager.com/..."> app/therapy/layout.tsx içinde
+- NEVER: ttq.track("Checkout", { ... }) (Checkout'ta TikTok Pixel)
+- NEVER: mixpanel.identify(getHardwareFingerprint()) (Çocuk sayfasında cihaz parmak izi)
+
+## Referans Uyumlu Kod Örnekleri
+### Rota Bazlı İzleme Engeli
+```ts
+import { shouldBlockCommercialTracking } from '@complirules/primitives';
+
+export function loadTracker(pathname: string, provider: 'meta-pixel' | 'google-ads') {
+  const decision = shouldBlockCommercialTracking(pathname, provider);
+  if (decision.blocked) {
+    console.warn(decision.reason); // Hassas rotada yükleme yapılmaz
+    return;
+  }
+  // Hassas olmayan sayfalarda ve rıza varsa yükleme
+}
+```

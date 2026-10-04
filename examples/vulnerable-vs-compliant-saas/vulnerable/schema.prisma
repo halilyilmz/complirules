@@ -1,0 +1,27 @@
+// Vulnerable Next.js + Prisma Vibe Coding Implementation
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  name      String
+  tckn      String?
+  createdAt DateTime  @default(now())
+
+  // TEHLİKELİ HATA: onDelete: Cascade ile kullanıcı silinince faturalar da siliniyor!
+  // 213 Sayılı Vergi Usul Kanunu Md. 253'e göre 5 yıl saklanması zorunlu.
+  invoices  Invoice[]
+}
+
+model Invoice {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amountCents Int
+  taxNumber   String
+  createdAt   DateTime @default(now())
+}

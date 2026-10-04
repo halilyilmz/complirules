@@ -1,0 +1,42 @@
+---
+description: "Global Privacy Control (Sec-GPC) Otomatik Opt-out (CCPA/CPRA § 7025)"
+globs: ["**/*.ts","**/*.tsx","**/*.js","**/middleware.*","**/components/cookie*.tsx","**/components/cmp*.tsx"]
+alwaysApply: false
+---
+
+# [CompliRules] Global Privacy Control (Sec-GPC) Otomatik Opt-out (CCPA/CPRA § 7025)
+**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `CCPA_US`
+
+## Yasal Dayanaklar (Legal Citations)
+- **California Code of Regulations, Title 11 (§ 7025 (opt-out preference signals))**: `Sec-GPC: 1` başlığı veya `navigator.globalPrivacyControl` sinyali kişisel verinin satışı/paylaşımı için bağlayıcı opt-out talebidir. Oturum açmış kullanıcıda sinyal kullanıcının profiline işlenir; hesap tercihiyle çelişirse işletme ancak kullanıcıyı bilgilendirip onayını alarak devam edebilir. *[Yaptırım: California AG v. Sephora (2022): 1,2 milyon $; DoorDash (2024): 375.000 $.]*
+- **Colorado Privacy Act (4 CCR 904-3, Rule 5.11)**: Colorado da evrensel opt-out mekanizmalarını tanımayı zorunlu kılar.
+
+## Kural Direktifleri
+- MUST: Her istekte `Sec-GPC` başlığını değerlendirin (`evaluateGpcSignal`); değer tam olarak `1` ise opt-out aktiftir.
+- MUST: GPC aktifken pazarlama/hedefli reklam kategorisini kapatın (`applyGpcToPreferences`) ve üçüncü taraf reklam piksellerini yüklemeyin.
+- MUST: Kullanıcı oturum açmışsa `ccpaOptedOut: true` değerini profile kaydedin; GPC'yi hesap tercihine tercih ederek yok saymayın.
+- MUST: GPC'yi yok sayacak bir "yeniden izin ver" akışı gerekiyorsa kullanıcıyı açıkça bilgilendirip onay alın.
+- MUST: Opt-out sonrasında üçüncü taraflara veri akışının gerçekten durduğunu ağ günlüğüyle doğrulayın.
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: if (getCookie("consent") !== "false") loadAdTrackers() (GPC denetimi yok)
+- NEVER: Sec-GPC başlığını loglayıp işlememek
+- NEVER: GPC sinyaline rağmen reklam çerezi set etmek
+
+## Referans Uyumlu Kod Örnekleri
+### Sunucu Tarafı GPC Değerlendirmesi (Next.js Middleware)
+```ts
+import { evaluateGpcSignal, applyGpcToPreferences, CookieConsentManager } from '@complirules/primitives';
+
+export function middleware(req: Request) {
+  const gpc = evaluateGpcSignal(req.headers, { isAuthenticated: Boolean(getSession(req)) });
+  const prefs = applyGpcToPreferences(readPreferences(req) ?? CookieConsentManager.createDefaultPreferences(), gpc);
+
+  if (gpc.shouldPersistToProfile) {
+    void saveProfile(getSession(req)!.userId, { ccpaOptedOut: true });
+  }
+  if (!CookieConsentManager.isCategoryAllowed(prefs, 'marketing')) {
+    // Reklam piksellerini yükleme
+  }
+}
+```

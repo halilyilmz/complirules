@@ -1,0 +1,42 @@
+// Compliant Next.js + Prisma Implementation (CompliRules-Enforced)
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(uuid())
+  email          String    // Anonimleştiğinde: "anonymized-{hash}@erased.local"
+  name           String    // Anonimleştiğinde: "ANONİM KULLANICI"
+  tckn           String?   // Anonimleştiğinde: null
+  phone          String?   // Anonimleştiğinde: null
+  
+  // KVKK Md. 7 & GDPR Art. 17 Uyum Alanları
+  isAnonymized   Boolean   @default(false)
+  anonymizedAt   DateTime?
+  tombstoneHash  String?
+  createdAt      DateTime  @default(now())
+
+  // UYUMLU İLİŞKİ: onDelete: SetNull sayesinde faturalar silinmez, VUK Md. 253 5 yıl korunur
+  invoices       Invoice[]
+  auditLogs      AuditLog[]
+}
+
+model Invoice {
+  id          String   @id @default(uuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  amountCents Int
+  taxNumber   String
+  createdAt   DateTime @default(now()) // 5 yıl saklanmak zorunda
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String   // "USER_ANONYMIZED", "CONSENT_GRANTED", "LOGIN"
+  ipHash     String
+  timestamp  DateTime @default(now())
+}

@@ -1,0 +1,61 @@
+---
+description: "EU AI Act Madde 50 Şeffaflık ve Madde 12 Denetim Logu Standartları"
+globs: ["**/*.tsx","**/*.jsx","**/api/generate/**/*.ts","**/*.py","**/*.go"]
+alwaysApply: false
+---
+
+# [CompliRules] EU AI Act Madde 50 Şeffaflık ve Madde 12 Denetim Logu Standartları
+**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `AI_ACT_EU`
+
+## Yasal Dayanaklar (Legal Citations)
+- **European Union Artificial Intelligence Act (EU AI Act) (Article 50)**: Yapay zekâ sistemleri ile etkileşimde bulunan kullanıcının bilgilendirilmesi ve üretilen içeriğin makinece okunabilir şekilde işaretlenmesi.
+- **European Union Artificial Intelligence Act (EU AI Act) (Article 12)**: Yüksek riskli (High-Risk - Annex III) yapay zekâ sistemleri için otomatik olay ve işlem kaydı tutma (record-keeping / audit trail) yükümlülüğü.
+- **European Union Artificial Intelligence Act (EU AI Act) (Article 14)**: Human Oversight (Human-in-the-loop / Human-on-the-loop). Yüksek riskli otonom sistemlerde kararların insanlar tarafından denetlenebilmesi, durdurulabilmesi veya geçersiz kılınabilmesi (override) zorunluluğu.
+- **European Union Artificial Intelligence Act (EU AI Act) (Article 86)**: Right to Explanation. Kullanıcının yapay zekâ destekli bireysel kararlara ilişkin gerekçeli açıklama talep etme ve itiraz hakkı.
+
+## Kural Direktifleri
+- MUST: Kullanıcı bir AI sohbet robotu veya aracıyla etkileşime girdiğinde "Bu yanıt bir yapay zekâ modeli tarafından üretilmiştir" ibaresi görünür olmalıdır.
+- MUST: AI tarafından üretilen görsel veya ses içeriklerinde makinece okunabilir şeffaflık metadata etiketi (`x-ai-generated: true`) döndürülmelidir.
+- MUST: Karar destek ve yüksek riskli (High-Risk - Annex III) süreçlerde kullanılan yapay zekâ çağrıları için Article 12 uyarınca otomatik sistem denetim logları (input hash, model versiyonu, timestamp, output hash) tutun.
+- MUST: Yüksek riskli veya kullanıcı üzerinde hukuki/mali etkisi olan AI kararlarında güven skoru düşük olduğunda (`confidenceScore < threshold`) veya kritik kararlarda süreci durdurup insan moderatör eskalasyon kuyruğuna (`escalateToHumanReview`) yönlendirin (Article 14).
+- MUST: AI destekli kararların yanında kullanıcıya gerekçeli açıklama talep etme ve karara itiraz etme hakkı tanıyan bir itiraz/insanla görüşme arayüzü (`RequestHumanInterventionButton`) sunun (Article 86).
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: AI yanıtlarını doğrudan insan yanıtı gibi göstermek (No AI disclaimer)
+- NEVER: AI üretimi içeriğin kaynağını gizlemek
+- NEVER: Yüksek riskli AI kararlarında denetim kaydı (audit log) tutmadan doğrudan işlem yapmak
+- NEVER: Kullanıcı haklarını veya mali durumunu etkileyen yüksek riskli AI kararlarını insan denetimi ve itiraz hakkı olmaksızın doğrudan kesinleştirmek
+
+## Referans Uyumlu Kod Örnekleri
+### AI Şeffaflık Rozeti Bileşeni
+```tsx
+<div className="flex items-center gap-1.5 text-xs text-neutral-500 py-1" role="status">
+  <SparklesIcon className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" />
+  <span>Yapay zekâ tarafından oluşturulmuştur. Hatalar içerebilir, lütfen doğrulayınız.</span>
+</div>
+```
+
+### EU AI Act Article 14 Human-in-the-loop & Eskalasyon Mekanizması
+```ts
+import { evaluateAiDecisionWithOversight } from '@complirules/primitives';
+
+export async function processAutomatedDecision(userApplication: any) {
+  const aiResult = await runModelInference(userApplication);
+
+  // Article 14: Eşik altı kararlar insan moderatöre yönlendirilir
+  const decisionRecord = evaluateAiDecisionWithOversight({
+    modelId: 'risk-scoring-v2',
+    inputPayload: userApplication,
+    outputPayload: aiResult,
+    confidenceScore: aiResult.score,
+    threshold: 0.85
+  });
+
+  if (decisionRecord.requiresHumanReview) {
+    await queueForHumanReview(decisionRecord);
+    return { status: 'PENDING_HUMAN_REVIEW', message: 'Karar insan denetçisi incelemesine yönlendirildi.' };
+  }
+
+  return { status: 'APPROVED', result: aiResult };
+}
+```

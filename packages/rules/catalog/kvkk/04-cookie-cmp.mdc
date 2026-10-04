@@ -1,0 +1,49 @@
+---
+description: "KVKK Çerez Rehberi & Simetrik Consent Management Platform (CMP)"
+globs: ["**/*.tsx","**/*.jsx","**/components/cookie*.tsx","**/components/cmp*.tsx","**/components/banner*.tsx"]
+alwaysApply: false
+---
+
+# [CompliRules] KVKK Çerez Rehberi & Simetrik Consent Management Platform (CMP)
+**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `KVKK_TR`
+
+## Yasal Dayanaklar (Legal Citations)
+- **KVKK Çerez Uygulamaları Hakkında Rehber (Haziran 2022)**: Zorunlu çerezler haricindeki tüm analitik ve pazarlama çerezlerinde önceden açık rıza (Prior Consent Gating) ve simetrik ret butonu zorunluluğu. *[Yaptırım: Hukuka aykırı veri işleme yaptırımları (KVKK Md. 18).]*
+- **6698 Sayılı KVKK (Madde 5/1)**: Kişisel verilerin ilgili kişinin açık rızası olmaksızın işlenemeyeceği temel kuralı.
+
+## Kural Direktifleri
+- MUST: Çerezleri Zorunlu (Strictly Necessary), İşlevsel (Functional), Analitik (Analytics) ve Pazarlama (Marketing) olarak 4 kategoriye ayırın.
+- MUST: Kullanıcı açıkça rıza vermeden (prior consent) Google Analytics, Hotjar, Facebook Pixel gibi üçüncü parti izleme scriptlerini ASLA çalıştırmayın.
+- MUST: Çerez banner'ında "Tümünü Kabul Et" butonuyla tamamen aynı büyüklük, zıtlık ve kolaylıkta "Tümünü Reddet" butonu sunun (Simetrik buton ilkesi).
+- MUST: Rıza tercihlerini versiyonlanmış çerezde saklayın ve en geç 12 ayda bir rıza yenileme isteyin.
+- MUST: Cookie Wall veya manipülatif koyu desen (Dark Pattern) uygulamayın.
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: Kullanıcı rızası alınmadan doğrudan analitik veya pazarlama scripti yüklemek (Ungated scripts)
+- NEVER: Bannerda sadece "Kabul Et" gösterip "Reddet" seçeneğini gizlemek veya zorlaştırmak
+- NEVER: Hizmet kullanımını zorunlu olmayan çerezlerin kabulüne bağlamak (Cookie Wall)
+
+## Referans Uyumlu Kod Örnekleri
+### React/Next.js Simetrik Çerez CMP Bileşeni
+```tsx
+import { CookieConsentManager } from '@complirules/primitives';
+
+export function CookieBanner({ onAcceptAll, onRejectAll }: Props) {
+  const config = CookieConsentManager.getSymmetricBannerConfig();
+  
+  return (
+    <div role="dialog" aria-label="Çerez Yönetimi" className="fixed bottom-0 inset-x-0 p-4 bg-white border-t flex justify-between items-center z-50">
+      <p className="text-sm text-neutral-700">{config.noticeText}</p>
+      <div className="flex gap-3">
+        {/* KVKK Kuralı: Reddet ve Kabul Et butonları simetrik olmalıdır */}
+        <button type="button" onClick={onRejectAll} className="px-4 py-2 border rounded text-neutral-800 hover:bg-neutral-100">
+          {config.rejectAllText}
+        </button>
+        <button type="button" onClick={onAcceptAll} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          {config.acceptAllText}
+        </button>
+      </div>
+    </div>
+  );
+}
+```

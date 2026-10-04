@@ -1,0 +1,43 @@
+---
+description: "SMS/OTP Doğrulaması ile Pazarlama ve Veri İşleme Rızasının Ayrıştırılması (2025/1072)"
+globs: ["**/*.ts","**/*.tsx","**/*.js","**/*.py","**/*.php","**/api/**/*","**/auth/**/*"]
+alwaysApply: false
+---
+
+# [CompliRules] SMS/OTP Doğrulaması ile Pazarlama ve Veri İşleme Rızasının Ayrıştırılması (2025/1072)
+**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `KVKK_TR`
+
+## Yasal Dayanaklar (Legal Citations)
+- **KVKK Kurulu 10.06.2025 tarihli ve 2025/1072 sayılı İlke Kararı (RG 26.06.2025, 32938) (SMS ile Doğrulama Kodu Uygulamaları)**: Tek bir SMS doğrulama koduyla üyelik sözleşmesi, ticari elektronik ileti izni ve kişisel veri işleme izninin birlikte alınması yasaktır. Kodun amacı SMS ve görevli tarafından açıkça belirtilmeli; kod verilmese de hizmet sunulmalıdır. *[Yaptırım: Geçersiz rıza ile veri işleme (KVKK Md. 5, 18) ve ETK Md. 12 idari para cezaları.]*
+- **KVKK Kurulu 2020/173 (Amazon Türkiye) (Açık Rıza — Kullanım Şartları Onayı)**: Siteyi ziyaret etmek veya kullanım şartlarını kabul etmek ticari ileti için geçerli açık rıza yerine geçmez.
+- **6563 Sayılı ETK (Madde 6)**: Ticari elektronik iletinin önceden onay alınarak gönderilmesi ve İYS kaydı.
+
+## Kural Direktifleri
+- MUST: OTP doğrulama handler'ı yalnızca `phoneVerified` benzeri doğrulama alanlarını güncelleyebilir.
+- MUST: OTP doğrulama kodu ile `marketingConsent`, `etkConsent`, `dataProcessingConsent` alanlarını ASLA `true` yapmayın; `assertOtpEffectsAreSeparated` kullanın.
+- MUST: SMS metni kodun yalnızca belirli bir amaç için olduğunu ve pazarlama izni anlamına gelmediğini açıkça belirtsin (`buildOtpSmsText`).
+- MUST: Pazarlama rızası ayrı, işaretsiz, isteğe bağlı bir kutu ile alınsın ve `consent-store` ile versiyonlu kaydedilsin.
+- MUST: Kod girilmediğinde veya rıza verilmediğinde ana hizmet sunulmaya devam etsin.
+
+## Yasaklı Desenler (Forbidden Anti-Patterns)
+- NEVER: user.update({ phoneVerified: true, marketingConsent: true }) (OTP ile rıza bundling)
+- NEVER: SMS: "Kodu paylaşarak kampanya iletilerini kabul etmiş olursunuz" (Örtülü rıza)
+- NEVER: Kasada OTP girilmeden ödeme/üyelik tamamlanmaması ve OTP'nin pazarlama izni saymak
+
+## Referans Uyumlu Kod Örnekleri
+### OTP Doğrulama ve Rızanın Ayrı Yönetimi
+```ts
+import { assertOtpEffectsAreSeparated, buildOtpSmsText } from '@complirules/primitives';
+
+app.post('/api/auth/verify-otp', async (req, res) => {
+  const { userId, code } = req.body;
+  if (!(await verifyCode(userId, code))) return res.status(400).end();
+
+  const effects = { phoneVerified: true }; // Rıza alanları bilinçli olarak yok
+  assertOtpEffectsAreSeparated(effects);
+  await db.user.update({ where: { id: userId }, data: effects });
+  res.status(204).end();
+});
+
+const sms = buildOtpSmsText('phone_verification', code, 'Marka');
+```
