@@ -3,213 +3,303 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#09090b">
+  <meta name="theme-color" content="#121110">
   <meta name="color-scheme" content="dark">
-  <title>CompliRules — Vibe Coder'lar İçin Yasal Uyum Kalkanı</title>
-  <meta name="description" content="Cursor ve Claude Code için KVKK, GDPR ve HIPAA yasal sınırlarını otomatik zorunlu kılan ücretsiz kural seti.">
+  <title>CompliRules — KVKK & GDPR rules for Cursor and Claude Code</title>
+  <meta name="description" content="Free rules for Cursor and Claude Code that stop your AI from accidentally writing KVKK and GDPR violating code. One command to install.">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              500: '#3b82f6',
-              600: '#2563eb',
-            }
-          }
-        }
-      }
-    }
-  </script>
 
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="min-h-screen text-zinc-100 selection:bg-blue-500/30 selection:text-blue-200 relative bg-[#09090b] flex flex-col justify-between">
+<body class="relative min-h-screen overflow-x-clip bg-[#121110] text-[#EDEAE4]">
 
-  <!-- Background Grid -->
-  <div class="bg-grid-pattern absolute inset-0 pointer-events-none"></div>
+  <!-- Noise Grain Overlay -->
+  <div 
+    aria-hidden="true" 
+    class="pointer-events-none fixed inset-0 z-50 opacity-[0.07] mix-blend-overlay"
+    style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"
+  ></div>
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#09090b]/80 border-b border-white/[0.08]">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-sm shadow-md shadow-blue-500/20">
-          🛡️
-        </div>
-        <span class="font-bold text-lg tracking-tight text-white">CompliRules</span>
+  <!-- Oversized Backdrop Word -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 top-24 select-none overflow-hidden text-center font-black uppercase leading-none tracking-tighter text-[#EDEAE4]/[0.04]"
+    style="font-size: clamp(8rem, 24vw, 22rem);"
+  >
+    RULES
+  </div>
+
+  <div class="relative mx-auto flex min-h-screen w-full max-w-4xl flex-col px-6 z-10">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between border-b-2 border-[#EDEAE4]/15 py-5">
+      <a href="/" class="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-[#EDEAE4]">
+        <span class="inline-block h-3 w-3 bg-[#E5484D]" aria-hidden="true"></span>
+        CompliRules
       </a>
-
-      <div class="flex items-center gap-4">
-        <a href="#" class="open-disclaimer-trigger text-xs text-zinc-400 hover:text-white transition-colors">Yasal Sorumluluk Reddi</a>
-        <a href="https://github.com/halilyilmz/complirules" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-zinc-200 transition-colors">
-          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          <span>GitHub</span>
+      <nav class="flex items-center gap-6 text-xs font-bold uppercase tracking-[0.15em] text-[#EDEAE4]/60">
+        <a href="https://github.com/halilyilmz/complirules" target="_blank" rel="noreferrer" class="transition-colors hover:text-[#E5484D]">
+          GitHub
         </a>
-      </div>
-    </div>
-  </header>
+        <button type="button" class="open-disclaimer-trigger transition-colors hover:text-[#E5484D] uppercase font-bold text-xs tracking-[0.15em]">
+          Disclaimer
+        </button>
+      </nav>
+    </header>
 
-  <!-- Main Content -->
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-16 z-10 relative">
+    <!-- Main Content -->
+    <main class="flex-1">
 
-    <!-- Hero -->
-    <div class="text-center max-w-2xl mx-auto mb-14">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-semibold mb-6">
-        <span>Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)</span>
-      </div>
-
-      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-5 leading-tight">
-        Cursor ve Claude ile kod yazarken<br>
-        <span class="text-blue-400">yasal cezalara takılmayın.</span>
-      </h1>
-
-      <p class="text-sm sm:text-base text-zinc-400 leading-relaxed font-normal mb-8">
-        Yapay zekanız proje üretirken farkında olmadan KVKK veya GDPR'ı ihlal edebilir. CompliRules, Cursor'a eklenen hazır kurallarla bu riskleri arka planda sessizce engeller.
-      </p>
-
-      <!-- One-click CLI Box -->
-      <div class="max-w-md mx-auto mb-4">
-        <div class="bento-card p-2 rounded-xl flex items-center justify-between gap-3 shadow-xl">
-          <div class="flex items-center gap-2.5 pl-3 font-mono text-xs sm:text-sm text-cyan-300 overflow-x-auto">
-            <span class="text-zinc-500 select-none">$</span>
-            <span id="install-cmd-text" class="whitespace-nowrap font-medium">npx complirules init</span>
+      <!-- Hero Section -->
+      <section class="relative pt-16 pb-20 sm:pt-20">
+        <div class="flex items-start justify-between gap-6">
+          <div>
+            <span class="inline-block -rotate-2 border-2 border-[#E5484D] px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-[#E5484D]">
+              Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)
+            </span>
+            <h1 class="mt-6 max-w-2xl text-balance text-5xl font-black uppercase leading-[0.95] tracking-tight sm:text-7xl">
+              Stop your AI from writing <span class="text-[#E5484D]">illegal code.</span>
+            </h1>
+            <p class="mt-6 max-w-lg text-pretty text-base leading-relaxed text-[#EDEAE4]/65">
+              While your AI generates your project, it can silently violate KVKK or GDPR. CompliRules adds ready-made rules to Cursor and Claude Code that quietly block those risks in the background.
+            </p>
           </div>
-          <button id="copy-install-btn" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-all flex items-center gap-1.5 whitespace-nowrap active:scale-95" aria-label="Komutu Kopyala">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-            <span>Kopyala</span>
-          </button>
+
+          <!-- Rotating Circular § Badge -->
+          <div aria-hidden="true" class="relative hidden h-32 w-32 shrink-0 animate-spin-slow sm:block">
+            <svg viewBox="0 0 100 100" class="h-full w-full">
+              <defs>
+                <path id="circlePath" d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"></path>
+              </defs>
+              <text class="fill-[#EDEAE4]/70 text-[9.5px] font-bold uppercase tracking-[0.28em]">
+                <textPath href="#circlePath">
+                  KVKK · GDPR · Compliant · KVKK · GDPR ·
+                </textPath>
+              </text>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-2xl font-black text-[#E5484D]">§</span>
+            </div>
+          </div>
         </div>
-        <p id="copy-feedback" class="text-xs text-emerald-400 font-mono mt-2 hidden font-semibold">
-          ✓ Komut panoya kopyalandı!
+
+        <!-- Copy Box -->
+        <div class="mt-10 flex">
+          <div class="flex w-full max-w-md items-center justify-between gap-3 border-2 border-[#EDEAE4]/25 bg-[#1A1917] px-5 py-4 brutalist-shadow">
+            <code class="truncate font-mono text-sm text-[#EDEAE4]">
+              <span class="text-[#E5484D]">$ </span>
+              <span id="install-cmd-text">npx complirules init</span>
+            </code>
+            <button
+              id="copy-install-btn"
+              type="button"
+              class="shrink-0 bg-[#E5484D] px-3 py-1.5 text-xs font-black uppercase tracking-[0.15em] text-[#121110] transition-transform hover:-translate-y-0.5 active:scale-95"
+              aria-label="Komutu Kopyala"
+            >
+              Copy
+            </button>
+          </div>
+        </div>
+        <p class="mt-3 text-xs font-medium uppercase tracking-[0.15em] text-[#EDEAE4]/40">
+          One command — rules land in .cursor/rules automatically
         </p>
-      </div>
+      </section>
 
-      <p class="text-xs text-zinc-500">
-        Tek komutla çalıştırın, <code class="text-zinc-400 font-mono">.cursor/rules</code> içine kurallar otomatik gelsin.
-      </p>
-    </div>
+      <!-- 4 Mistakes Section -->
+      <section class="border-t-2 border-[#EDEAE4]/15 py-16">
+        <h2 class="text-3xl font-black uppercase tracking-tight sm:text-4xl">
+          4 legal mistakes <span class="text-[#E5484D]">your AI makes</span>
+        </h2>
+        <div class="mt-10 grid gap-4 sm:grid-cols-2">
+          <!-- Card 1 -->
+          <div class="group border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6 transition-colors hover:border-[#E5484D]">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs font-bold text-[#E5484D]">01</span>
+              <span aria-hidden="true" class="text-lg">🍪</span>
+            </div>
+            <h3 class="mt-4 text-base font-black uppercase tracking-wide">No Consentless Cookies</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+              Blocks Google Analytics and tracking scripts from firing before the visitor gives explicit consent.
+            </p>
+          </div>
 
-    <!-- The 4 Real Things It Protects Against (Simple & Human) -->
-    <div class="mb-14">
-      <div class="text-center mb-6">
-        <h2 class="text-lg font-bold text-white">Yapay Zekanın Yaptığı 4 Yasal Hatayı Önler</h2>
-      </div>
+          <!-- Card 2 -->
+          <div class="group border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6 transition-colors hover:border-[#E5484D]">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs font-bold text-[#E5484D]">02</span>
+              <span aria-hidden="true" class="text-lg">🔒</span>
+            </div>
+            <h3 class="mt-4 text-base font-black uppercase tracking-wide">No Passwords in Logs</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+              Stops passwords, tokens and national ID numbers from being written into server logs while debugging.
+            </p>
+          </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="bento-card p-5 rounded-xl">
-          <div class="text-2xl mb-2">🍪</div>
-          <h3 class="text-sm font-bold text-white mb-1">İzinsiz Çerez Yüklemez</h3>
-          <p class="text-xs text-zinc-400 leading-relaxed">
-            Ziyaretçi açıkça onay butonuna basmadan Google Analytics veya takip scriptlerinin çalışmasını engeller.
+          <!-- Card 3 -->
+          <div class="group border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6 transition-colors hover:border-[#E5484D]">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs font-bold text-[#E5484D]">03</span>
+              <span aria-hidden="true" class="text-lg">🗑️</span>
+            </div>
+            <h3 class="mt-4 text-base font-black uppercase tracking-wide">Real Account Deletion</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+              When a user says “delete my account”, the database records actually get wiped — not just hidden.
+            </p>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="group border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6 transition-colors hover:border-[#E5484D]">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs font-bold text-[#E5484D]">04</span>
+              <span aria-hidden="true" class="text-lg">🌐</span>
+            </div>
+            <h3 class="mt-4 text-base font-black uppercase tracking-wide">No Silent IP Leaks</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+              Bundles fonts locally instead of external CDNs, so visitor IPs never leak abroad without notice.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works Section -->
+      <section class="border-t-2 border-[#EDEAE4]/15 py-16">
+        <h2 class="text-3xl font-black uppercase tracking-tight sm:text-4xl">
+          How it works
+        </h2>
+        <ol class="mt-10 grid gap-8 sm:grid-cols-3">
+          <li>
+            <span class="block text-5xl font-black leading-none text-[#E5484D]">01</span>
+            <h3 class="mt-3 text-sm font-black uppercase tracking-[0.15em]">INSTALL</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+              Run <code class="text-[#E5484D] font-mono">npx complirules init</code> in your project.
+            </p>
+          </li>
+          <li>
+            <span class="block text-5xl font-black leading-none text-[#E5484D]">02</span>
+            <h3 class="mt-3 text-sm font-black uppercase tracking-[0.15em]">AUTO-DETECTED</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+              Cursor or Claude picks the rules into context instantly.
+            </p>
+          </li>
+          <li>
+            <span class="block text-5xl font-black leading-none text-[#E5484D]">03</span>
+            <h3 class="mt-3 text-sm font-black uppercase tracking-[0.15em]">SAFE CODING</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#EDEAE4]/60">
+              Your AI can no longer produce code that breaks the law.
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- Disclaimer Section -->
+      <section class="border-t-2 border-[#EDEAE4]/15 py-16">
+        <div class="border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6">
+          <p class="text-sm leading-relaxed text-[#EDEAE4]/65">
+            CompliRules is a static rule set tool — not legal advice or an attorney service. The software is provided "AS IS".
           </p>
+          <div class="mt-3">
+            <button type="button" class="open-disclaimer-trigger text-sm font-black uppercase tracking-[0.15em] text-[#E5484D] underline-offset-4 transition-colors hover:underline">
+              Full Legal Disclaimer (EN/TR) →
+            </button>
+          </div>
         </div>
+      </section>
 
-        <div class="bento-card p-5 rounded-xl">
-          <div class="text-2xl mb-2">🔒</div>
-          <h3 class="text-sm font-bold text-white mb-1">Loglara Şifre Basmaz</h3>
-          <p class="text-xs text-zinc-400 leading-relaxed">
-            Hata ayıklarken şifre, token veya kimlik numaralarının sunucu loglarına ve konsola açıkça yazılmasını durdurur.
-          </p>
-        </div>
-
-        <div class="bento-card p-5 rounded-xl">
-          <div class="text-2xl mb-2">🗑️</div>
-          <h3 class="text-sm font-bold text-white mb-1">Hesabı Gerçekten Siler</h3>
-          <p class="text-xs text-zinc-400 leading-relaxed">
-            Kullanıcı "Hesabımı sil" dediğinde veritabanındaki kayıtların kurtarılamayacak şekilde temizlenmesini sağlar.
-          </p>
-        </div>
-
-        <div class="bento-card p-5 rounded-xl">
-          <div class="text-2xl mb-2">🌐</div>
-          <h3 class="text-sm font-bold text-white mb-1">Habersiz IP Sızdırmaz</h3>
-          <p class="text-xs text-zinc-400 leading-relaxed">
-            Google Fonts gibi harici CDN'ler yerine fontları yerel pakete alarak ziyaretçi IP'lerinin yurt dışına sızmasını önler.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3 Simple Steps -->
-    <div class="bento-card p-6 rounded-2xl mb-12">
-      <div class="text-center mb-6">
-        <h2 class="text-base font-bold text-white">Nasıl Kullanılır?</h2>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-        <div>
-          <div class="text-xs font-mono text-blue-400 font-bold mb-1">01</div>
-          <h3 class="text-xs font-bold text-white mb-1">Kurulum</h3>
-          <p class="text-[11px] text-zinc-400">Projenizde <code class="text-cyan-300 font-mono">npx complirules init</code> deyin.</p>
-        </div>
-        <div>
-          <div class="text-xs font-mono text-cyan-400 font-bold mb-1">02</div>
-          <h3 class="text-xs font-bold text-white mb-1">Otomatik Tanıma</h3>
-          <p class="text-[11px] text-zinc-400">Cursor veya Claude kuralları anında bağlamına alır.</p>
-        </div>
-        <div>
-          <div class="text-xs font-mono text-emerald-400 font-bold mb-1">03</div>
-          <h3 class="text-xs font-bold text-white mb-1">Güvenli Kodlama</h3>
-          <p class="text-[11px] text-zinc-400">Yapay zeka mevzuata aykırı kod üretemez.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Hidden compatibility hooks for test suite -->
-    <div class="hidden terminal-window" id="rules-grid">
-      <!-- 24 Kural & Mevzuat -->
-    </div>
-
-    <!-- Legal Disclaimer Notice -->
-    <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center max-w-2xl mx-auto text-xs text-zinc-400">
-      <p class="mb-2">
-        CompliRules bir statik kural aracıdır; avukatlık veya resmi hukuki danışmanlık hizmeti değildir. Yazılım "OLDUĞU GİBİ" (AS-IS) sağlanır.
-      </p>
-      <button class="open-disclaimer-trigger text-cyan-400 hover:underline font-semibold">
-        Yasal Sorumluluk Reddi Tam Metni (TR/EN) →
-      </button>
-    </div>
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="border-t border-white/[0.08] py-8 px-4 sm:px-6 max-w-4xl mx-auto text-center text-xs text-zinc-500 z-10 relative">
-    <div class="flex flex-wrap items-center justify-center gap-5 mb-2">
-      <a href="https://github.com/halilyilmz/complirules" class="hover:text-zinc-300 transition-colors">GitHub Repository</a>
-      <a href="#" class="open-disclaimer-trigger hover:text-zinc-300 transition-colors">Sorumluluk Reddi Beyanı</a>
-      <a href="https://github.com/halilyilmz/complirules/blob/main/LICENSE" class="hover:text-zinc-300 transition-colors">Kullanım Lisansı (Free-to-Use)</a>
-    </div>
-    <p>© 2026 İbrahim Halil Yılmaz (CompliRules). Free to Use for Vibe Coders & Engineering Teams.</p>
-  </footer>
-
-  <!-- Modal: Full Legal Disclaimer -->
-  <div id="disclaimer-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden" role="dialog" aria-modal="true" aria-labelledby="disclaimer-modal-title">
-    <div class="bento-card max-w-lg w-full max-h-[85vh] rounded-2xl p-6 flex flex-col shadow-2xl overflow-hidden border border-white/20">
-      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
-        <h3 id="disclaimer-modal-title" class="font-bold text-sm text-white">Yasal Sorumluluk Reddi & Şartlar</h3>
-        <button id="close-disclaimer-btn" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-zinc-300 hover:text-white transition-colors" aria-label="Kapat">✕</button>
+      <!-- Hidden test anchors -->
+      <div class="hidden terminal-window" id="rules-grid">
+        <!-- 24 Kural & Mevzuat -->
       </div>
 
-      <div class="overflow-y-auto space-y-3 text-xs text-zinc-300 pr-2 leading-relaxed">
-        <p><strong>1. Hukuki Tavsiye Değildir:</strong> CompliRules geliştiriciler için kılavuz kural setidir; resmi baro üyesi bir avukatın hukuki danışmanlığının yerini almaz.</p>
-        <p><strong>2. Sıfır Sorumluluk İlkesi:</strong> Yazılım AS-IS sunulur. Veri koruma otoriteleri (KVKK, CNIL, FTC vb.) tarafından kesilebilecek hiçbir idari cezadan yapımcılar sorumlu tutulamaz.</p>
-        <p><strong>3. Statutory Waiver (English):</strong> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. UNDER NO CIRCUMSTANCES SHALL THE AUTHORS BE LIABLE FOR ANY REGULATORY FINES (GDPR, KVKK, HIPAA, BIPA) ARISING OUT OF THE USE OF THESE HEURISTICS.</p>
-      </div>
+    </main>
 
-      <div class="pt-3 border-t border-white/10 mt-3 text-right">
-        <button id="accept-disclaimer-btn" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold">
-          Anladım
+    <!-- Footer -->
+    <footer class="border-t-2 border-[#EDEAE4]/15 py-8">
+      <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+        <p class="text-xs font-medium uppercase tracking-[0.12em] text-[#EDEAE4]/50">
+          © 2026 İbrahim Halil Yılmaz (CompliRules). Free to Use for Vibe Coders & Engineering Teams.
+        </p>
+        <div class="flex items-center gap-5 text-xs font-bold uppercase tracking-[0.15em] text-[#EDEAE4]/60">
+          <a href="https://github.com/halilyilmz/complirules" target="_blank" rel="noreferrer" class="transition-colors hover:text-[#E5484D]">
+            GitHub
+          </a>
+          <a href="https://github.com/halilyilmz/complirules/blob/main/LICENSE" target="_blank" rel="noreferrer" class="transition-colors hover:text-[#E5484D]">
+            Kullanım Lisansı (Free-to-Use)
+          </a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Disclaimer Modal -->
+  <div id="disclaimer-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-[#121110]/85 px-4 backdrop-blur-sm hidden" role="dialog" aria-modal="true" aria-label="Legal Disclaimer">
+    <div class="w-full max-w-lg border-2 border-[#EDEAE4]/25 bg-[#1A1917] p-6 brutalist-shadow-lg">
+      <div class="flex items-start justify-between gap-4">
+        <h2 id="disclaimer-modal-title" class="text-lg font-black uppercase tracking-tight text-[#EDEAE4]">
+          Legal Disclaimer
+        </h2>
+        <button id="close-disclaimer-btn" type="button" aria-label="Close" class="text-[#EDEAE4]/60 transition-colors hover:text-[#E5484D] text-lg font-bold">
+          ✕
         </button>
       </div>
+      <div class="mt-4 space-y-4 text-sm leading-relaxed text-[#EDEAE4]/65">
+        <p>
+          CompliRules is a static rule set tool. It does not provide legal advice or attorney services. The software is provided "AS IS", without warranty of any kind. You remain responsible for the compliance of your own software.
+        </p>
+        <p lang="tr">
+          CompliRules bir statik kural aracıdır; avukatlık veya resmi hukuki danışmanlık hizmeti değildir. Yazılım "OLDUĞU GİBİ" (AS-IS) sağlanır. Olası idari cezalardan kullanıcı sorumludur.
+        </p>
+      </div>
+      <button id="accept-disclaimer-btn" type="button" class="mt-6 w-full bg-[#E5484D] px-4 py-2.5 text-sm font-black uppercase tracking-[0.15em] text-[#121110] transition-transform hover:-translate-y-0.5">
+        Close / Kapat
+      </button>
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="js/rules-data.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+    // Copy functionality
+    const copyBtn = document.getElementById("copy-install-btn");
+    const copyText = document.getElementById("install-cmd-text");
+    if (copyBtn && copyText) {
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(copyText.innerText.trim());
+          const original = copyBtn.innerText;
+          copyBtn.innerText = "Copied!";
+          setTimeout(() => { copyBtn.innerText = original; }, 2000);
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
+
+    // Modal functionality
+    const modal = document.getElementById("disclaimer-modal");
+    const openBtns = document.querySelectorAll(".open-disclaimer-trigger");
+    const closeBtn = document.getElementById("close-disclaimer-btn");
+    const acceptBtn = document.getElementById("accept-disclaimer-btn");
+
+    function openModal() {
+      if (modal) modal.classList.remove("hidden");
+    }
+    function closeModal() {
+      if (modal) modal.classList.add("hidden");
+    }
+
+    openBtns.forEach(b => b.addEventListener("click", openModal));
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (acceptBtn) acceptBtn.addEventListener("click", closeModal);
+    if (modal) {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+      });
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+  </script>
 </body>
 </html>

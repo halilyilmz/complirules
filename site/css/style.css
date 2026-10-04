@@ -1,14 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap');
 
 :root {
-  --bg-main: #09090b;
-  --bg-surface: #121217;
-  --bg-card: rgba(18, 18, 23, 0.7);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.16);
-  --primary-blue: #3b82f6;
-  --primary-cyan: #06b6d4;
-  --primary-emerald: #10b981;
+  --bg-deep: #121110;
+  --bg-card: #1A1917;
+  --text-main: #EDEAE4;
+  --accent-red: #E5484D;
+  --border-light: rgba(237, 234, 228, 0.15);
+  --border-accent: #E5484D;
   color-scheme: dark;
 }
 
@@ -17,69 +15,42 @@
 }
 
 body {
-  background-color: var(--bg-main);
-  color: #f4f4f5;
+  background-color: var(--bg-deep);
+  color: var(--text-main);
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
   touch-action: manipulation;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Background Grid Pattern (Linear / V0 signature) */
-.bg-grid-pattern {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%);
+/* Brutalist Shadow */
+.brutalist-shadow {
+  box-shadow: 6px 6px 0 0 var(--accent-red);
 }
 
-/* High-End Glassmorphism Card with Inset Highlight */
-.bento-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+.brutalist-shadow-lg {
+  box-shadow: 8px 8px 0 0 var(--accent-red);
 }
 
-.bento-card:hover {
-  border-color: var(--border-hover);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-  transform: translateY(-2px);
-}
-
-/* IDE / Editor Mockup Box */
-.ide-window {
-  background: #0d0e15;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-  font-family: 'JetBrains Mono', monospace;
-}
-
-/* Custom Scrollbar */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #121110;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
+  background: rgba(237, 234, 228, 0.2);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: var(--accent-red);
 }
 
-/* Focus Visible APG */
+/* Focus Visible */
 a:focus-visible,
-button:focus-visible,
-input:focus-visible {
-  outline: 2px solid var(--primary-blue);
+button:focus-visible {
+  outline: 2px solid var(--accent-red);
   outline-offset: 2px;
 }
 
@@ -88,12 +59,12 @@ input:focus-visible {
   overscroll-behavior: contain;
 }
 
-/* Shimmer animation for pill */
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+/* Rotating circular text animation */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.animate-shimmer {
-  animation: shimmer 2.5s infinite;
+.animate-spin-slow {
+  animation: spinSlow 24s linear infinite;
 }
