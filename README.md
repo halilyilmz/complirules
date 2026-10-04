@@ -1,17 +1,16 @@
 # 🛡️ CompliRules: Compliance-as-Code & Legal AI Guardrail Engine
 
 [![CI](https://github.com/halilyilmz/complirules/actions/workflows/ci.yml/badge.svg)](https://github.com/halilyilmz/complirules/actions/workflows/ci.yml)
-[![Website](https://img.shields.io/badge/Website-Live%20Demo-blue.svg)](https://halilyilmz.github.io/complirules/)
-[![Security Partners](https://img.shields.io/badge/Security%20Partners-Verified%20Directory-cyan.svg)](https://halilyilmz.github.io/complirules/#partners)
+[![Website](https://img.shields.io/badge/Website-Live%20Documentation-blue.svg)](https://halilyilmz.github.io/complirules/)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)
 ![Tests](https://img.shields.io/badge/Tests-129%20Passing-success.svg)
 ![MDC Rules](https://img.shields.io/badge/MDC%20Rules-24%20Active-purple.svg)
 ![MCP Tools](https://img.shields.io/badge/MCP%20Tools-16%20Live-orange.svg)
-![License](https://img.shields.io/badge/License-MIT%20%2B%20Disclaimer-green.svg)
+![License](https://img.shields.io/badge/License-MIT%20Free%20%26%20Open%20Source-green.svg)
 
 > **The enterprise-grade compliance guardrail engine, deterministic AST linter, and Model Context Protocol (MCP) server that keeps AI coding assistants ("Vibe Coders", Cursor, Claude Code, Windsurf) and engineering teams strictly compliant with global privacy laws, statutory retention mandates, and judicial precedents.**
 > 
-> 🌐 **Live Website & Partners Hub:** [https://halilyilmz.github.io/complirules/](https://halilyilmz.github.io/complirules/)  
+> 🌐 **Live Website & Documentation:** [https://halilyilmz.github.io/complirules/](https://halilyilmz.github.io/complirules/)  
 > ⚖️ **Binding Legal Terms & Disclaimer:** [`DISCLAIMER.md`](DISCLAIMER.md)
 
 ---
@@ -179,18 +178,16 @@ complirules/
 
 ---
 
-## 🛡️ Verified Security & Compliance Partners Directory
+## 🌐 Informative Website & 24 Rules Explorer
 
-Automated AST heuristics and AI prompt guardrails catch **90% of code regressions** before they leave the IDE. However, statutory compliance mandates that production systems undergo independent human audits, accredited penetration testing, and formal Data Protection Officer (DPO) sign-offs.
+CompliRules provides a zero-build, static documentation website deployable directly to GitHub Pages:
 
-CompliRules maintains a curated, verified directory of specialized cybersecurity and regulatory audit partners tailored for fast-moving startups and vibe-coders:
+- 🎯 **24 Interactive Rules:** Filter and inspect statutory rules across KVKK, GDPR, HIPAA, BIPA, EAA, and Security.
+- ⚡ **Interactive Terminal Simulation:** Test how AST scanning catches Google Fonts, pre-checked checkboxes, and unredacted logging in real-time.
+- 🧩 **5 Enterprise Primitives:** Crypto-shredding, ePrivacy consent gating, Schrems II TIA, BIPA guards, and conflict quarantining.
+- ⚖️ **Zero-Liability Legal Center:** Clear, binding open-source liability waiver.
 
-- 🛡️ **Web & API Penetration Testing:** Rapid vulnerability assessments, offensive security, and red-teaming.
-- ⚖️ **KVKK & GDPR Regulatory Counsel:** VERBİS filings, RoPA drafting, Schrems II Transfer Impact Assessments (TIA), and 72-hour breach response.
-- 📜 **SOC 2 & ISO 27001 Certification:** Audit-readiness, continuous evidence collection, and security policies.
-- ☁️ **Cloud Infrastructure Hardening:** AWS/GCP IAM least-privilege policies, Kubernetes security, and cross-border geo-fencing.
-
-👉 **Browse Partners or Apply to Join the Network:** [https://halilyilmz.github.io/complirules/#partners](https://halilyilmz.github.io/complirules/#partners)
+👉 **Visit the Live Site:** [https://halilyilmz.github.io/complirules/](https://halilyilmz.github.io/complirules/)
 
 ---
 

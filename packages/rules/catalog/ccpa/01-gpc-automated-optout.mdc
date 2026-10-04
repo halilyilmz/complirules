@@ -7,7 +7,7 @@ alwaysApply: false
 # [CompliRules] CCPA/CPRA 11 CCR § 7025 Automated Global Privacy Control (GPC) Opt-Out Mandate
 **Severity:** `HIGH` | **Jurisdiction:** `CCPA_US`
 
-<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+<!-- NOTICE: CompliRules provides automated AST guardrails under MIT License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
 
 ## Legal Citations
 - **California Code of Regulations, Title 11 (§ 7025 (opt-out preference signals))**: `Sec-GPC: 1` başlığı veya `navigator.globalPrivacyControl` sinyali kişisel verinin satışı/paylaşımı için bağlayıcı opt-out talebidir. Oturum açmış kullanıcıda sinyal kullanıcının profiline işlenir; hesap tercihiyle çelişirse işletme ancak kullanıcıyı bilgilendirip onayını alarak devam edebilir. *[Sanction: California AG v. Sephora (2022): 1,2 milyon $; DoorDash (2024): 375.000 $.]*

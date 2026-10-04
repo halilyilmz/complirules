@@ -18,8 +18,8 @@ CompliRules, açık kaynak kodlu olarak **"OLDUĞU GİBİ" (AS-IS)** ve hiçbir 
 
 ### 3. Gerçek Uzman ve Bağımsız Denetim Zorunluluğu
 Yapay zeka ve statik analiz araçları kod düzeyindeki sözdizimi hatalarını ve açık sızıntıları yakalayabilir; ancak şirketinizin kurumsal iş süreçlerini, çalışan yetki matrislerini, üçüncü taraf sözleşmelerini ve fiili sunucu altyapısını denetleyemez.
-- Canlı ortama (production) alınacak sistemlerin, özellikle özel nitelikli kişisel veri (sağlık, biyometri, finansal veri vb.) işleyen projelerin, **yetkili siber güvenlik uzmanları ve siber hukukçular** tarafından denetlenmesi zorunludur.
-- Onaylı siber güvenlik ve uyum partnerlerimiz için: [https://halilyilmz.github.io/complirules/#partners](https://halilyilmz.github.io/complirules/#partners)
+- Canlı ortama (production) alınacak sistemlerin, özellikle özel nitelikli kişisel veri (sağlık, biyometri, finansal veri vb.) işleyen projelerin, **yetkili siber güvenlik uzmanları ve siber hukukçular** tarafından denetlenmesi önerilir.
+- Dokümantasyon ve kural kataloğu için: [https://halilyilmz.github.io/complirules/](https://halilyilmz.github.io/complirules/)
 
 ### 4. Şartların Kabulü
 Bu yazılımı indirmek, `npm install` veya `npx complirules init` komutlarıyla kurmak, kural dosyalarını kod tabanınıza eklemek veya dokümantasyonunu referans almak suretiyle, yukarıda yer alan tüm yasal sorumluluk reddi şartlarını peşinen, gayrikabili rücu kabul etmiş sayılırsınız.
@@ -38,7 +38,7 @@ THE SOFTWARE AND ALL ASSOCIATED RULES, PRIMITIVES, AND GUIDES ARE PROVIDED "AS I
 
 ### 3. Requirement for Independent Professional Audits
 Heuristic linter checks and AI prompt guardrails cannot guarantee regulatory immunity. Organizations deploying systems to production—particularly those processing Protected Health Information (PHI), biometric identifiers, financial transactions, or automated high-risk AI workflows—must engage qualified legal counsel, certified Data Protection Officers (DPOs), and accredited penetration testing firms.
-- To connect with certified security and compliance audit partners, visit: [https://halilyilmz.github.io/complirules/#partners](https://halilyilmz.github.io/complirules/#partners)
+- For technical documentation and statutory rule catalog, visit: [https://halilyilmz.github.io/complirules/](https://halilyilmz.github.io/complirules/)
 
 ### 4. Automatic Acceptance of Terms
 By downloading, cloning, installing (`npm install` or `npx complirules`), or incorporating any portion of CompliRules into a software project, you expressly agree to and are legally bound by this Disclaimer and the associated MIT License conditions.

@@ -7,7 +7,7 @@ alwaysApply: false
 # [CompliRules] HIPAA § 164.312(a)(2)(ii) Emergency Break-Glass Access Protocol & High-Priority Auditing
 **Severity:** `CRITICAL` | **Jurisdiction:** `HIPAA_US`
 
-<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+<!-- NOTICE: CompliRules provides automated AST guardrails under MIT License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
 
 ## Legal Citations
 - **HIPAA Security Rule (45 CFR § 164.312(a)(2)(ii))**: Emergency Access Procedure. Hayati klinik durumlarda PHI verisine anında yetkili erişim sağlama zorunluluğu. *[Sanction: OCR yaptırımları ve klinik ihmal davaları.]*

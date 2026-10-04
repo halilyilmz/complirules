@@ -1,11 +1,11 @@
 /**
- * CompliRules - Client Application Logic
+ * CompliRules - Client Application Logic (Free, Open-Source & Informative)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
   initCopyButton();
   initTerminalSimulator();
-  initPartnersDirectory();
+  initRulesExplorer();
   initModals();
 });
 
@@ -47,8 +47,8 @@ function initTerminalSimulator() {
     { text: "📊 Summary: 2 Errors, 1 Warning found.", delay: 2500, color: "text-red-300 font-bold" },
     { text: "💡 Auto-remediation available: Run 'npx complirules scaffold' to generate local font proxy & CMP gate.", delay: 2800, color: "text-emerald-400" },
     { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", delay: 3000, color: "text-gray-600" },
-    { text: "ℹ️  CompliRules is an automated AST heuristic tool (Not certified legal/security counsel).", delay: 3200, color: "text-gray-400 italic" },
-    { text: "   For certified penetration tests & official DPO audits: https://halilyilmz.github.io/complirules/#partners", delay: 3400, color: "text-cyan-400 font-medium" }
+    { text: "ℹ️  CompliRules is an open-source automated AST heuristic tool (See DISCLAIMER.md - Not legal/security advice).", delay: 3200, color: "text-gray-400 italic" },
+    { text: "   Documentation & Rule Catalog: https://halilyilmz.github.io/complirules/", delay: 3400, color: "text-cyan-400 font-medium" }
   ];
 
   function runSimulation() {
@@ -70,70 +70,52 @@ function initTerminalSimulator() {
   if (replayBtn) replayBtn.addEventListener("click", runSimulation);
 }
 
-// 3. Verified Partners Directory (Filter & Render)
-function initPartnersDirectory() {
-  const container = document.getElementById("partners-grid");
-  const filterBtns = document.querySelectorAll(".partner-filter-btn");
+// 3. Interactive Rules & Statutory Frameworks Explorer
+function initRulesExplorer() {
+  const container = document.getElementById("rules-grid");
+  const filterBtns = document.querySelectorAll(".rule-filter-btn");
 
-  if (!container || !window.PARTNERS_DATA) return;
+  if (!container || !window.RULES_DATA) return;
 
-  function renderPartners(category = "all") {
+  function renderRules(category = "all") {
     container.innerHTML = "";
 
     const filtered = category === "all"
-      ? window.PARTNERS_DATA
-      : window.PARTNERS_DATA.filter((p) => p.category === category);
+      ? window.RULES_DATA
+      : window.RULES_DATA.filter((r) => r.category === category);
 
-    if (filtered.length === 0) {
-      container.innerHTML = `
-        <div class="col-span-full text-center py-12 text-gray-400">
-          Bu kategoride henüz partner bulunmuyor. Siber güvenlik firmanızla katılmak için bize ulaşın.
-        </div>
-      `;
-      return;
-    }
-
-    filtered.forEach((partner) => {
+    filtered.forEach((rule) => {
       const card = document.createElement("article");
-      card.className = "glass-panel rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-gray-600 group";
+      card.className = "glass-panel rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:border-gray-500 group";
       
-      const badgeClass = `badge-${partner.category}`;
+      const isCritical = rule.severity === "CRITICAL";
+      const badgeColor = isCritical 
+        ? "bg-red-950/60 text-red-300 border-red-800/80" 
+        : "bg-amber-950/60 text-amber-300 border-amber-800/80";
 
       card.innerHTML = `
         <div>
-          <div class="flex items-start justify-between gap-4 mb-4">
-            <div class="flex items-center gap-3">
-              <img src="${partner.logo}" alt="${partner.name} logo" class="w-12 h-12 rounded-xl object-cover border border-white/10" loading="lazy" />
-              <div>
-                <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors">${partner.name}</h3>
-                <span class="text-xs text-gray-400 flex items-center gap-1">📍 ${partner.location}</span>
-              </div>
-            </div>
-            <span class="text-xs px-2.5 py-1 rounded-full font-medium ${badgeClass}">
-              ${partner.categoryLabel}
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <span class="text-xs font-semibold text-cyan-400 flex items-center gap-1">
+              ${rule.jurisdiction}
+            </span>
+            <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${badgeColor}">
+              ${rule.severity}
             </span>
           </div>
 
-          <p class="text-sm text-gray-300 mb-4 leading-relaxed">${partner.description}</p>
+          <h3 class="font-bold text-base text-white group-hover:text-cyan-300 transition-colors mb-2 leading-snug">
+            ${rule.title}
+          </h3>
 
-          <div class="mb-5">
-            <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">Uzmanlık Alanları</span>
-            <div class="flex flex-wrap gap-1.5">
-              ${partner.services.map(s => `<span class="text-xs bg-white/5 border border-white/10 px-2 py-0.5 rounded text-gray-300">${s}</span>`).join('')}
-            </div>
-          </div>
+          <p class="text-xs text-gray-300 leading-relaxed mb-4">
+            ${rule.summary}
+          </p>
         </div>
 
-        <div class="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-          <div>
-            ${partner.discountCode ? `
-              <span class="text-[11px] text-emerald-400 font-mono block">İndirim Kodu: <strong class="bg-emerald-950/60 px-1 py-0.5 rounded border border-emerald-800/60">${partner.discountCode}</strong></span>
-            ` : ''}
-            <span class="text-[11px] text-gray-500">Doğrulanmış Partner</span>
-          </div>
-          <a href="${partner.referralUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs font-bold rounded-lg transition-all shadow-md hover:shadow-cyan-500/25">
-            Teklif Al <span>→</span>
-          </a>
+        <div class="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-gray-400">
+          <span class="truncate max-w-[240px] text-gray-400" title="${rule.citation}">⚖️ ${rule.citation}</span>
+          <span class="text-xs text-cyan-400 group-hover:translate-x-0.5 transition-transform font-bold">.mdc</span>
         </div>
       `;
 
@@ -142,7 +124,7 @@ function initPartnersDirectory() {
   }
 
   // Initial render
-  renderPartners("all");
+  renderRules("all");
 
   // Tab click handlers
   filterBtns.forEach((btn) => {
@@ -155,20 +137,16 @@ function initPartnersDirectory() {
       btn.classList.remove("text-gray-400", "border-transparent");
 
       const category = btn.getAttribute("data-category") || "all";
-      renderPartners(category);
+      renderRules(category);
     });
   });
 }
 
-// 4. Modals (Disclaimer & Partner Inbound)
+// 4. Modals (Disclaimer)
 function initModals() {
   const disclaimerModal = document.getElementById("disclaimer-modal");
   const openDisclaimerBtns = document.querySelectorAll(".open-disclaimer-trigger");
   const closeDisclaimerBtn = document.getElementById("close-disclaimer-btn");
-
-  const partnerModal = document.getElementById("partner-modal");
-  const openPartnerBtn = document.getElementById("open-partner-modal-btn");
-  const closePartnerBtn = document.getElementById("close-partner-btn");
 
   function openModal(modal) {
     if (!modal) return;
@@ -189,22 +167,17 @@ function initModals() {
 
   if (closeDisclaimerBtn) closeDisclaimerBtn.addEventListener("click", () => closeModal(disclaimerModal));
 
-  if (openPartnerBtn) openPartnerBtn.addEventListener("click", () => openModal(partnerModal));
-  if (closePartnerBtn) closePartnerBtn.addEventListener("click", () => closeModal(partnerModal));
-
   // Close on backdrop click
-  [disclaimerModal, partnerModal].forEach(modal => {
-    if (!modal) return;
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeModal(modal);
+  if (disclaimerModal) {
+    disclaimerModal.addEventListener("click", (e) => {
+      if (e.target === disclaimerModal) closeModal(disclaimerModal);
     });
-  });
+  }
 
   // Close on Escape key
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeModal(disclaimerModal);
-      closeModal(partnerModal);
     }
   });
 }

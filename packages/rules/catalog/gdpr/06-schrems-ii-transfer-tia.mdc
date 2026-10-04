@@ -7,7 +7,7 @@ alwaysApply: true
 # [CompliRules] Schrems II International Data Transfer & Transfer Impact Assessment (TIA) Guardrail
 **Severity:** `CRITICAL` | **Jurisdiction:** `GDPR_EU`
 
-<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+<!-- NOTICE: CompliRules provides automated AST guardrails under MIT License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
 
 ## Legal Citations
 - **Regulation (EU) 2016/679 (GDPR) (Chapter V (Articles 44-49))**: Transfers of personal data to third countries or international organisations.

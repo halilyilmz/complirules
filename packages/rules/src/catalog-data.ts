@@ -432,7 +432,7 @@ export const HIPAA_TECHNICAL_SAFEGUARDS_RULE: RuleDefinition = {
     "Enforce an automatic session timeout of 15 minutes of user inactivity across all clinical and healthcare portals.",
     "Maintain append-only, immutable audit trails capturing user ID, timestamp, patient ID, and accessed fields for every PHI read/write operation.",
     "Apply the \"Minimum Necessary Standard\" by selecting only necessary projection fields (`select: { id: true, diagnosis: true }`) instead of wildcard `SELECT *`.",
-    "Human Audit Requirement: Automated guardrails cannot substitute for certified HIPAA audits. For accredited penetration testing and compliance verification: https://halilyilmz.github.io/complirules/#partners"
+    "Human Audit Requirement: Automated guardrails cannot substitute for certified HIPAA audits. For statutory healthcare compliance and documentation: https://halilyilmz.github.io/complirules/"
   ],
   forbiddenPatterns: [
     "Storing medical diagnoses, prescriptions, or clinical notes in unencrypted generic User tables",
@@ -1582,7 +1582,7 @@ export const BIPA_BIOMETRIC_RULE: RuleDefinition = {
     'Require executed written informed release before processing face scans, voiceprints, or fingerprints.',
     'Publish a publicly accessible biometric retention and destruction schedule.',
     'Never transmit or monetize biometric data with third-party advertising or analytics networks.',
-    'Human Audit Requirement: BIPA imposes $1K-$5K strict liability per scan. Ensure written releases and biometric systems are vetted by licensed privacy counsel and security partners: https://halilyilmz.github.io/complirules/#partners'
+    'Human Audit Requirement: BIPA imposes $1K-$5K strict liability per scan. Ensure written releases and biometric systems are vetted by licensed privacy counsel. Documentation: https://halilyilmz.github.io/complirules/'
   ],
   forbiddenPatterns: [
     'Face recognition auth without signed written release'

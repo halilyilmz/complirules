@@ -21,7 +21,7 @@ describe('Legal Disclaimer & Zero Liability Invariants', () => {
     expect(content).toContain('Hukuki ve Güvenlik Danışmanlığı Niteliğinde Değildir');
     expect(content).toContain('Sıfır Sorumluluk İlkesi');
     expect(content).toContain('6698 sayılı KVKK');
-    expect(content).toContain('https://halilyilmz.github.io/complirules/#partners');
+    expect(content).toContain('https://halilyilmz.github.io/complirules/');
 
     // İngilizce şartlar
     expect(content).toContain('Statutory Legal Disclaimer & Waiver');
@@ -41,7 +41,7 @@ describe('Legal Disclaimer & Zero Liability Invariants', () => {
   });
 });
 
-describe('Static Website & Verified Partners Directory', () => {
+describe('Static Informative Website & 24 Rules Explorer', () => {
   const siteDir = path.resolve(__dirname, '../site');
 
   it('site/index.html dosyası mevcut ve gerekli ana bileşenleri içerir', () => {
@@ -52,63 +52,43 @@ describe('Static Website & Verified Partners Directory', () => {
     expect(html).toContain('CompliRules');
     expect(html).toContain('npx complirules init');
     expect(html).toContain('terminal-window');
-    expect(html).toContain('Onaylı Siber Güvenlik & Hukuk Partnerleri');
-    expect(html).toContain('partners-grid');
+    expect(html).toContain('24 Kural & Mevzuat');
+    expect(html).toContain('rules-grid');
     expect(html).toContain('disclaimer-modal');
   });
 
-  it('site/data/partners.json dosyası geçerli JSON olup 4 ana kategoriyi kapsar', () => {
-    const jsonPath = path.join(siteDir, 'data', 'partners.json');
-    expect(fs.existsSync(jsonPath)).toBe(true);
-
-    const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-    expect(Array.isArray(data)).toBe(true);
-    expect(data.length).toBeGreaterThanOrEqual(4);
-
-    const categories = new Set(data.map((p: any) => p.category));
-    expect(categories.has('pentest')).toBe(true);
-    expect(categories.has('legal')).toBe(true);
-    expect(categories.has('soc2')).toBe(true);
-    expect(categories.has('cloud')).toBe(true);
-
-    // Her partner referralUrl ve servis alanına sahip olmalı
-    for (const p of data) {
-      expect(p.name).toBeDefined();
-      expect(p.referralUrl).toContain('ref=complirules');
-      expect(p.services.length).toBeGreaterThan(0);
-    }
-  });
-
-  it('site/js/partners.js dosyası istemci tarafı PARTNERS_DATA listesini tanımlar', () => {
-    const jsPath = path.join(siteDir, 'js', 'partners.js');
+  it('site/js/rules-data.js dosyası 24 kuralı ve tüm yargı alanlarını kapsar', () => {
+    const jsPath = path.join(siteDir, 'js', 'rules-data.js');
     expect(fs.existsSync(jsPath)).toBe(true);
 
     const js = fs.readFileSync(jsPath, 'utf8');
-    expect(js).toContain('window.PARTNERS_DATA');
-    expect(js).toContain('CyberSentinel Labs');
-    expect(js).toContain('LexData Privacy Counsel');
+    expect(js).toContain('window.RULES_DATA');
+    expect(js).toContain('kvkk-retention-tombstone');
+    expect(js).toContain('gdpr-right-to-be-forgotten');
+    expect(js).toContain('hipaa-phi-technical-safeguards');
+    expect(js).toContain('bipa-biometric-retention');
   });
 });
 
 describe('AI Agent Prompt & Rule Directives', () => {
   const allRules = getAllRules();
 
-  it('renderAgentsMd çıktısı yasal sorumluluk reddi ve partner direktifini içerir', () => {
+  it('renderAgentsMd çıktısı yasal sorumluluk reddi ve insan doğrulama direktifini içerir', () => {
     const rendered = renderAgentsMd(allRules.slice(0, 3));
     expect(rendered).toContain('DISCLAIMER & LIABILITY NOTICE');
-    expect(rendered).toContain('HUMAN AUDIT & PARTNER DIRECTIVE');
-    expect(rendered).toContain('https://halilyilmz.github.io/complirules/#partners');
+    expect(rendered).toContain('HUMAN VERIFICATION DIRECTIVE');
+    expect(rendered).toContain('https://halilyilmz.github.io/complirules/');
   });
 
-  it('renderClaudeMd çıktısı siber güvenlik partneri yönlendirmesini barındırır', () => {
+  it('renderClaudeMd çıktısı dokümantasyon ve yasal uyarı yönlendirmesini barındırır', () => {
     const rendered = renderClaudeMd(allRules.slice(0, 3));
-    expect(rendered).toContain('Legal Disclaimer & Certified Partner Directives');
-    expect(rendered).toContain('https://halilyilmz.github.io/complirules/#partners');
+    expect(rendered).toContain('Legal Disclaimer & Human Verification Directives');
+    expect(rendered).toContain('https://halilyilmz.github.io/complirules/');
   });
 
-  it('renderMdcRule çıktısı her kuralın başında partner & disclaimer notunu içerir', () => {
+  it('renderMdcRule çıktısı her kuralın başında dokümantasyon & disclaimer notunu içerir', () => {
     const rule = allRules[0];
     const rendered = renderMdcRule(rule);
-    expect(rendered).toContain('<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->');
+    expect(rendered).toContain('<!-- NOTICE: CompliRules provides automated AST guardrails under MIT License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->');
   });
 });

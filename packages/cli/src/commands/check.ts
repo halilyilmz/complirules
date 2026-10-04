@@ -29,8 +29,8 @@ export function executeCheck(targetPath = '.'): boolean {
     console.log('   ' + '-'.repeat(60));
   }
 
-  console.log('\nℹ️  CompliRules is an automated AST heuristic tool (See DISCLAIMER.md - Not certified legal/security advice).');
-  console.log('   For certified penetration testing & official compliance audits: https://halilyilmz.github.io/complirules/#partners\n');
+  console.log('\nℹ️  CompliRules is an open-source automated AST heuristic tool (See DISCLAIMER.md - Not legal/security advice).');
+  console.log('   Documentation & Rule Catalog: https://halilyilmz.github.io/complirules/\n');
 
   if (result.summary.critical > 0 || result.summary.high > 0) {
     console.log('❌ ERROR: Critical or high-severity statutory compliance violations exist. CI/CD check failed.\n');

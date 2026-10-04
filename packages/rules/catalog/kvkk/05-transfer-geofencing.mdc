@@ -7,7 +7,7 @@ alwaysApply: false
 # [CompliRules] KVKK Article 9 (2024 Reform) Cross-Border Data Transfer & Cloud Geo-Fencing
 **Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
-<!-- NOTICE: CompliRules provides automated AST guardrails without warranty (See DISCLAIMER.md). For certified pentests & DPO audits: https://halilyilmz.github.io/complirules/#partners -->
+<!-- NOTICE: CompliRules provides automated AST guardrails under MIT License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
 
 ## Legal Citations
 - **6698 Sayılı KVKK (Madde 9 (12 Mart 2024 Reformu))**: Yurt dışına veri aktarımında Standart Sözleşme (SCC), BCR veya Kurul izni zorunluluğu. *[Sanction: KVKK Md. 18/1-e (1.000.000 TL - 5.000.000 TL idari para cezası) & TCK Md. 136 hapis yaptırımı.]*
