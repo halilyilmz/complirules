@@ -1,11 +1,9 @@
 /**
- * CompliRules - Client Application Logic (Minimal, Fast & Developer-First)
+ * CompliRules - Client Application Logic (Simple, Fast & Clean)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
   initCopyButton();
-  initDemoTabs();
-  initTerminal();
   initRulesExplorer();
   initModal();
 });
@@ -31,73 +29,7 @@ function initCopyButton() {
   });
 }
 
-// 2. Interactive IDE vs Terminal Switcher
-function initDemoTabs() {
-  const tabIde = document.getElementById("toggle-tab-ide");
-  const tabCli = document.getElementById("toggle-tab-cli");
-  const viewIde = document.getElementById("view-ide");
-  const viewCli = document.getElementById("view-cli");
-
-  if (!tabIde || !tabCli || !viewIde || !viewCli) return;
-
-  tabIde.addEventListener("click", () => {
-    tabIde.className = "px-3 py-1 rounded text-xs font-mono bg-blue-600 text-white font-medium";
-    tabCli.className = "px-3 py-1 rounded text-xs font-mono bg-white/5 hover:bg-white/10 text-zinc-400 font-medium";
-    viewIde.classList.remove("hidden");
-    viewCli.classList.add("hidden");
-  });
-
-  tabCli.addEventListener("click", () => {
-    tabCli.className = "px-3 py-1 rounded text-xs font-mono bg-blue-600 text-white font-medium";
-    tabIde.className = "px-3 py-1 rounded text-xs font-mono bg-white/5 hover:bg-white/10 text-zinc-400 font-medium";
-    viewCli.classList.remove("hidden");
-    viewIde.classList.add("hidden");
-    if (typeof window.runTerminalSimulation === "function") {
-      window.runTerminalSimulation();
-    }
-  });
-}
-
-// 3. Minimalist Terminal Simulation
-function initTerminal() {
-  const terminal = document.getElementById("terminal-output-body");
-  const replayBtn = document.getElementById("terminal-replay-btn");
-
-  const lines = [
-    { text: "⚡ complirules check --path ./src", delay: 100, color: "text-zinc-400 font-semibold" },
-    { text: "   Parsing AST across 28 files...", delay: 400, color: "text-zinc-500" },
-    { text: "❌ [FAIL] Header.tsx:14 — Harici Google Fonts CDN tespit edildi (LG München I emsal ihlali - IP sızıntısı).", delay: 900, color: "text-rose-400" },
-    { text: "❌ [FAIL] RegisterForm.tsx:52 — Önceden işaretlenmiş rıza kutusu tespit edildi (KVKK & ePrivacy Art. 5(3) ihlali).", delay: 1400, color: "text-rose-400" },
-    { text: "⚠️  [WARN] logger.ts:18 — Ham kullanıcı token'ı loglanıyor (KVKK Md. 12 Veri Güvenliği).", delay: 1900, color: "text-amber-400" },
-    { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", delay: 2200, color: "text-zinc-700" },
-    { text: "🛡️ 2 Hata, 1 Uyarı engellendi. Kodunuz yasal sınırlara çekildi.", delay: 2500, color: "text-emerald-400 font-bold" }
-  ];
-
-  function run() {
-    if (!terminal) return;
-    terminal.innerHTML = "";
-    lines.forEach((l) => {
-      setTimeout(() => {
-        const div = document.createElement("div");
-        div.className = `py-0.5 leading-relaxed text-xs sm:text-sm ${l.color}`;
-        div.textContent = l.text;
-        terminal.appendChild(div);
-        terminal.scrollTop = terminal.scrollHeight;
-      }, l.delay);
-    });
-  }
-
-  window.runTerminalSimulation = run;
-  if (terminal) run();
-  if (replayBtn) replayBtn.addEventListener("click", () => {
-    // switch to CLI tab and run
-    const tabCli = document.getElementById("toggle-tab-cli");
-    if (tabCli) tabCli.click();
-    else run();
-  });
-}
-
-// 4. Searchable & Filterable Rules Explorer
+// 2. Searchable & Filterable Rules Explorer
 function initRulesExplorer() {
   const grid = document.getElementById("rules-grid");
   const searchInput = document.getElementById("rules-search-input");
@@ -130,7 +62,7 @@ function initRulesExplorer() {
 
     if (filtered.length === 0) {
       grid.innerHTML = `
-        <div class="col-span-full py-12 text-center text-zinc-500 text-sm">
+        <div class="col-span-full py-8 text-center text-zinc-500 text-xs">
           Aramanızla eşleşen kural bulunamadı.
         </div>
       `;
@@ -139,7 +71,7 @@ function initRulesExplorer() {
 
     filtered.forEach((rule) => {
       const el = document.createElement("div");
-      el.className = "bento-card rounded-xl p-5 flex flex-col justify-between";
+      el.className = "p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-white/20 transition-all flex flex-col justify-between";
 
       const isCritical = rule.severity === "CRITICAL";
       const badgeStyle = isCritical
@@ -148,24 +80,24 @@ function initRulesExplorer() {
 
       el.innerHTML = `
         <div>
-          <div class="flex items-center justify-between gap-2 mb-2.5">
-            <span class="text-xs font-semibold text-cyan-400">
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <span class="text-[11px] font-semibold text-cyan-400">
               ${rule.jurisdiction}
             </span>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border ${badgeStyle}">
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded border ${badgeStyle}">
               ${rule.severity}
             </span>
           </div>
-          <h3 class="font-bold text-sm sm:text-base text-white mb-2 leading-snug">
+          <h4 class="font-bold text-xs text-white mb-1 leading-snug">
             ${rule.title}
-          </h3>
-          <p class="text-xs text-zinc-400 leading-relaxed mb-4">
+          </h4>
+          <p class="text-[11px] text-zinc-400 leading-relaxed mb-2 line-clamp-2" title="${rule.summary}">
             ${rule.summary}
           </p>
         </div>
 
-        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-zinc-500">
-          <span class="truncate max-w-[220px]" title="${rule.citation}">⚖️ ${rule.citation}</span>
+        <div class="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+          <span class="truncate max-w-[200px]" title="${rule.citation}">⚖️ ${rule.citation}</span>
           <span class="text-cyan-400/80 font-bold">.mdc</span>
         </div>
       `;
@@ -178,11 +110,11 @@ function initRulesExplorer() {
   filterBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       filterBtns.forEach((b) => {
-        b.classList.remove("bg-white/15", "text-white", "border-white/20");
-        b.classList.add("text-zinc-400", "border-transparent");
+        b.classList.remove("bg-white/15", "text-white");
+        b.classList.add("text-zinc-400");
       });
-      btn.classList.add("bg-white/15", "text-white", "border-white/20");
-      btn.classList.remove("text-zinc-400", "border-transparent");
+      btn.classList.add("bg-white/15", "text-white");
+      btn.classList.remove("text-zinc-400");
 
       currentCategory = btn.getAttribute("data-category") || "all";
       render();
@@ -201,7 +133,7 @@ function initRulesExplorer() {
   render();
 }
 
-// 5. Accessible Legal Modal
+// 3. Accessible Legal Modal
 function initModal() {
   const modal = document.getElementById("disclaimer-modal");
   const openTriggers = document.querySelectorAll(".open-disclaimer-trigger");
