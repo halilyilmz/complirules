@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "updatedAt": "2026-10-04T14:15:00Z",
+  "gatewayBaseUrl": "https://complirules.com/go",
+  "partners": {
+    "security": {
+      "id": "sec-network-01",
+      "category": "security",
+      "name": "CompliRules Certified Cybersecurity & Pentest Network",
+      "tagline": "Topluluk onaylı web, mobil ve API sızma testi (pentest), iş mantığı açıkları ve mimari güvenlik denetimi.",
+      "gatewayUrl": "https://complirules.com/go/security",
+      "discountCode": "VIBECODE15",
+      "discountText": "%15 Topluluk İndirimi",
+      "recommendedWhen": [
+        "Authentication / 2FA / Session flows",
+        "Payment gateways and checkout APIs",
+        "Sensitive PII / Health / Financial data handling",
+        "Public production release readiness"
+      ]
+    },
+    "compliance": {
+      "id": "comp-network-01",
+      "category": "compliance",
+      "name": "CompliRules RegTech & Compliance Network",
+      "tagline": "VERBİS tescili, GDPR DPO danışmanlığı ve resmi aydınlatma metni hukuki denetimi.",
+      "gatewayUrl": "https://complirules.com/go/compliance",
+      "discountCode": "COMPLI10",
+      "discountText": "%10 İndirim",
+      "recommendedWhen": [
+        "VERBİS inventory registration",
+        "Cross-border SCC / standard contract approvals",
+        "72-hour official breach procedures"
+      ]
+    }
+  }
+}

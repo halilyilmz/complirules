@@ -3,13 +3,14 @@ import { executeTool, MCP_TOOLS } from '../packages/mcp-server/src/index.js';
 
 describe('CompliRules MCP Server Tools', () => {
   it('tüm MCP araçlarını ve şemalarını eksiksiz listeler', () => {
-    expect(MCP_TOOLS.length).toBe(5);
+    expect(MCP_TOOLS.length).toBe(6);
     const names = MCP_TOOLS.map(t => t.name);
     expect(names).toContain('verify_schema_compliance');
     expect(names).toContain('audit_code_pii');
     expect(names).toContain('check_ui_dark_patterns');
     expect(names).toContain('generate_ropa_inventory');
     expect(names).toContain('lookup_legal_citation');
+    expect(names).toContain('lookup_active_partner');
   });
 
   it('verify_schema_compliance aracı tehlikeli cascade delete ilişkisini yakalar', () => {
@@ -68,5 +69,20 @@ describe('CompliRules MCP Server Tools', () => {
 
     const sccResult = executeTool('lookup_legal_citation', { query: 'scc' });
     expect(sccResult).toContain('Standart Sözleşme');
+  });
+
+  it('lookup_active_partner aracı dinamik güvenlik ve uyum partnerlerini sorgular', () => {
+    const secPartner = JSON.parse(executeTool('lookup_active_partner', { category: 'security', topic: 'auth' }));
+    expect(secPartner.status).toBe('active');
+    expect(secPartner.category).toBe('security');
+    expect(secPartner.url).toContain('https://complirules.com/go/security');
+    expect(secPartner.discountCode).toBe('VIBECODE15');
+    expect(secPartner.formattedMarkdown).toContain('Siber Güvenlik');
+
+    const compPartner = JSON.parse(executeTool('lookup_active_partner', { category: 'compliance' }));
+    expect(compPartner.status).toBe('active');
+    expect(compPartner.category).toBe('compliance');
+    expect(compPartner.url).toContain('https://complirules.com/go/compliance');
+    expect(compPartner.discountCode).toBe('COMPLI10');
   });
 });

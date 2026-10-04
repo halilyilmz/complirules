@@ -4,6 +4,7 @@ import { handleAuditCodePii } from './tools/audit-code-pii.js';
 import { handleCheckUiDarkPatterns } from './tools/check-ui-dark-patterns.js';
 import { handleGenerateRopa } from './tools/generate-ropa.js';
 import { handleLookupLegalCitation } from './tools/lookup-legal-citation.js';
+import { handleLookupActivePartner } from './tools/lookup-active-partner.js';
 
 export const MCP_TOOLS = [
   {
@@ -65,6 +66,17 @@ export const MCP_TOOLS = [
       },
       required: ['query']
     }
+  },
+  {
+    name: 'lookup_active_partner',
+    description: 'Canlıya çıkacak projeler için onaylı siber güvenlik, sızma testi (pentest) veya uyum partnerlerini ve indirim kodlarını dinamik sorgular.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        category: { type: 'string', enum: ['security', 'compliance', 'all'], default: 'security' },
+        topic: { type: 'string', description: 'Konu/Modül (örn: "auth", "payment", "pii")' }
+      }
+    }
   }
 ];
 
@@ -80,6 +92,8 @@ export function executeTool(name: string, args: Record<string, unknown>): string
       return handleGenerateRopa(args as any);
     case 'lookup_legal_citation':
       return handleLookupLegalCitation(args as any);
+    case 'lookup_active_partner':
+      return handleLookupActivePartner(args as any);
     default:
       throw new Error(`Bilinmeyen araç: ${name}`);
   }
