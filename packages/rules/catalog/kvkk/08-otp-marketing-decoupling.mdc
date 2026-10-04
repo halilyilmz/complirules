@@ -7,7 +7,7 @@ alwaysApply: false
 # [CompliRules] KVKK Board Decision 2025/1072 SMS OTP Decoupling from Commercial Consent
 **Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
-<!-- NOTICE: CompliRules provides automated AST guardrails under MIT License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
 
 ## Legal Citations
 - **KVKK Kurulu 10.06.2025 tarihli ve 2025/1072 sayılı İlke Kararı (RG 26.06.2025, 32938) (SMS ile Doğrulama Kodu Uygulamaları)**: Tek bir SMS doğrulama koduyla üyelik sözleşmesi, ticari elektronik ileti izni ve kişisel veri işleme izninin birlikte alınması yasaktır. Kodun amacı SMS ve görevli tarafından açıkça belirtilmeli; kod verilmese de hizmet sunulmalıdır. *[Sanction: Geçersiz rıza ile veri işleme (KVKK Md. 5, 18) ve ETK Md. 12 idari para cezaları.]*

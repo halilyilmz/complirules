@@ -11,7 +11,7 @@
 CompliRules; yazılım geliştiricileri, mimarlar ve yapay zeka kodlama ajanları (Cursor, Claude Code, Windsurf vb.) için tasarlanmış bir **statik kod analizi (AST) ve mimari kural motorudur**. CompliRules tarafından sağlanan hiçbir kural dosyası (`.cursor/rules/*.mdc`), mimari primitive, linter uyarısı, Model Context Protocol (MCP) çıktısı veya dokümantasyon; **resmi hukuki danışmanlık, avukatlık faaliyeti, mali müşavirlik, siber güvenlik sızma testi (pentest) raporu veya resmi uygunluk belgesi (sertifikasyon) teşkil etmez**.
 
 ### 2. Sıfır Sorumluluk İlkesi (İdari Para Cezaları ve Güvenlik İhlalleri)
-CompliRules, açık kaynak kodlu olarak **"OLDUĞU GİBİ" (AS-IS)** ve hiçbir zımni veya sarih garanti verilmeksizin sunulmaktadır.
+CompliRules, geliştiriciler ve mühendislik ekipleri için **kullanımı tamamen ücretsiz (Free-to-Use)** ve telif hakları saklı olarak **"OLDUĞU GİBİ" (AS-IS)** sunulmaktadır. Ücretsiz kullanım izni, yazılımın veya kural kataloğunun izinsiz kopyalanması, forklanması, yeniden dağıtılması veya ticari olarak satılması hakkını doğurmaz.
 - Bu yazılımın veya kuralların kullanılması, projenizin ilgili mevzuata (6698 sayılı KVKK, AB GDPR, ABD HIPAA, BIPA, CCPA, AB Yapay Zeka Yasası vb.) %100 uyumlu olduğunu garanti etmez.
 - Projenizin denetimlerden geçememesi, Veri Koruma Otoriteleri (KVKK Kurumu, CNIL, DSK, Garante, FTC vb.) tarafından idari para cezasına çarptırılması, veri sızıntısı yaşanması veya üçüncü kişilerce tazminat davası açılması durumunda; **CompliRules geliştiricileri, telif hakkı sahipleri ve katkıda bulunanlar hiçbir hukuki, cezai veya mali sorumluluk kabul etmez**.
 - Tüm yasal uyum ve güvenlik sorumluluğu münhasıran projeyi geliştiren, yayımlayan ve veri sorumlusu (data controller) sıfatını taşıyan kişi veya kuruma aittir.
@@ -40,5 +40,5 @@ THE SOFTWARE AND ALL ASSOCIATED RULES, PRIMITIVES, AND GUIDES ARE PROVIDED "AS I
 Heuristic linter checks and AI prompt guardrails cannot guarantee regulatory immunity. Organizations deploying systems to production—particularly those processing Protected Health Information (PHI), biometric identifiers, financial transactions, or automated high-risk AI workflows—must engage qualified legal counsel, certified Data Protection Officers (DPOs), and accredited penetration testing firms.
 - For technical documentation and statutory rule catalog, visit: [https://halilyilmz.github.io/complirules/](https://halilyilmz.github.io/complirules/)
 
-### 4. Automatic Acceptance of Terms
-By downloading, cloning, installing (`npm install` or `npx complirules`), or incorporating any portion of CompliRules into a software project, you expressly agree to and are legally bound by this Disclaimer and the associated MIT License conditions.
+### 4. Automatic Acceptance of Terms & Proprietary Protection
+CompliRules is a free-to-use developer tool protected by international copyright treaties and statutory intellectual property laws. Free usage in private or commercial codebases does NOT grant permission to fork, mirror, redistribute, repackage, white-label, or resell the software or its rule definitions. By downloading, cloning, installing (`npm install` or `npx complirules`), or incorporating any portion of CompliRules into a software project, you expressly agree to and are legally bound by this Disclaimer and the CompliRules Free-to-Use Software License conditions.

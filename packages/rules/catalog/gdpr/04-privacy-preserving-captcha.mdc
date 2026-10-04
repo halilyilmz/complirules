@@ -7,7 +7,7 @@ alwaysApply: false
 # [CompliRules] GDPR & CNIL Privacy-Preserving CAPTCHA without Hardware Telemetry (Cityscoot Decision)
 **Severity:** `HIGH` | **Jurisdiction:** `GDPR_EU`
 
-<!-- NOTICE: CompliRules provides automated AST guardrails under MIT License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
 
 ## Legal Citations
 - **CNIL Karar SAN-2023-003 Cityscoot (16.03.2023) (ePrivacy Md. 5(3) / Fransız Veri Koruma Kanunu Md. 82)**: reCAPTCHA terminal cihazdan bilgi okur/yazar ve telemetri Google'a akar; "kesinlikle gerekli" muafiyeti kapsamında sayılmadığı için ön rıza gerekir. Aynı kararda aşırı konum takibi (Md. 5/1-c) ve alt işleyen sözleşmeleri (Md. 28) de ihlal sayılmıştır.

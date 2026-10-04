@@ -7,7 +7,7 @@ alwaysApply: true
 # [CompliRules] Illinois BIPA & State Biometric Guardrail (740 ILCS 14/)
 **Severity:** `CRITICAL` | **Jurisdiction:** `CCPA_US`
 
-<!-- NOTICE: CompliRules provides automated AST guardrails under MIT License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
 
 ## Legal Citations
 - **Illinois Biometric Information Privacy Act (740 ILCS 14/15(b))**: Written informed release must be executed prior to capturing biometric identifiers. *[Sanction: $1,000 to $5,000 statutory damages per scan (Cothron v. White Castle).]*

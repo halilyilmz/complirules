@@ -6,7 +6,7 @@
 ![Tests](https://img.shields.io/badge/Tests-129%20Passing-success.svg)
 ![MDC Rules](https://img.shields.io/badge/MDC%20Rules-24%20Active-purple.svg)
 ![MCP Tools](https://img.shields.io/badge/MCP%20Tools-16%20Live-orange.svg)
-![License](https://img.shields.io/badge/License-MIT%20Free%20%26%20Open%20Source-green.svg)
+![License](https://img.shields.io/badge/License-Free%20to%20Use%20(Protected)-blue.svg)
 
 > **The enterprise-grade compliance guardrail engine, deterministic AST linter, and Model Context Protocol (MCP) server that keeps AI coding assistants ("Vibe Coders", Cursor, Claude Code, Windsurf) and engineering teams strictly compliant with global privacy laws, statutory retention mandates, and judicial precedents.**
 > 
@@ -193,14 +193,12 @@ CompliRules provides a zero-build, static documentation website deployable direc
 
 ## ⚖️ Legal Disclaimer & Zero-Liability Policy
 
-CompliRules is an open-source engineering heuristic and automated Privacy-by-Design guardrail system. The rule sets, linter checks, MCP tools, and code templates provided herein **DO NOT constitute legal counsel, formal penetration testing, or official regulatory certification**.
+## 📄 License & Intellectual Property Protection
 
-Under no legal theory (contract, tort, negligence, or strict liability) shall the authors, copyright holders, or contributors be held liable for any direct or indirect damages, data compromise, or statutory administrative fines (under KVKK, GDPR, HIPAA, BIPA, CCPA, or FTC orders) arising from the use of this software.
+**CompliRules Free-to-Use Software License**  
+Copyright (c) 2026 Halil Yılmaz & CompliRules. All Rights Reserved.
 
-By downloading, installing, or referencing this repository, you explicitly accept the binding waiver conditions detailed in [**`DISCLAIMER.md`**](DISCLAIMER.md).
+- ✅ **Free to Use:** Software developers, engineering teams, and enterprises are granted permission to download, install, and execute CompliRules within their own internal codebases completely free of charge.
+- 🚫 **No Forking, Resale, or White-Labeling:** Public redistribution, mirroring, commercial resale, white-labeling, or building competing commercial linters/guardrails using CompliRules rule datasets or AST code is strictly prohibited without prior written authorization.
 
----
-
-## 📄 License
-
-MIT © 2026 CompliRules Contributors (See [LICENSE](LICENSE) and [DISCLAIMER.md](DISCLAIMER.md))
+For full license terms and liability limitations, see [**`LICENSE`**](LICENSE) and [**`DISCLAIMER.md`**](DISCLAIMER.md).
