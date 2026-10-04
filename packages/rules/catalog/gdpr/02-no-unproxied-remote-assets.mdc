@@ -1,27 +1,28 @@
 ---
-description: "Almanya & AB Uzak Resim Hotlink ve IP Sızıntısı Yasağı (LG München I & CJEU Breyer)"
+description: "GDPR & CJEU Breyer C-582/14 Prohibition of Unproxied Remote Assets (LG München I)"
 globs: ["**/*.tsx","**/*.jsx","**/*.html","**/*.vue","**/*.php","**/components/**/*.ts"]
 alwaysApply: false
 ---
 
-# [CompliRules] Almanya & AB Uzak Resim Hotlink ve IP Sızıntısı Yasağı (LG München I & CJEU Breyer)
-**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `GDPR_EU`
+# [CompliRules] GDPR & CJEU Breyer C-582/14 Prohibition of Unproxied Remote Assets (LG München I)
+**Severity:** `HIGH` | **Jurisdiction:** `GDPR_EU`
 
-## Yasal Dayanaklar (Legal Citations)
-- **LG München I (3 O 17493/20) & CJEU Breyer (C-582/14) (IP Adreslerinin Üçüncü Taraflara Rızasız İletimi)**: Harici resimler (<img src="https://...">), Gravatar avatarları veya remote fontların doğrudan istemciye bağlanması (Hotlinking), ziyaretçi IP adresi ve Referer başlığını üçüncü taraf sunuculara sızdırır. Rıza olmaksızın veya güvenli proxy kullanılmaksızın yapılması tazminat ve idari yaptırım doğurur. *[Yaptırım: Almanya mahkemelerince ziyaretçi başına 100€+ manevi tazminat, ihtiyati tedbir ve GDPR Md. 83 idari para cezaları.]*
+## Legal Citations
+- **LG München I (3 O 17493/20) & CJEU Breyer (C-582/14) (IP Adreslerinin Üçüncü Taraflara Rızasız İletimi)**: Harici resimler (<img src="https://...">), Gravatar avatarları veya remote fontların doğrudan istemciye bağlanması (Hotlinking), ziyaretçi IP adresi ve Referer başlığını üçüncü taraf sunuculara sızdırır. Rıza olmaksızın veya güvenli proxy kullanılmaksızın yapılması tazminat ve idari yaptırım doğurur. *[Sanction: Almanya mahkemelerince ziyaretçi başına 100€+ manevi tazminat, ihtiyati tedbir ve GDPR Md. 83 idari para cezaları.]*
 - **General Data Protection Regulation (GDPR) (Article 6(1) & Article 44+)**: Hukuki dayanak olmaksızın kişisel veri (dinamik IP) işleme ve yeterlilik kararı bulunmayan üçüncü ülkelere sınır ötesi veri aktarımı yasağı.
 
-## Kural Direktifleri
-- MUST: ASLA harici resim ve avatarları (`<img src="https://external.com/..."/>`, Gravatar) doğrudan istemci DOM içine un-proxied olarak bağlamayın (Hotlinking yasağı).
-- MUST: Kullanıcı veya üçüncü taraftan gelen harici görselleri sunucu taraflı güvenli bir ters vekil / önbellek (`createSecureAssetProxyUrl`) üzerinden sunarak kullanıcının gerçek IP adresini gizleyin.
-- MUST: Asset proxy uç noktasında SSRF (Server-Side Request Forgery) koruması uygulayın; yerel ve özel ağ IPlerine (`127.0.0.1`, `192.168.*`, `10.*`) erişimi kesin olarak engelleyin.
+## Rule Mandates
+- MUST: Route all external user avatars (Gravatar), remote images, and third-party media through a server-side signed asset proxy.
+- MUST: Self-host all web fonts (Google Fonts, Adobe Fonts) locally or bundle them into static deployment assets (`@next/font/google`, `@fontsource`).
+- MUST: Implement strict Server-Side Request Forgery (SSRF) filters validating that asset proxies never fetch internal IP ranges (127.0.0.1, 10.x, 169.254.x).
+- MUST: Add cryptographic HMAC signatures to proxy URLs to prevent unauthenticated server resource abuse.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: <img src="https://gravatar.com/avatar/..." /> (Almanya LG München I ihlali)
-- NEVER: <img src="https://external-domain.com/..." /> (Un-proxied doğrudan hotlink)
-- NEVER: style={{ backgroundImage: "url(https://external...)" }} (Proxy olmadan harici CSS arka planı)
+## Forbidden Anti-Patterns
+- NEVER: <img src="https://gravatar.com/avatar/..." /> directly rendered in client-side HTML
+- NEVER: <link href="https://fonts.googleapis.com/css2?..." rel="stylesheet"> in HTML headers
+- NEVER: <img src="https://images.unsplash.com/..." /> without next/image optimization or asset proxying
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### Güvenli Resim Proxy Entegrasyonu (React / Next.js & @complirules/primitives)
 ```tsx
 import { createSecureAssetProxyUrl } from '@complirules/primitives';

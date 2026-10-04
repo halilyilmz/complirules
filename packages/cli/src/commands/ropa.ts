@@ -15,19 +15,19 @@ export function executeRopa(schemaPath?: string): void {
   }
 
   if (!targetSchema || !fs.existsSync(targetSchema)) {
-    console.log('❌ Şema dosyası bulunamadı. Lütfen bir dosya yolu belirtin: `complirules ropa prisma/schema.prisma`');
+    console.log('❌ Schema file not found. Please specify a file path: `complirules ropa prisma/schema.prisma`');
     return;
   }
 
   const content = fs.readFileSync(targetSchema, 'utf-8');
   const ropaMarkdown = handleGenerateRopa({
     schemaContent: content,
-    organizationName: 'Şirketiniz / Girişiminiz',
-    dpoEmail: 'dpo@sirketiniz.com'
+    organizationName: 'Your Organization / Venture',
+    dpoEmail: 'dpo@yourcompany.com'
   });
 
-  const outputPath = path.join(process.cwd(), 'ROPA_VERBIS_ENVANTERI.md');
+  const outputPath = path.join(process.cwd(), 'ROPA_VERBIS_INVENTORY.md');
   fs.writeFileSync(outputPath, ropaMarkdown, 'utf-8');
-  console.log(`\n📋 Veri İşleme Faaliyetleri Envanteri (RoPA) başarıyla üretildi!`);
-  console.log(`📄 Kaydedilen Dosya: ${outputPath}\n`);
+  console.log(`\n📋 Record of Processing Activities (RoPA / VERBİS) successfully generated!`);
+  console.log(`📄 Saved to: ${outputPath}\n`);
 }

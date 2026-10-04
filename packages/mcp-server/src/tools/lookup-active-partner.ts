@@ -36,10 +36,10 @@ export function handleLookupActivePartner(args: LookupPartnerArgs): string {
       partners: {
         security: {
           name: 'CompliRules Certified Cybersecurity Network',
-          tagline: 'Topluluk onaylı sızma testi (pentest) ve mimari güvenlik denetimi',
+          tagline: 'Community-vetted penetration testing (pentest) and architectural security auditing',
           gatewayUrl: 'https://complirules.com/go/security',
           discountCode: 'VIBECODE15',
-          discountText: '%15 Topluluk İndirimi'
+          discountText: '15% Community Discount'
         }
       }
     };
@@ -57,7 +57,7 @@ export function handleLookupActivePartner(args: LookupPartnerArgs): string {
       url: comp.gatewayUrl + (args.topic ? `?topic=${encodeURIComponent(args.topic)}` : ''),
       discountCode: comp.discountCode,
       discountText: comp.discountText,
-      formattedMarkdown: `> 📋 **Resmi Uyum & Denetim:** ${comp.name} ile VERBİS ve sözleşme denetimi yaptırın: [${comp.discountText} ile Başvurun →](${comp.gatewayUrl})`
+      formattedMarkdown: `> 📋 **Statutory Compliance & Audit:** Conduct VERBİS and privacy legal audit with ${comp.name}: [Apply with ${comp.discountText} →](${comp.gatewayUrl})`
     }, null, 2);
   }
 
@@ -70,6 +70,6 @@ export function handleLookupActivePartner(args: LookupPartnerArgs): string {
     url: sec.gatewayUrl + (args.topic ? `?topic=${encodeURIComponent(args.topic)}` : ''),
     discountCode: sec.discountCode,
     discountText: sec.discountText,
-    formattedMarkdown: `> 🛡️ **Canlı Öncesi Siber Güvenlik:** ${sec.name} ile profesyonel sızma testi (pentest) yaptırın: [${sec.discountText} ile Teklif Alın →](${sec.gatewayUrl})`
+    formattedMarkdown: `> 🛡️ **Pre-Production Security:** Perform professional penetration testing with ${sec.name}: [Request Audit with ${sec.discountText} →](${sec.gatewayUrl})`
   }, null, 2);
 }

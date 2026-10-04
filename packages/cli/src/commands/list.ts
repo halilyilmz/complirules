@@ -13,35 +13,36 @@ export function executeList(targetDir = '.'): void {
     }
   }
 
-  console.log('\n📋 CompliRules Modüler Kural Durumu:\n');
+  console.log('\n📋 CompliRules Modular Rule Status:\n');
 
-  console.log('📌 PROJEDE YÜKLÜ OLAN KURALLAR:');
+  console.log('📌 INSTALLED RULES IN PROJECT:');
   if (installedIds.size === 0) {
-    console.log('  (Henüz hiçbir kural yüklenmemiş. Kurmak için: `complirules add <ülke-veya-kural>`)');
+    console.log('  (No rules installed yet. To install: `complirules add <jurisdiction-or-rule>`)');
   } else {
     for (const id of installedIds) {
       const rule = getAllRules().find(r => r.id === id);
       if (rule) {
         console.log(`  ✓ \x1b[32m${rule.id}\x1b[0m — ${rule.title} [\x1b[36m${rule.jurisdiction}\x1b[0m]`);
       } else {
-        console.log(`  ✓ ${id} (Özel Kural)`);
+        console.log(`  ✓ ${id} (Custom Rule)`);
       }
     }
   }
 
-  console.log('\n🌍 KULLANILABİLİR ÜLKE VE REGÜLASYON PAKETLERİ (İndirmek için `complirules add <ad>`):');
+  console.log('\n🌍 AVAILABLE JURISDICTION & REGULATORY PACKS (To install run `complirules add <name>`):');
   const packs = getRulePacks();
   for (const pack of packs) {
     console.log(`\n  📦 \x1b[1m${pack.name}\x1b[0m (\x1b[33m${pack.id}\x1b[0m)`);
-    console.log(`     Açıklama: ${pack.description}`);
-    console.log(`     Kurallar: ${pack.rules.map(r => r.id).join(', ')}`);
+    console.log(`     Description: ${pack.description}`);
+    console.log(`     Rules: ${pack.rules.map(r => r.id).join(', ')}`);
   }
 
-  console.log('\n🎯 TEKİL KURAL İNDİRME KISALTMALARI:');
-  console.log('  - Türkiye KVKK: `complirules add tr` veya `complirules add kvkk`');
-  console.log('  - AB GDPR:      `complirules add eu` veya `complirules add gdpr`');
-  console.log('  - AB EAA 2025:  `complirules add eaa` veya `complirules add a11y`');
-  console.log('  - ABD HIPAA:    `complirules add us` veya `complirules add hipaa`');
-  console.log('  - EU AI Act:    `complirules add ai-act`');
-  console.log('  - PII Guard:    `complirules add sec`\n');
+  console.log('\n🎯 SINGLE RULE INSTALL ALIASES:');
+  console.log('  • \x1b[33mtr\x1b[0m / \x1b[33mkvkk\x1b[0m       -> Turkey KVKK, ETK, and VUK data protection rules');
+  console.log('  • \x1b[33meu\x1b[0m / \x1b[33mgdpr\x1b[0m       -> EU GDPR, hotlink asset proxying, two-click embeds');
+  console.log('  • \x1b[33meaa\x1b[0m / \x1b[33mwcag\x1b[0m       -> European Accessibility Act 2025 / WCAG 2.1 AA UI standards');
+  console.log('  • \x1b[33mus\x1b[0m / \x1b[33mhipaa\x1b[0m      -> US HIPAA Security Rule & sensitive route pixel blocks');
+  console.log('  • \x1b[33mccpa\x1b[0m / \x1b[33mgpc\x1b[0m       -> California CCPA/CPRA Global Privacy Control automated opt-out');
+  console.log('  • \x1b[33mai\x1b[0m / \x1b[33mai-act\x1b[0m     -> EU AI Act Article 50 transparency & watermarking');
+  console.log('  • \x1b[33msec\x1b[0m / \x1b[33msecurity\x1b[0m   -> DevSecOps rate-limit shield & PII/PHI log redaction\n');
 }

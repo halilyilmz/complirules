@@ -1,30 +1,28 @@
 ---
-description: "HIPAA 45 CFR § 164.312(a)(2)(ii) Emergency Break-Glass Protokolü & Safe Harbor"
+description: "HIPAA § 164.312(a)(2)(ii) Emergency Break-Glass Access Protocol & High-Priority Auditing"
 globs: ["**/api/emergency/**/*.ts","**/services/clinical*.ts","**/lib/breakglass*.ts","**/*emergency*.py","**/*breakglass*.go"]
 alwaysApply: false
 ---
 
-# [CompliRules] HIPAA 45 CFR § 164.312(a)(2)(ii) Emergency Break-Glass Protokolü & Safe Harbor
-**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `HIPAA_US`
+# [CompliRules] HIPAA § 164.312(a)(2)(ii) Emergency Break-Glass Access Protocol & High-Priority Auditing
+**Severity:** `CRITICAL` | **Jurisdiction:** `HIPAA_US`
 
-## Yasal Dayanaklar (Legal Citations)
-- **HIPAA Security Rule (45 CFR § 164.312(a)(2)(ii))**: Emergency Access Procedure. Hayati klinik durumlarda PHI verisine anında yetkili erişim sağlama zorunluluğu. *[Yaptırım: OCR yaptırımları ve klinik ihmal davaları.]*
+## Legal Citations
+- **HIPAA Security Rule (45 CFR § 164.312(a)(2)(ii))**: Emergency Access Procedure. Hayati klinik durumlarda PHI verisine anında yetkili erişim sağlama zorunluluğu. *[Sanction: OCR yaptırımları ve klinik ihmal davaları.]*
 - **HIPAA Breach Notification Rule (45 CFR § 164.402 & § 164.408)**: Safe Harbor şifreleme muafiyeti (AES-256) ve <500 vs >=500 hasta bildirim takvimi.
 
-## Kural Direktifleri
-- MUST: Klinik sistemlerde hayati acil durumlarda normal erişim kontrollerini aşan `HipaaEmergencyService.activateBreakGlass` protokolü uygulayın.
-- MUST: Zorunlu klinik gerekçe (en az 10 karakter) girilmeden acil durum kilidini açmayın.
-- MUST: Break-Glass tetiklendiğinde Güvenlik Yöneticisine (Security/Privacy Officer) gerçek zamanlı alarm gönderin.
-- MUST: Acil durum oturum süresini en fazla 30 dakika ile sınırlandırın ve süresi dolunca yetkileri otomatik düşürün.
-- MUST: Tüm acil erişimleri bağımsız ve değiştirilemez bir denetim kütüğüne (Emergency Audit Log) kaydedin.
-- MUST: 45 CFR § 164.402 uyarınca AES-256 ve TLS 1.3 şifreleme sağlayarak Safe Harbor bildirim muafiyeti standartlarını koruyun.
+## Rule Mandates
+- MUST: Implement a dedicated emergency access override mechanism allowing clinicians to access restricted patient records during life-threatening emergencies.
+- MUST: Mandate entry of a clinical justification reason prior to granting break-glass emergency access.
+- MUST: Generate an immediate high-priority audit record documenting physician ID, patient ID, timestamp, and clinical justification.
+- MUST: Trigger automated supervisor or compliance officer notifications upon execution of any break-glass access event.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: Klinik acil durumlarda Break-Glass prosedürü sunmayıp hasta hayatını riske atmak
-- NEVER: Gerekçe girilmeksizin veya sahte gerekçelerle Break-Glass oturumu açılmasına izin vermek
-- NEVER: Break-Glass erişimlerini denetim loguna kaydetmemek veya güvenlik yöneticisine alarm göndermemek
+## Forbidden Anti-Patterns
+- NEVER: Allowing break-glass emergency access without requiring a clinical justification reason
+- NEVER: Failing to log emergency access events in an immutable, high-priority audit trail
+- NEVER: Granting permanent blanket permissions under an emergency access override
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### HIPAA Break-Glass Acil Durum Erişimi
 ```ts
 import { HipaaEmergencyService } from '@complirules/primitives';

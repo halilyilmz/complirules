@@ -9,17 +9,17 @@ import {
 } from '@complirules/rules';
 
 export function executeRemove(target: string, targetDir = '.'): void {
-  console.log(`\n🗑️  Modüler Kural Paketi Kaldırılıyor: "${target}"...\n`);
+  console.log(`\n🗑️  Removing Modular Rule Pack: "${target}"...\n`);
 
   const matchedRules = resolveRulesFromQuery(target);
   if (matchedRules.length === 0) {
-    console.log(`❌ "${target}" sorgusuyla eşleşen kural bulunamadı.\n`);
+    console.log(`❌ No matching rules found for query "${target}".\n`);
     return;
   }
 
   const cursorRulesDir = path.join(targetDir, '.cursor', 'rules');
   if (!fs.existsSync(cursorRulesDir)) {
-    console.log(`ℹ️ Projede kurulu herhangi bir kural bulunamadı (.cursor/rules dizini yok).\n`);
+    console.log(`ℹ️ No installed rules found in project (.cursor/rules directory does not exist).\n`);
     return;
   }
 
@@ -28,12 +28,12 @@ export function executeRemove(target: string, targetDir = '.'): void {
     const filePath = path.join(cursorRulesDir, `${rule.id}.mdc`);
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
-      console.log(`  ✓ Silindi: .cursor/rules/${rule.id}.mdc`);
+      console.log(`  ✓ Removed: .cursor/rules/${rule.id}.mdc`);
       removedCount++;
     }
   }
 
-  // Kalan kuralları tara ve AGENTS.md / CLAUDE.md güncelle
+  // Scan remaining rules and update AGENTS.md / CLAUDE.md
   const remainingFiles = fs.readdirSync(cursorRulesDir)
     .filter(f => f.endsWith('.mdc'))
     .map(f => f.replace('.mdc', ''));
@@ -47,15 +47,15 @@ export function executeRemove(target: string, targetDir = '.'): void {
   if (remainingRules.length > 0) {
     fs.writeFileSync(path.join(targetDir, 'AGENTS.md'), renderAgentsMd(remainingRules), 'utf-8');
     fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), renderClaudeMd(remainingRules), 'utf-8');
-    console.log(`  ✓ Güncellendi: AGENTS.md ve CLAUDE.md (${remainingRules.length} kural kaldı)`);
+    console.log(`  ✓ Updated: AGENTS.md and CLAUDE.md (${remainingRules.length} rules remaining)`);
   } else {
-    // Tüm kurallar silindiyse dosyaları da temizle
+    // If no rules remain, clean up AGENTS.md and CLAUDE.md
     const agentsPath = path.join(targetDir, 'AGENTS.md');
     const claudePath = path.join(targetDir, 'CLAUDE.md');
     if (fs.existsSync(agentsPath)) fs.unlinkSync(agentsPath);
     if (fs.existsSync(claudePath)) fs.unlinkSync(claudePath);
-    console.log(`  ✓ Kalan kural olmadığından AGENTS.md ve CLAUDE.md temizlendi.`);
+    console.log(`  ✓ Removed AGENTS.md and CLAUDE.md since no active rules remain.`);
   }
 
-  console.log(`\n✨ İşlem tamamlandı: ${removedCount} kural dosyası kaldırıldı.\n`);
+  console.log(`\n✨ Done: ${removedCount} rule file(s) removed.\n`);
 }

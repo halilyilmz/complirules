@@ -1,28 +1,28 @@
 ---
-description: "Gizlilik Dostu Bot Koruması: reCAPTCHA Ön Rıza Şartı (CNIL Cityscoot)"
+description: "GDPR & CNIL Privacy-Preserving CAPTCHA without Hardware Telemetry (Cityscoot Decision)"
 globs: ["**/*.tsx","**/*.jsx","**/*.html","**/*.vue","**/*.php"]
 alwaysApply: false
 ---
 
-# [CompliRules] Gizlilik Dostu Bot Koruması: reCAPTCHA Ön Rıza Şartı (CNIL Cityscoot)
-**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `GDPR_EU`
+# [CompliRules] GDPR & CNIL Privacy-Preserving CAPTCHA without Hardware Telemetry (Cityscoot Decision)
+**Severity:** `HIGH` | **Jurisdiction:** `GDPR_EU`
 
-## Yasal Dayanaklar (Legal Citations)
+## Legal Citations
 - **CNIL Karar SAN-2023-003 Cityscoot (16.03.2023) (ePrivacy Md. 5(3) / Fransız Veri Koruma Kanunu Md. 82)**: reCAPTCHA terminal cihazdan bilgi okur/yazar ve telemetri Google'a akar; "kesinlikle gerekli" muafiyeti kapsamında sayılmadığı için ön rıza gerekir. Aynı kararda aşırı konum takibi (Md. 5/1-c) ve alt işleyen sözleşmeleri (Md. 28) de ihlal sayılmıştır.
 - **CJEU C-252/21 Meta v. Bundeskartellamt (04.07.2023) (GDPR Md. 6(1))**: Üçüncü taraf izleme, sözleşme (6/1-b) veya meşru menfaat (6/1-f) ile haklı gösterilemez; rıza gerekir.
 
-## Kural Direktifleri
-- MUST: Giriş/kayıt/iletişim formlarına reCAPTCHA scriptini rıza verilmeden yüklemeyin.
-- MUST: Öncelik: kendi sunucunuzda doğrulanan Proof-of-Work captcha (Altcha, mCaptcha) veya rate limit + honeypot.
-- MUST: Google reCAPTCHA zorunluysa yüklemeyi CMP "işlevsel/güvenlik" rızasına bağlayın ve rıza yoksa alternatif doğrulama (e-posta OTP) sunun.
-- MUST: Bot korumasını hizmete erişimin şartı yapıp rızayı zorunlu kılmayın (bağlı rıza yasağı).
+## Rule Mandates
+- MUST: Prefer zero-telemetry, privacy-preserving CAPTCHA solutions based on local client-side Proof-of-Work (Altcha, mCaptcha, Cloudflare Turnstile).
+- MUST: If Google reCAPTCHA v2/v3 or hCaptcha is utilized, strictly gate script loading behind prior explicit cookie consent under the "Security/Functional" category.
+- MUST: Never execute reCAPTCHA scripts on initial unconsented page loads (CNIL Decision SAN-2023-003).
+- MUST: Provide fallback verification mechanisms (email/SMS OTP) for users who reject tracking CAPTCHAs.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: <script src="https://www.google.com/recaptcha/api.js"> (Rızasız yükleme)
-- NEVER: <div class="g-recaptcha" data-sitekey="..."> (Gating olmadan)
-- NEVER: import ReCAPTCHA from "react-google-recaptcha" (Rıza kontrolü olmadan render)
+## Forbidden Anti-Patterns
+- NEVER: <script src="https://www.google.com/recaptcha/api.js"></script> loaded directly without prior consent gating
+- NEVER: <div className="g-recaptcha"> rendered on login/signup forms without checking user cookie consent
+- NEVER: Claiming that behavioral reCAPTCHA fingerprinting qualifies as a strictly necessary cookie exempt from consent
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### Rıza Kontrollü Captcha Yükleme
 ```tsx
 import { CookieConsentManager } from '@complirules/primitives';

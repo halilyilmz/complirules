@@ -1,29 +1,28 @@
 ---
-description: "Giriş Uç Noktalarında Rate Limit, Hesap Kilitleme ve MFA (KVKK Md. 12 / GDPR Md. 32)"
+description: "Account Takeover Defense: Adaptive Sliding Window Rate Limiting and Mandatory MFA"
 globs: ["**/api/**/login*","**/api/**/auth/**","**/auth/**/*.ts","**/routes/auth*","**/controllers/auth*"]
 alwaysApply: false
 ---
 
-# [CompliRules] Giriş Uç Noktalarında Rate Limit, Hesap Kilitleme ve MFA (KVKK Md. 12 / GDPR Md. 32)
-**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `GLOBAL_SEC`
+# [CompliRules] Account Takeover Defense: Adaptive Sliding Window Rate Limiting and Mandatory MFA
+**Severity:** `HIGH` | **Jurisdiction:** `GLOBAL_SEC`
 
-## Yasal Dayanaklar (Legal Citations)
+## Legal Citations
 - **6698 Sayılı KVKK (Madde 12(1))**: Teknolojinin ulaştığı seviyeye uygun teknik tedbir yükümlülüğü. Brute-force ve credential-stuffing ile hesap ele geçirilmesinde rate limit, hesap kilitleme ve çok faktörlü doğrulama eksikliği veri sorumlusunun kusuru sayılır.
 - **GDPR (Madde 32)**: Risk düzeyine uygun güvenlik: kimlik doğrulama saldırılarına karşı teknik önlemler.
 
-## Kural Direktifleri
-- MUST: Giriş, parola sıfırlama ve OTP doğrulama uç noktalarını IP ve hesap anahtarı bazında ayrı ayrı sınırlayın (`RateLimitShield`).
-- MUST: Eşik aşıldığında hesabı geçici kilitleyin ve MFA'yı zorunlu kılın; başarılı girişte sayaçları sıfırlayın.
-- MUST: Yönetici ve sağlık/finans verisine erişen hesaplarda MFA zorunlu olsun.
-- MUST: Hata mesajları hesap varlığını ifşa etmesin ("E-posta veya parola hatalı"); başarısız denemeleri redakte edilmiş şekilde loglayın.
-- MUST: Parolaları bcrypt (maliyet ≥ 10) ile saklayın; sızdırılmış parola listelerine karşı kontrol uygulayın.
+## Rule Mandates
+- MUST: Deploy a sliding window rate limiter tracking client IP addresses and account identifiers across all login, register, and reset endpoints.
+- MUST: Enforce progressive backoff lockouts (e.g. 5 failed attempts within 5 minutes triggers a 15-minute account lockout).
+- MUST: Trigger mandatory multi-factor authentication (TOTP / SMS MFA) when login attempts originate from unfamiliar devices or unusual geographic locations.
+- MUST: Log security telemetry events (`AUTH_RATE_LIMIT_EXCEEDED`, `ACCOUNT_LOCKED`) to enable rapid incident detection.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: app.post("/login", ...) içinde rate limit/lockout olmaması (Sınırsız parola denemesi)
-- NEVER: return res.status(404).send("Kullanıcı bulunamadı") (Hesap numaralandırma)
-- NEVER: Yönetici paneli için MFA zorunluluğunun bulunmaması
+## Forbidden Anti-Patterns
+- NEVER: Exposing authentication or password reset endpoints without IP or account-level rate limiting
+- NEVER: Permitting infinite brute-force login attempts without progressive lockout delays
+- NEVER: Storing authentication session tokens or MFA secrets in unencrypted plaintext cookies
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### Rate Limit + Kilitleme (Express)
 ```ts
 import { RateLimitShield } from '@complirules/primitives';

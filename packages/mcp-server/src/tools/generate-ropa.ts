@@ -18,100 +18,84 @@ export interface Ropa10ColumnRow {
 }
 
 export function handleGenerateRopa(input: GenerateRopaInput): string {
-  const { schemaContent, organizationName = 'Örnek Şirket A.Ş.', dpoEmail = 'kvkk@ornek.com' } = input;
+  const { schemaContent, organizationName = 'Example Corporation', dpoEmail = 'dpo@example.com' } = input;
 
   const dataCategories: Ropa10ColumnRow[] = [];
 
   if (/email|name|phone|ad|soyad|telefon/i.test(schemaContent)) {
     dataCategories.push({
-      category: 'Kimlik ve İletişim Verisi',
-      fields: ['Ad', 'Soyad', 'E-posta', 'Telefon Numarası'],
-      dataSubjectGroup: 'Müşteri / Kullanıcı',
-      purpose: 'Kullanıcı hesabı oluşturulması, kimlik doğrulama ve sözleşmenin ifası',
-      legalBasis: 'KVKK Md. 5/2-c (Sözleşmenin ifası) / GDPR Art. 6(1)(b)',
-      recipients: 'Yetkili Kamu Kurumları, Çağrı Merkezi',
-      crossBorderTransfer: 'Yok (TR Region Data Residency / Standart Sözleşme)',
-      retention: 'Üyelik süresince + 10 yıl (TTK Md. 82)',
-      destructionMethod: 'Periyodik İmha (6 ayda bir Crypto-Shredding / Tombstone)',
-      technicalMeasures: 'TLS 1.3, Argon2id/Bcrypt parola hashleme, PII Maskeleme'
+      category: 'Identity & Contact Data (Kimlik ve İletişim Verisi)',
+      fields: ['Full Name', 'Email Address', 'Phone Number'],
+      dataSubjectGroup: 'Customers / Registered Users',
+      purpose: 'Account creation, identity verification, and contract performance',
+      legalBasis: 'KVKK Art. 5/2-c (Contractual Performance) / GDPR Art. 6(1)(b)',
+      recipients: 'Authorized Public Authorities, Customer Support Desk',
+      crossBorderTransfer: 'None (Local Data Residency / Standard Contractual Clauses)',
+      retention: 'Active account duration + 10 years statutory limitation',
+      destructionMethod: 'Periodic Destruction (Semi-annual Crypto-Shredding / Tombstone)',
+      technicalMeasures: 'TLS 1.3, Argon2id/Bcrypt password hashing, Automated PII Redaction'
     });
   }
 
   if (/invoice|payment|tax|fatura|tckn|amount/i.test(schemaContent)) {
     dataCategories.push({
-      category: 'Finansal ve Fatura Verisi',
-      fields: ['Fatura Adresi', 'Vergi No / TCKN', 'Ödeme Tutarı', 'İşlem Zamanı'],
-      dataSubjectGroup: 'Müşteri / Abone',
-      purpose: 'Yasal fatura düzenleme ve muhasebe kayıtlarının tutulması',
-      legalBasis: 'KVKK Md. 5/2-ç (Hukuki yükümlülüğün yerine getirilmesi) & VUK Md. 253',
-      recipients: 'Gelir İdaresi Başkanlığı (GİB), Mali Müşavir, Bankalar',
-      crossBorderTransfer: 'Aktarılmaz (Yerel Veri Tabanı)',
-      retention: 'Düzenleme tarihinden itibaren 5 yıl (VUK Md. 253) / 10 yıl (TTK Md. 82)',
-      destructionMethod: '5. yıl sonunda SetNull & anonimleştirme (Cascade Drop Yasağı)',
-      technicalMeasures: 'AES-256 veritabanı şifreleme, Salt-hash TCKN denetimi'
+      category: 'Financial & Billing Data (Finansal ve Fatura Verisi)',
+      fields: ['Billing Address', 'Tax ID / National ID', 'Transaction Amount', 'Timestamp'],
+      dataSubjectGroup: 'Customers / Subscribers',
+      purpose: 'Statutory invoicing, tax reporting, and accounting records',
+      legalBasis: 'KVKK Art. 5/2-ç (Compliance with Legal Obligation) & Tax Code Art. 253 (VUK Md. 253)',
+      recipients: 'Revenue Administration, Tax Accountants, Payment Processors',
+      crossBorderTransfer: 'Prohibited (Stored in Local Financial Database)',
+      retention: '5 years from issuance date (Tax Code Art. 253 / VUK Md. 253) / 10 years Commercial Code',
+      destructionMethod: 'SetNull & Anonymization after year 5 (Cascade Drop Prohibited)',
+      technicalMeasures: 'AES-256 database encryption at rest, Salted national ID hashing'
     });
   }
 
   if (/ip|userAgent|log|accessedAt|session/i.test(schemaContent)) {
     dataCategories.push({
-      category: 'İşlem Güvenliği ve Erişim Logları',
-      fields: ['IP Adresi Hash', 'User Agent', 'Oturum Zamanı', 'Erişim Logları'],
-      dataSubjectGroup: 'Web / Mobil Uygulama Ziyaretçisi',
-      purpose: 'Bilgi güvenliği süreçlerinin yürütülmesi ve siber güvenliğin sağlanması',
-      legalBasis: 'KVKK Md. 5/2-ç (5651 Sayılı Kanun Madde 2)',
-      recipients: 'Yetkili Adli ve İdari Merciler, BTK',
-      crossBorderTransfer: 'Yok (Yerel Syslog / SIEM)',
-      retention: '2 Yıl (5651 Sayılı Kanun gereği zorunlu saklama)',
-      destructionMethod: 'Süre bitiminde kalıcı SHA-256 özet doğrulama sonrası güvenli silme',
-      technicalMeasures: 'Zaman damgalı hash bütünlüğü (RFC 3161), Maskelenmiş IP logları'
+      category: 'Transaction Security & Access Logs (İşlem Güvenliği ve Erişim Logları)',
+      fields: ['Hashed IP Address', 'User Agent String', 'Session Timestamps', 'Audit Logs'],
+      dataSubjectGroup: 'Web / Mobile Visitors',
+      purpose: 'Information security management and cyber threat detection',
+      legalBasis: 'GDPR Art. 6(1)(f) (Legitimate Interest) & Law No. 5651',
+      recipients: 'Internal Cyber Defense Team, Cloudflare (CDN Edge)',
+      crossBorderTransfer: 'Pseudonymized / Gated via Asset Proxy',
+      retention: '2 years statutory mandatory access log retention',
+      destructionMethod: 'Automated Log Rotation and Cryptographic Overwriting',
+      technicalMeasures: 'WAF Rate Limiting, SIEM Log Anonymization, Signed URL Proxies'
     });
   }
 
-  if (/marketingConsent|newsletter|etk/i.test(schemaContent)) {
+  if (/health|diagnosis|prescription|reçete|tani|medical/i.test(schemaContent)) {
     dataCategories.push({
-      category: 'Pazarlama ve Tercih Verisi',
-      fields: ['Pazarlama İletişim Onayı', 'İzin Tarihi', 'İzin Kanalı'],
-      dataSubjectGroup: 'Müşteri / Potansiyel Alıcı',
-      purpose: 'Ticari elektronik ileti gönderimi ve kampanya bilgilendirmesi',
-      legalBasis: 'KVKK Md. 5/1 (Açık Rıza) & 6563 Sayılı ETK / İYS',
-      recipients: 'İYS A.Ş., Yetkili E-posta/SMS Servis Sağlayıcıları',
-      crossBorderTransfer: 'SCC Güvencesi (Kurul 5 iş günü bildirimli)',
-      retention: 'Rıza geri çekilene kadar + 3 yıl (İYS Yönetmeliği)',
-      destructionMethod: 'Opt-out anında derhal durdurma, 3 yıl sonra kayıt silme',
-      technicalMeasures: 'Simetrik CMP onay mimarisi, Versiyonlanmış Consent Store'
+      category: 'Special Category Personal Data (Health & Biometrics) (Özel Nitelikli Kişisel Veri)',
+      fields: ['Clinical Diagnoses', 'Prescription Records', 'Health History'],
+      dataSubjectGroup: 'Patients / Clients',
+      purpose: 'Medical diagnosis, treatment history, and healthcare service delivery',
+      legalBasis: 'KVKK Art. 6/3 (Explicit Consent / Medical Confidentiality) & HIPAA 45 CFR § 164.312',
+      recipients: 'Authorized Medical Practitioners only (Break-Glass Protocol)',
+      crossBorderTransfer: 'Prohibited without explicit statutory consent and Board authorization',
+      retention: '20 years patient record statutory archiving retention',
+      destructionMethod: 'Cryptographic Key Shredding (DEK Eradication)',
+      technicalMeasures: 'Envelope Encryption (AES-256-GCM + KMS KEK), Dedicated Encrypted Schema'
     });
   }
 
-  if (/health|medical|diagnosis|prescription|saglik|biyometri|patient|tedavi/i.test(schemaContent)) {
-    dataCategories.push({
-      category: 'Özel Nitelikli Kişisel Veri (Sağlık & Biyometri)',
-      fields: ['Tıbbi Teşhis', 'Reçete ve İlaçlar', 'Hasta Geçmişi', 'Biyometrik Veri'],
-      dataSubjectGroup: 'Hasta / Danışan',
-      purpose: 'Tıbbi teşhis, tedavi ve sağlık bakım hizmetlerinin yürütülmesi',
-      legalBasis: 'KVKK Md. 6/3 (Sır saklama yükümlülüğü) & HIPAA § 164.502 / GDPR Art. 9(2)(h)',
-      recipients: 'Sağlık Bakanlığı, SGK, Yetkili Hekimler',
-      crossBorderTransfer: 'Yurt dışına aktarılamaz (TR/Local Only Zarf Şifreleme)',
-      retention: 'Hasta kabulünden itibaren 20 yıl (Sağlık Hizmetleri Mevzuatı)',
-      destructionMethod: 'DEK Kriptografik İmha (Crypto-Shredding)',
-      technicalMeasures: 'AES-256-GCM Zarf Şifreleme, KMS Anahtar Ayrımı, Break-Glass Acil Denetimi'
-    });
-  }
+  const tableHeader = 
+    `| # | Data Category | Personal Fields | Data Subject Group | Processing Purpose | Legal Basis | Recipients | Cross-Border Transfer | Retention Period | Destruction Method | Technical Safeguards |\n` +
+    `|---|---|---|---|---|---|---|---|---|---|---|`;
 
-  const tableRows = dataCategories.length > 0
-    ? dataCategories.map(c => 
-        `| **${c.category}** | \`${c.fields.join(', ')}\` | ${c.dataSubjectGroup} | ${c.purpose} | ${c.legalBasis} | ${c.recipients} | ${c.crossBorderTransfer} | ${c.retention} | ${c.destructionMethod} | ${c.technicalMeasures} |`
-      ).join('\n')
-    : '| *Kişisel veri tespit edilemedi* | - | - | - | - | - | - | - | - | - |';
+  const tableRows = dataCategories.map((row, idx) => 
+    `| ${idx + 1} | **${row.category}** | ${row.fields.join(', ')} | ${row.dataSubjectGroup} | ${row.purpose} | ${row.legalBasis} | ${row.recipients} | ${row.crossBorderTransfer} | ${row.retention} | ${row.destructionMethod} | ${row.technicalMeasures} |`
+  ).join('\n');
 
-  return `# 📋 Veri İşleme Faaliyetleri Envanteri (RoPA / KVKK VERBİS 10 Sütun Standardı)
-**Veri Sorumlusu:** ${organizationName} | **DPO / İrtibat Kişisi:** ${dpoEmail}  
-**Oluşturulma Tarihi:** ${new Date().toISOString().split('T')[0]}  
-**Referans:** 6698 Sayılı KVKK Madde 16 & GDPR Article 30 (10 Temel Sütun)
-
-| 1. Veri Kategorisi | 2. Kişisel Veri Alanları | 3. İlgili Kişi Grubu | 4. İşleme Amacı | 5. Hukuki Dayanak | 6. Alıcı Grupları | 7. Sınır Ötesi Aktarım & Güvence | 8. Saklama Süresi | 9. Periyodik İmha Yöntemi (6 Ay) | 10. İdari ve Teknik Tedbirler |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-${tableRows}
-
----
-> *Not: Bu 10 sütunlu envanter CompliRules MCP Sunucusu tarafından kod tabanındaki veritabanı modelleri, VERBİS etiketleri ve ORM şemaları taranarak otomatik derlenmiştir.*`;
+  return `# Record of Processing Activities (RoPA / VERBİS Envanteri)\n\n` +
+    `**Organization:** ${organizationName} | **DPO:** ${dpoEmail} | **Date:** ${new Date().toISOString().split('T')[0]}\n\n` +
+    `> This inventory table is automatically compiled in accordance with **GDPR Article 30** and **KVKK Article 16 (VERBİS)** requirements.\n\n` +
+    `${tableHeader}\n${tableRows}\n\n` +
+    `### Statutory Retention & Destruction Notes:\n` +
+    `- **Financial & Invoicing Records:** Must be preserved for a minimum of 5 years under Tax Procedure Code Art. 253 (VUK Md. 253).\n` +
+    `- **Right to be Forgotten:** User accounts must be anonymized (Tombstone pattern) rather than hard deleted.\n` +
+    `- **Special Category Personal Data:** Must be stored in isolated, envelope-encrypted schemas (KVKK Art. 6 / HIPAA § 164.312).\n`;
 }

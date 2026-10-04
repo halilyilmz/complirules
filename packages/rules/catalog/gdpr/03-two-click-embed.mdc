@@ -1,32 +1,29 @@
 ---
-description: "Harici Embed ve Sosyal Eklenti İçin İki Tıklamalı Çözüm (CJEU Fashion ID & DSK)"
+description: "GDPR & TDDDG § 25 Two-Click Solution for Video and Map Embeds (CJEU Fashion ID)"
 globs: ["**/*.tsx","**/*.jsx","**/*.html","**/*.vue","**/*.php","**/components/**/*.ts"]
 alwaysApply: false
 ---
 
-# [CompliRules] Harici Embed ve Sosyal Eklenti İçin İki Tıklamalı Çözüm (CJEU Fashion ID & DSK)
-**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `GDPR_EU`
+# [CompliRules] GDPR & TDDDG § 25 Two-Click Solution for Video and Map Embeds (CJEU Fashion ID)
+**Severity:** `HIGH` | **Jurisdiction:** `GDPR_EU`
 
-## Yasal Dayanaklar (Legal Citations)
-- **CJEU C-40/17 Fashion ID (29.07.2019) (GDPR Md. 26 — Ortak Veri Sorumluluğu)**: Facebook Beğen gibi bir eklentiyi gömen site sahibi, verinin toplanması ve aktarımı aşamasında eklenti sağlayıcısıyla ortak veri sorumlusudur; eklenti yüklenirken ziyaretçi tıklamasa bile IP ve tarayıcı verisi aktarılır. *[Yaptırım: Hukuki dayanak (rıza) ve aydınlatma eksikliğinde GDPR Md. 83 idari para cezaları ve Md. 82 tazminat.]*
+## Legal Citations
+- **CJEU C-40/17 Fashion ID (29.07.2019) (GDPR Md. 26 — Ortak Veri Sorumluluğu)**: Facebook Beğen gibi bir eklentiyi gömen site sahibi, verinin toplanması ve aktarımı aşamasında eklenti sağlayıcısıyla ortak veri sorumlusudur; eklenti yüklenirken ziyaretçi tıklamasa bile IP ve tarayıcı verisi aktarılır. *[Sanction: Hukuki dayanak (rıza) ve aydınlatma eksikliğinde GDPR Md. 83 idari para cezaları ve Md. 82 tazminat.]*
 - **Alman DSK Telemedya Rehberi / TDDDG § 25 (Zwei-Klick-Lösung)**: YouTube, Vimeo ve Google Maps iframe'leri (youtube-nocookie.com dahil) sayfa açılır açılmaz IP ve Referer bilgisini iletir. Kullanıcı etkinleştirmeden önce harici sunucuya hiçbir istek atılmamalıdır.
 - **CJEU C-300/21 Österreichische Post (04.05.2023) (GDPR Md. 82)**: Manevi tazminat için asgari ciddiyet eşiği aranmaz; bu nedenle tek bir rızasız harici istek bile toplu dava ve ihtar (Abmahnung) riski doğurur.
 
-## Kural Direktifleri
-- MUST: Harici iframe ve widget scriptlerini sayfa render edilirken DOM'a eklemeyin; yerel önizleme görseli (same-origin) ve aydınlatma metni gösterin.
-- MUST: Kullanıcı açık bir eylemde bulunduktan sonra (tıklama, Enter, Space) `createTwoClickEmbed` / `activateTwoClickEmbed` ile iframe'i yükleyin; `referrerpolicy="no-referrer"` ve `sandbox` ekleyin.
-- MUST: Önizleme görselini harici sağlayıcıdan (i.ytimg.com vb.) çekmeyin; derleme zamanında yerel olarak üretip barındırın.
-- MUST: Sosyal paylaşım için istemci SDK yerine statik paylaşım bağlantıları (Shariff deseni) tercih edin.
-- MUST: Etkinleştirme kontrolü klavye ile erişilebilir olmalıdır (gerçek `button` elemanı, görünür odak halkası).
+## Rule Mandates
+- MUST: Wrap all third-party media iframes (YouTube, Vimeo, Google Maps) in a Two-Click Consent Component (*Zwei-Klick-Lösung*).
+- MUST: Display only locally hosted or self-proxied thumbnail images prior to explicit user activation (never hotlink `i.ytimg.com`).
+- MUST: Ensure zero network requests are dispatched to third-party domains on initial page load.
+- MUST: Load the actual iframe only after the user explicitly clicks the overlay activation button, applying `referrerpolicy="no-referrer"`.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: <iframe src="https://www.youtube.com/embed/..."> (Rızasız doğrudan embed)
-- NEVER: <iframe src="https://www.youtube-nocookie.com/embed/..."> (Gizlilik modu da IP sızdırır)
-- NEVER: <iframe src="https://www.google.com/maps/embed?..."> (Rızasız harita)
-- NEVER: <script src="https://connect.facebook.net/.../sdk.js"> (Fashion ID ortak sorumluluk)
-- NEVER: <img src="https://i.ytimg.com/vi/.../hqdefault.jpg"> (Harici önizleme görseli)
+## Forbidden Anti-Patterns
+- NEVER: <iframe src="https://www.youtube.com/embed/..." /> rendered directly without a user activation click
+- NEVER: <iframe src="https://www.google.com/maps/embed?..." /> loaded automatically on page render
+- NEVER: Hotlinking video preview thumbnails from `https://i.ytimg.com/...` in two-click placeholders
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### İki Tıklamalı YouTube Embed (React & @complirules/primitives)
 ```tsx
 import { useState } from 'react';

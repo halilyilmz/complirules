@@ -1,4 +1,4 @@
-﻿import fs from 'fs';
+import fs from 'fs';
 import path from 'path';
 import { detectProjectStack } from '../detectors/stack-detector.js';
 import { 
@@ -17,10 +17,10 @@ export interface InitOptions {
 }
 
 export function executeInit(targetDir: string, options: InitOptions = {}): void {
-  console.log('\n🛡️  CompliRules — Legal-as-Code & Compliance Guardrail Başlatılıyor...\n');
+  console.log('\n🛡️  CompliRules — Initializing Legal-as-Code & Compliance Guardrail...\n');
 
   const stack = detectProjectStack(targetDir);
-  console.log(`📦 Tespit Edilen Yığın: Framework=${stack.framework.toUpperCase()}, ORM=${stack.orm.toUpperCase()}, TS=${stack.hasTypeScript}`);
+  console.log(`📦 Detected Stack: Framework=${stack.framework.toUpperCase()}, ORM=${stack.orm.toUpperCase()}, TS=${stack.hasTypeScript}`);
 
   const jurisdictions: Jurisdiction[] = [];
   if (options.all) {
@@ -31,18 +31,18 @@ export function executeInit(targetDir: string, options: InitOptions = {}): void 
     if (raw.includes('EU') || raw.includes('GDPR')) jurisdictions.push('GDPR_EU', 'EAA_EU', 'AI_ACT_EU');
     if (raw.includes('US') || raw.includes('HIPAA')) jurisdictions.push('HIPAA_US', 'CCPA_US');
   } else {
-    // Varsayılan: KVKK + GDPR + EAA
+    // Default: KVKK + GDPR + EAA
     jurisdictions.push('KVKK_TR', 'GDPR_EU', 'EAA_EU');
   }
 
-  console.log(`🎯 Hedef Yargı Alanları: ${jurisdictions.join(', ')}`);
+  console.log(`🎯 Target Jurisdictions: ${jurisdictions.join(', ')}`);
 
-  // Kuralları topla
+  // Collect rules
   const rulesToApply = getAllRules().filter((r: RuleDefinition) => 
     jurisdictions.includes(r.jurisdiction) || r.jurisdiction === 'GLOBAL_SEC'
   );
 
-  // 1. .cursor/rules/*.mdc dosyalarını yaz
+  // 1. Write .cursor/rules/*.mdc files
   const cursorRulesDir = path.join(targetDir, '.cursor', 'rules');
   fs.mkdirSync(cursorRulesDir, { recursive: true });
 
@@ -50,19 +50,19 @@ export function executeInit(targetDir: string, options: InitOptions = {}): void 
     const mdcContent = renderMdcRule(rule);
     const fileName = `${rule.id}.mdc`;
     fs.writeFileSync(path.join(cursorRulesDir, fileName), mdcContent, 'utf-8');
-    console.log(`  ✓ Oluşturuldu: .cursor/rules/${fileName}`);
+    console.log(`  ✓ Generated: .cursor/rules/${fileName}`);
   }
 
-  // 2. Kök dizine AGENTS.md ve CLAUDE.md yaz
+  // 2. Write AGENTS.md and CLAUDE.md to root
   const agentsMdContent = renderAgentsMd(rulesToApply);
   fs.writeFileSync(path.join(targetDir, 'AGENTS.md'), agentsMdContent, 'utf-8');
-  console.log(`  ✓ Oluşturuldu: AGENTS.md (Claude Code, Windsurf, Copilot için)`);
+  console.log(`  ✓ Generated: AGENTS.md (for Claude Code, Windsurf, Copilot)`);
 
   const claudeMdContent = renderClaudeMd(rulesToApply);
   fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), claudeMdContent, 'utf-8');
-  console.log(`  ✓ Oluşturuldu: CLAUDE.md`);
+  console.log(`  ✓ Generated: CLAUDE.md`);
 
-  // 3. .cursor/mcp.json konfigürasyonunu ekle
+  // 3. Configure .cursor/mcp.json
   const cursorMcpJsonPath = path.join(targetDir, '.cursor', 'mcp.json');
   const mcpConfig = {
     mcpServers: {
@@ -73,7 +73,7 @@ export function executeInit(targetDir: string, options: InitOptions = {}): void 
     }
   };
   fs.writeFileSync(cursorMcpJsonPath, JSON.stringify(mcpConfig, null, 2), 'utf-8');
-  console.log(`  ✓ Yapılandırıldı: .cursor/mcp.json (Model Context Protocol Entegrasyonu)`);
+  console.log(`  ✓ Configured: .cursor/mcp.json (Model Context Protocol Integration)`);
 
-  console.log('\n✨ Kurulum tamamlandı! AI kodlama araçlarınız (Cursor, Claude Code, Windsurf) artık yasal mevzuat sınırları içerisinde çalışacak.');
+  console.log('\n✨ Initialization complete! Your AI coding agents (Cursor, Claude Code, Windsurf) are now constrained within legal boundaries.\n');
 }

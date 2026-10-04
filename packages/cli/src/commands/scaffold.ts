@@ -19,9 +19,9 @@ export function shredPersonalData<T extends { id: string; email: string }>(user:
   return {
     ...user,
     email: \`anonymized-\${tombstoneHash.slice(0, 10)}@erased.local\`,
-    name: 'ANONİM KULLANICI',
+    name: 'ANONYMIZED USER',
     phone: null,
-    tckn: null,
+    nationalId: null,
     isAnonymized: true,
     anonymizedAt: new Date(),
     tombstoneHash
@@ -31,7 +31,7 @@ export function shredPersonalData<T extends { id: string; email: string }>(user:
     },
     'pii-logger': {
       fileName: 'pii-logger.ts',
-      content: `const SENSITIVE_KEYS = new Set(['password', 'tckn', 'creditcard', 'token', 'authorization', 'secret']);
+      content: `const SENSITIVE_KEYS = new Set(['password', 'nationalid', 'tckn', 'creditcard', 'token', 'authorization', 'secret']);
 
 export function scrubObject<T>(data: T): T {
   if (!data || typeof data !== 'object') return data;
@@ -58,11 +58,12 @@ export const safeLogger = {
 
   const selected = templates[primitiveType];
   if (!selected) {
-    console.log(`❌ Geçersiz primitif türü: "${primitiveType}". Kullanılabilir: ${Object.keys(templates).join(', ')}`);
+    console.log(`❌ Unknown primitive type "${primitiveType}".`);
+    console.log('   Available primitives: crypto-shredding, pii-logger\n');
     return;
   }
 
-  const destFile = path.join(complianceDir, selected.fileName);
-  fs.writeFileSync(destFile, selected.content, 'utf-8');
-  console.log(`✓ Oluşturuldu: lib/compliance/${selected.fileName}`);
+  const destPath = path.join(complianceDir, selected.fileName);
+  fs.writeFileSync(destPath, selected.content, 'utf-8');
+  console.log(`\n✨ Primitive successfully generated: lib/compliance/${selected.fileName}\n`);
 }

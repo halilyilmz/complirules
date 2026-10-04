@@ -1,32 +1,30 @@
 ---
-description: "EU AI Act Madde 50 Şeffaflık ve Madde 12 Denetim Logu Standartları"
+description: "EU AI Act (Regulation 2024/1689) Article 50 Transparency & Synthetic Watermarking Standard"
 globs: ["**/*.tsx","**/*.jsx","**/api/generate/**/*.ts","**/*.py","**/*.go"]
 alwaysApply: false
 ---
 
-# [CompliRules] EU AI Act Madde 50 Şeffaflık ve Madde 12 Denetim Logu Standartları
-**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `AI_ACT_EU`
+# [CompliRules] EU AI Act (Regulation 2024/1689) Article 50 Transparency & Synthetic Watermarking Standard
+**Severity:** `HIGH` | **Jurisdiction:** `AI_ACT_EU`
 
-## Yasal Dayanaklar (Legal Citations)
+## Legal Citations
 - **European Union Artificial Intelligence Act (EU AI Act) (Article 50)**: Yapay zekâ sistemleri ile etkileşimde bulunan kullanıcının bilgilendirilmesi ve üretilen içeriğin makinece okunabilir şekilde işaretlenmesi.
 - **European Union Artificial Intelligence Act (EU AI Act) (Article 12)**: Yüksek riskli (High-Risk - Annex III) yapay zekâ sistemleri için otomatik olay ve işlem kaydı tutma (record-keeping / audit trail) yükümlülüğü.
 - **European Union Artificial Intelligence Act (EU AI Act) (Article 14)**: Human Oversight (Human-in-the-loop / Human-on-the-loop). Yüksek riskli otonom sistemlerde kararların insanlar tarafından denetlenebilmesi, durdurulabilmesi veya geçersiz kılınabilmesi (override) zorunluluğu.
 - **European Union Artificial Intelligence Act (EU AI Act) (Article 86)**: Right to Explanation. Kullanıcının yapay zekâ destekli bireysel kararlara ilişkin gerekçeli açıklama talep etme ve itiraz hakkı.
 
-## Kural Direktifleri
-- MUST: Kullanıcı bir AI sohbet robotu veya aracıyla etkileşime girdiğinde "Bu yanıt bir yapay zekâ modeli tarafından üretilmiştir" ibaresi görünür olmalıdır.
-- MUST: AI tarafından üretilen görsel veya ses içeriklerinde makinece okunabilir şeffaflık metadata etiketi (`x-ai-generated: true`) döndürülmelidir.
-- MUST: Karar destek ve yüksek riskli (High-Risk - Annex III) süreçlerde kullanılan yapay zekâ çağrıları için Article 12 uyarınca otomatik sistem denetim logları (input hash, model versiyonu, timestamp, output hash) tutun.
-- MUST: Yüksek riskli veya kullanıcı üzerinde hukuki/mali etkisi olan AI kararlarında güven skoru düşük olduğunda (`confidenceScore < threshold`) veya kritik kararlarda süreci durdurup insan moderatör eskalasyon kuyruğuna (`escalateToHumanReview`) yönlendirin (Article 14).
-- MUST: AI destekli kararların yanında kullanıcıya gerekçeli açıklama talep etme ve karara itiraz etme hakkı tanıyan bir itiraz/insanla görüşme arayüzü (`RequestHumanInterventionButton`) sunun (Article 86).
+## Rule Mandates
+- MUST: Affix clear, prominent visual disclosure badges indicating that users are interacting with an artificial intelligence system (Article 50(1)).
+- MUST: Embed machine-readable, cryptographic provenance watermarks (C2PA / IPTC standard) into all generated synthetic images, audio, and video (Article 50(2)).
+- MUST: Establish human-in-the-loop escalation mechanisms (`evaluateAiDecisionWithOversight`) for high-impact automated scoring or classification decisions (Article 14).
+- MUST: Provide users with clear opt-out or human review contestation mechanisms for AI-generated determinations.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: AI yanıtlarını doğrudan insan yanıtı gibi göstermek (No AI disclaimer)
-- NEVER: AI üretimi içeriğin kaynağını gizlemek
-- NEVER: Yüksek riskli AI kararlarında denetim kaydı (audit log) tutmadan doğrudan işlem yapmak
-- NEVER: Kullanıcı haklarını veya mali durumunu etkileyen yüksek riskli AI kararlarını insan denetimi ve itiraz hakkı olmaksızın doğrudan kesinleştirmek
+## Forbidden Anti-Patterns
+- NEVER: Deploying customer-facing AI chat agents without explicit disclosure that the system is an automated AI assistant
+- NEVER: Publishing synthetic deepfake media or generative images without machine-readable provenance metadata
+- NEVER: Executing fully autonomous, irrevocable high-impact decisions (credit, employment, health) without human review capabilities
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### AI Şeffaflık Rozeti Bileşeni
 ```tsx
 <div className="flex items-center gap-1.5 text-xs text-neutral-500 py-1" role="status">

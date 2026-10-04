@@ -10,16 +10,16 @@ export function handleAuditCodePii(input: AuditCodePiiInput): string {
   const violations = noUnredactedLogsRule.check(filePath, code);
 
   if (violations.length === 0) {
-    return '✅ PII/PHI Log Denetimi: Kod parçacığında açık metin kişisel veri loglaması veya yetkisiz telemetri sızıntısı tespit edilmedi.';
+    return '✅ PII/PHI Logging Audit: No unredacted cleartext personal data logging or unauthorized telemetry leakage detected in this snippet.';
   }
 
   const reports = violations.map(v => 
-    `- Satır ${v.line}: **${v.message}**\n  *Kod:* \`${v.matchedSnippet}\`\n  *Dayanak:* ${v.lawCitation}\n  *Düzeltme:* ${v.suggestedFix}`
+    `- Line ${v.line}: **${v.message}**\n  *Code:* \`${v.matchedSnippet}\`\n  *Citation:* ${v.lawCitation}\n  *Suggested Fix:* ${v.suggestedFix}`
   ).join('\n\n');
 
-  return `### 🚨 CompliRules PII/PHI Sızıntı Uyarısı\n\n${reports}\n\n` +
-    `**Güvenli Kodlama Örneği:**\n` +
+  return `### 🚨 CompliRules PII/PHI Leakage Alert\n\n${reports}\n\n` +
+    `**Secure Coding Reference:**\n` +
     `\`\`\`typescript\nimport { createRedactedLogger } from '@complirules/primitives';\n` +
     `const logger = createRedactedLogger();\n` +
-    `logger.info("İşlem tamamlandı", { userId: user.id }); // email ve tckn otomatik maskelenir\n\`\`\``;
+    `logger.info("Operation completed", { userId: user.id }); // email, passwords, and national IDs automatically redacted\n\`\`\``;
 }

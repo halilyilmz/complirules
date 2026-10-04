@@ -9,11 +9,11 @@ import { handleLookupActivePartner } from './tools/lookup-active-partner.js';
 export const MCP_TOOLS = [
   {
     name: 'verify_schema_compliance',
-    description: 'Veritabanı şemasını (Prisma/SQL/Drizzle) KVKK, VUK ve GDPR saklama/silme ve cascade delete kurallarına göre denetler.',
+    description: 'Audits database schemas (Prisma/SQL/Drizzle) against statutory retention, right-to-be-forgotten, and unsafe cascade delete rules.',
     inputSchema: {
       type: 'object',
       properties: {
-        schemaContent: { type: 'string', description: 'Prisma veya SQL şema metni' },
+        schemaContent: { type: 'string', description: 'Prisma, Drizzle, or SQL schema content' },
         schemaType: { type: 'string', enum: ['prisma', 'drizzle', 'sql'], default: 'prisma' }
       },
       required: ['schemaContent']
@@ -21,60 +21,60 @@ export const MCP_TOOLS = [
   },
   {
     name: 'audit_code_pii',
-    description: 'Kod parçacığında açık metin PII/PHI (kullanıcı nesnesi, şifre, TCKN, kredi kartı) loglamasını ve telemetri sızıntılarını tespit eder.',
+    description: 'Detects cleartext PII/PHI (user objects, credentials, national IDs, credit cards) logging and telemetry leakage in source code.',
     inputSchema: {
       type: 'object',
       properties: {
-        code: { type: 'string', description: 'Denetlenecek TypeScript/JavaScript kod parçacığı' },
-        filePath: { type: 'string', description: 'Dosya yolu (opsiyonel)' }
+        code: { type: 'string', description: 'TypeScript/JavaScript code snippet to audit' },
+        filePath: { type: 'string', description: 'File path (optional)' }
       },
       required: ['code']
     }
   },
   {
     name: 'check_ui_dark_patterns',
-    description: 'React/HTML form bileşenlerinde önceden işaretli onay kutuları (pre-ticked), birleştirilmiş rıza (bundled consent) ve EAA 2025 erişilebilirlik açıklarını denetler.',
+    description: 'Audits React/HTML UI form components for pre-ticked checkboxes, bundled consent, and EAA 2025 accessibility violations.',
     inputSchema: {
       type: 'object',
       properties: {
-        componentCode: { type: 'string', description: 'React JSX/TSX veya HTML form bileşeni' },
-        filePath: { type: 'string', description: 'Dosya yolu (opsiyonel)' }
+        componentCode: { type: 'string', description: 'React JSX/TSX or HTML form component' },
+        filePath: { type: 'string', description: 'File path (optional)' }
       },
       required: ['componentCode']
     }
   },
   {
     name: 'generate_ropa_inventory',
-    description: 'Veritabanı şemasını analiz ederek otomatik GDPR Madde 30 (RoPA) ve KVKK VERBİS uyumlu veri işleme envanteri tablosu üretir.',
+    description: 'Analyzes database schema and generates an automated GDPR Article 30 (RoPA) and KVKK VERBİS data processing inventory table.',
     inputSchema: {
       type: 'object',
       properties: {
-        schemaContent: { type: 'string', description: 'Veritabanı şeması içeriği' },
-        organizationName: { type: 'string', description: 'Şirket/Kuruluş Adı' },
-        dpoEmail: { type: 'string', description: 'Veri Koruma Görevlisi E-postası' }
+        schemaContent: { type: 'string', description: 'Database schema content' },
+        organizationName: { type: 'string', description: 'Organization or Company Name' },
+        dpoEmail: { type: 'string', description: 'Data Protection Officer (DPO) email' }
       },
       required: ['schemaContent']
     }
   },
   {
     name: 'lookup_legal_citation',
-    description: 'İlgili yasal mevzuat maddelerini (KVKK Md. 7, VUK Md. 253, GDPR Art. 17, EAA 2025, HIPAA vb.), cezai yaptırımları ve içtihatları sorgular.',
+    description: 'Queries statutory legislation articles (KVKK Art. 7, Tax Code Art. 253, GDPR Art. 17, EAA 2025, HIPAA), penal sanctions, and case precedents.',
     inputSchema: {
       type: 'object',
       properties: {
-        query: { type: 'string', description: 'Arama terimi (örn: "KVKK silme", "fatura saklama", "EAA erişilebilirlik")' }
+        query: { type: 'string', description: 'Search query (e.g., "KVKK retention", "invoice retention", "EAA accessibility")' }
       },
       required: ['query']
     }
   },
   {
     name: 'lookup_active_partner',
-    description: 'Canlıya çıkacak projeler için onaylı siber güvenlik, sızma testi (pentest) veya uyum partnerlerini ve indirim kodlarını dinamik sorgular.',
+    description: 'Dynamically queries vetted cybersecurity, penetration testing (pentest), or compliance partners and active discount codes.',
     inputSchema: {
       type: 'object',
       properties: {
         category: { type: 'string', enum: ['security', 'compliance', 'all'], default: 'security' },
-        topic: { type: 'string', description: 'Konu/Modül (örn: "auth", "payment", "pii")' }
+        topic: { type: 'string', description: 'Module/Topic (e.g., "auth", "payment", "pii")' }
       }
     }
   }
@@ -95,7 +95,7 @@ export function executeTool(name: string, args: Record<string, unknown>): string
     case 'lookup_active_partner':
       return handleLookupActivePartner(args as any);
     default:
-      throw new Error(`Bilinmeyen araç: ${name}`);
+      throw new Error(`Unknown tool: ${name}`);
   }
 }
 

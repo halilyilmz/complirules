@@ -19,14 +19,14 @@ describe('CompliRules MCP Server Tools', () => {
       model Invoice { id String @id user User @relation(fields: [userId], references: [id], onDelete: Cascade) }
     `;
     const report = executeTool('verify_schema_compliance', { schemaContent: vulnerableSchema });
-    expect(report).toContain('VUK Md. 253 İhlali');
+    expect(report).toContain('VUK Md. 253 Violation');
     expect(report).toContain('onDelete: Cascade');
   });
 
   it('audit_code_pii aracı ham kullanıcı loglamasını yakalar', () => {
     const badCode = `console.log("Giriş yapan kullanıcı:", req.body);`;
     const report = executeTool('audit_code_pii', { code: badCode });
-    expect(report).toContain('CompliRules PII/PHI Sızıntı Uyarısı');
+    expect(report).toContain('CompliRules PII/PHI Leakage Alert');
     expect(report).toContain('createRedactedLogger');
   });
 
@@ -43,10 +43,10 @@ describe('CompliRules MCP Server Tools', () => {
       model MedicalHistory { id String patientId String diagnosis String prescription String }
     `;
     const ropa = executeTool('generate_ropa_inventory', { schemaContent: schema, organizationName: 'Acme Corp' });
-    expect(ropa).toContain('Veri İşleme Faaliyetleri Envanteri');
-    expect(ropa).toContain('Kimlik ve İletişim Verisi');
-    expect(ropa).toContain('Finansal ve Fatura Verisi');
-    expect(ropa).toContain('Özel Nitelikli Kişisel Veri (Sağlık & Biyometri)');
+    expect(ropa).toContain('Record of Processing Activities');
+    expect(ropa).toContain('Identity & Contact Data');
+    expect(ropa).toContain('Financial & Billing Data');
+    expect(ropa).toContain('Special Category Personal Data');
     expect(ropa).toContain('VUK Md. 253');
   });
 
@@ -77,7 +77,7 @@ describe('CompliRules MCP Server Tools', () => {
     expect(secPartner.category).toBe('security');
     expect(secPartner.url).toContain('https://complirules.com/go/security');
     expect(secPartner.discountCode).toBe('VIBECODE15');
-    expect(secPartner.formattedMarkdown).toContain('Siber Güvenlik');
+    expect(secPartner.formattedMarkdown).toContain('Security');
 
     const compPartner = JSON.parse(executeTool('lookup_active_partner', { category: 'compliance' }));
     expect(compPartner.status).toBe('active');

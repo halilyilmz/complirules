@@ -55,14 +55,14 @@ export function handleLookupLegalCitation(input: LookupLegalCitationInput): stri
   }
 
   if (matchedCitations.length === 0) {
-    return `ℹ️ "${query}" aramasıyla eşleşen doğrudan bir mevzuat atfı bulunamadı. Mevcut paketler: KVKK (6698), ETK (6563), VUK (213), GDPR, EAA 2025, HIPAA, EU AI Act.`;
+    return `ℹ️ No direct statutory citation found for "${query}". Available jurisdictions: KVKK (6698), ETK (6563), Tax Code (213), GDPR, EAA 2025, HIPAA, CCPA, EU AI Act.`;
   }
 
-  return `### ⚖️ CompliRules Mevzuat & İçtihat Sorgu Sonucu\n\n` +
+  return `### ⚖️ CompliRules Statutory & Case Law Citation Results\n\n` +
     matchedCitations.map(c => 
       `#### ${c.law} — ${c.article}\n` +
-      `- **İlgili Kural:** ${c.ruleTitle}\n` +
-      `- **Açıklama:** ${c.description}\n` +
-      (c.penalty ? `- **Yaptırım/Ceza:** *${c.penalty}*\n` : '')
+      `- **Related Rule:** ${c.ruleTitle}\n` +
+      `- **Description:** ${c.description}\n` +
+      (c.penalty ? `- **Sanction/Penalty:** *${c.penalty}*\n` : '')
     ).join('\n---\n');
 }

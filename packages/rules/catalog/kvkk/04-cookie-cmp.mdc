@@ -1,29 +1,28 @@
 ---
-description: "KVKK Çerez Rehberi & Simetrik Consent Management Platform (CMP)"
+description: "KVKK Cookie Guidelines & Category-Based Prior Consent Management Platform (CMP)"
 globs: ["**/*.tsx","**/*.jsx","**/components/cookie*.tsx","**/components/cmp*.tsx","**/components/banner*.tsx"]
 alwaysApply: false
 ---
 
-# [CompliRules] KVKK Çerez Rehberi & Simetrik Consent Management Platform (CMP)
-**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `KVKK_TR`
+# [CompliRules] KVKK Cookie Guidelines & Category-Based Prior Consent Management Platform (CMP)
+**Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
-## Yasal Dayanaklar (Legal Citations)
-- **KVKK Çerez Uygulamaları Hakkında Rehber (Haziran 2022)**: Zorunlu çerezler haricindeki tüm analitik ve pazarlama çerezlerinde önceden açık rıza (Prior Consent Gating) ve simetrik ret butonu zorunluluğu. *[Yaptırım: Hukuka aykırı veri işleme yaptırımları (KVKK Md. 18).]*
+## Legal Citations
+- **KVKK Çerez Uygulamaları Hakkında Rehber (Haziran 2022)**: Zorunlu çerezler haricindeki tüm analitik ve pazarlama çerezlerinde önceden açık rıza (Prior Consent Gating) ve simetrik ret butonu zorunluluğu. *[Sanction: Hukuka aykırı veri işleme yaptırımları (KVKK Md. 18).]*
 - **6698 Sayılı KVKK (Madde 5/1)**: Kişisel verilerin ilgili kişinin açık rızası olmaksızın işlenemeyeceği temel kuralı.
 
-## Kural Direktifleri
-- MUST: Çerezleri Zorunlu (Strictly Necessary), İşlevsel (Functional), Analitik (Analytics) ve Pazarlama (Marketing) olarak 4 kategoriye ayırın.
-- MUST: Kullanıcı açıkça rıza vermeden (prior consent) Google Analytics, Hotjar, Facebook Pixel gibi üçüncü parti izleme scriptlerini ASLA çalıştırmayın.
-- MUST: Çerez banner'ında "Tümünü Kabul Et" butonuyla tamamen aynı büyüklük, zıtlık ve kolaylıkta "Tümünü Reddet" butonu sunun (Simetrik buton ilkesi).
-- MUST: Rıza tercihlerini versiyonlanmış çerezde saklayın ve en geç 12 ayda bir rıza yenileme isteyin.
-- MUST: Cookie Wall veya manipülatif koyu desen (Dark Pattern) uygulamayın.
+## Rule Mandates
+- MUST: Categorize all cookies and local storage tokens into 4 distinct statutory groups: `necessary`, `functional`, `analytics`, and `marketing`.
+- MUST: Gate all non-essential analytics and marketing scripts behind explicit user consent prior to loading (`CookieConsentManager.isCategoryAllowed()`).
+- MUST: Provide a symmetric "Reject All" button with equal visual weight, color contrast, and font size as the "Accept All" button.
+- MUST: Enforce a maximum consent validity window of 12 months, prompting re-consent upon policy updates or expiration.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: Kullanıcı rızası alınmadan doğrudan analitik veya pazarlama scripti yüklemek (Ungated scripts)
-- NEVER: Bannerda sadece "Kabul Et" gösterip "Reddet" seçeneğini gizlemek veya zorlaştırmak
-- NEVER: Hizmet kullanımını zorunlu olmayan çerezlerin kabulüne bağlamak (Cookie Wall)
+## Forbidden Anti-Patterns
+- NEVER: Loading Google Tag Manager, Meta Pixel, or analytics scripts before the user explicitly clicks "Accept"
+- NEVER: Providing only an "Accept" button while hiding the "Reject" option behind nested sub-menus (Dark Pattern)
+- NEVER: Pre-selecting optional cookie categories as active inside preference modals
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### React/Next.js Simetrik Çerez CMP Bileşeni
 ```tsx
 import { CookieConsentManager } from '@complirules/primitives';

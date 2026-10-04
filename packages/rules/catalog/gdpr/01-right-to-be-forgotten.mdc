@@ -1,33 +1,30 @@
 ---
-description: "GDPR Madde 17 Unutulma Hakkı ve Üçüncü Parti İtlaf Pipeline"
+description: "GDPR Article 17 Right to Erasure (Right to be Forgotten) & Downstream Purge Pipeline"
 globs: ["**/*.prisma","**/api/**/*.ts","**/services/user*.ts","**/models.py","**/models/**/*.py","**/models/**/*.go","**/Models/**/*.php"]
 alwaysApply: false
 ---
 
-# [CompliRules] GDPR Madde 17 Unutulma Hakkı ve Üçüncü Parti İtlaf Pipeline
-**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `GDPR_EU`
+# [CompliRules] GDPR Article 17 Right to Erasure (Right to be Forgotten) & Downstream Purge Pipeline
+**Severity:** `CRITICAL` | **Jurisdiction:** `GDPR_EU`
 
-## Yasal Dayanaklar (Legal Citations)
-- **General Data Protection Regulation (GDPR) (Article 17 & 25)**: Right to erasure ("right to be forgotten") and Data protection by design and by default. *[Yaptırım: İhlal durumunda 20 milyon Euro veya küresel cironun %4üne varan idari para cezası.]*
+## Legal Citations
+- **General Data Protection Regulation (GDPR) (Article 17 & 25)**: Right to erasure ("right to be forgotten") and Data protection by design and by default. *[Sanction: İhlal durumunda 20 milyon Euro veya küresel cironun %4üne varan idari para cezası.]*
 - **General Data Protection Regulation (GDPR) (Article 17(3)(b) & (e))**: Hukuki saklama yükümlülüğü (vergi/muhasebe) ve hukuki taleplerin savunulması istisnası. Fatura ve mali kayıtlar fiziksel olarak silinemez; kullanıcı ile ilişkisi koparılmalıdır.
 - **General Data Protection Regulation (GDPR) (Article 20)**: Right to Data Portability. Kullanıcının kişisel verilerini yapılandırılmış, yaygın kullanılan ve makinece okunabilir formatta (JSON/CSV) alma ve taşıma hakkı.
 - **General Data Protection Regulation (GDPR) (Article 8)**: Çocukların rızası ve yaş sınırları. 16 yaşından (veya üye devletçe belirlenen 13 yaşından) küçüklerin verisi veli/ebeveyn onayı olmadan işlenemez.
 
-## Kural Direktifleri
-- MUST: Kullanıcı silme işleminde bir `UserErasureJob` asenkron olayı tetikleyin.
-- MUST: Harici üçüncü parti sistemlerdeki (Stripe customer, Resend contact, Mixpanel profile) kullanıcı kayıtlarını API üzerinden anonimleştirin veya silin.
-- MUST: Finansal ve muhasebe kayıtlarını (fatura/ödeme) GDPR Madde 17(3)(b) uyarınca yasal saklama yükümlülüğü nedeniyle ASLA cascade ile silmeyin; kullanıcı ilişkisini SetNull veya crypto-shredding ile kopararak saklayın.
-- MUST: Kullanıcının verilerini yapılandırılmış, yaygın kullanılan ve makinece okunabilir (JSON/CSV) formatta dışa aktarabileceği `exportUserData(userId)` veya `GET /api/user/export` endpointi oluşturun (GDPR Art. 20).
-- MUST: Genel kitleye açık platformlarda yaş doğrulama kapısı ekleyin; 16 yaş altı kullanıcılar için veli onay akışı sağlayın (GDPR Art. 8).
-- MUST: Yedekleme (backup) sistemlerindeki veriler için 30 günlük dönemsel cryptographic shredding anahtar imhası uygulayın.
+## Rule Mandates
+- MUST: Execute a deterministic data eradication pipeline upon confirmed erasure requests.
+- MUST: Dispatch asynchronous webhook notifications to all integrated third-party processors (Stripe, CRM, Email services) to ensure downstream erasure.
+- MUST: Retain anonymized tombstone identifiers where necessary to prevent account recreation and maintain statutory tax records.
+- MUST: Log cryptographic erasure verification tokens to prove compliance to data protection authorities.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: Sadece tek tablodan DELETE çalıştırıp dış sistemleri (CRM/Analitik) unutmak
-- NEVER: Hard delete ile audit trail (denetim izi) veya fatura kanıtını tamamen yok etmek
-- NEVER: onDelete: Cascade (User ile Invoice/Billing modelleri arasında)
-- NEVER: Kullanıcı hesabı sunup veri dışa aktarma (Data Portability / Export) imkanı sunmamak (GDPR Art. 20 ihlali)
+## Forbidden Anti-Patterns
+- NEVER: Setting a soft-delete `deletedAt` timestamp while leaving plaintext user data indefinitely accessible in active tables
+- NEVER: Failing to propagate user erasure requests to integrated third-party SaaS vendors and sub-processors
+- NEVER: Deleting tax invoices or accounting records before the expiration of statutory commercial retention obligations
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### TypeScript De-identification Pipeline
 ```ts
 export async function executeRightToBeForgotten(userId: string) {

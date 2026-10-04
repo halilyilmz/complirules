@@ -2,7 +2,7 @@ import { RuleDefinition, RulePack } from './types.js';
 
 export const KVKK_RETENTION_RULE: RuleDefinition = {
   id: 'kvkk-retention-tombstone',
-  title: 'KVKK & VUK Veri Saklama ve Tombstone Anonimleştirme Standardı',
+  title: "KVKK & Tax Procedure Code Data Retention and Tombstone Anonymization Standard",
   jurisdiction: 'KVKK_TR',
   severity: 'CRITICAL',
   globs: [
@@ -47,22 +47,22 @@ export const KVKK_RETENTION_RULE: RuleDefinition = {
       penaltyContext: 'KVKK Md. 18/1-ç uyarınca en üst hadden idari para cezası.'
     }
   ],
-  summary: 'Kullanıcı silindiğinde finansal/fatura kayıtlarını silmeyin (onDelete: Cascade yasağı). Kişisel verileri Tombstone/Crypto-shredding ile anonimleştirin. Yurt dışı LLM çağrılarında PII maskeleyin ve özel verileri zarf şifreleme ile koruyun.',
+  summary: "Never delete financial/invoice records when a user account is deleted (prohibition of onDelete: Cascade). Anonymize personal identity data via Tombstone / Crypto-shredding. Mask PII in cross-border LLM API calls and isolate sensitive data with envelope encryption.",
   instructions: [
-    'ASLA kullanıcı modeli ile fatura/ödeme modelleri arasında `onDelete: Cascade` (Django: `models.CASCADE`, Laravel: `cascadeOnDelete()`) ilişkisi kurmayın.',
-    'Kullanıcı silme talebinde (Right to be Forgotten) veriyi kalıcı olarak DROP etmek yerine kişisel alanları (ad, e-posta, telefon, TCKN) deterministik olarak ezerek anonimleştirin.',
-    'Her kullanıcı için `isAnonymized: Boolean` ve `anonymizedAt: DateTime?` sütunları bulundurun.',
-    'Veri saklama sürelerini yönetmek için `RetentionPolicy` ve silme işlemlerini belgeleyen `ImhaLog` tablosu oluşturun.',
-    'Yurt dışı LLM ve bulut APIlerine (OpenAI, Anthropic, Resend, AWS US-East) açık TCKN veya kişisel veri göndermeyin; yerel takma adlaştırma (pseudonymization) filtresi uygulayın (KVKK Md. 9).',
-    'Sağlık, biyometrik veya adli sicil gibi özel nitelikli verileri `User` tablosunda plaintext saklamayın; Zarf Şifreleme (Envelope Encryption - DEK & KEK) kullanın (KVKK Md. 6).',
-    'Veritabanı şemasında her hassas sütun üzerine VERBİS süreç eşleme etiketleri ekleyin (`/// @compliance: KVKK_MD5_2C | Retention: 10Y`).'
+    "NEVER configure `onDelete: Cascade` (Django: `models.CASCADE`, Laravel: `cascadeOnDelete()`) between User models and Financial/Invoice/Order models.",
+    "When handling a user deletion or Right to be Forgotten request, anonymize personal fields (name, email, phone, national ID) deterministically rather than executing a hard SQL DROP.",
+    "Maintain `isAnonymized: Boolean` and `anonymizedAt: DateTime?` columns on the User model.",
+    "Establish a `RetentionPolicy` and an `AuditLog` table to document deletion and anonymization actions.",
+    "Never transmit unmasked national IDs or direct personal data to overseas LLM or cloud APIs (OpenAI, Anthropic, Resend, AWS US-East); apply local pseudonymization filters (KVKK Art. 9).",
+    "Never store special category personal data (health, biometric, criminal records) in plaintext in the User table; use Envelope Encryption (DEK & KEK) (KVKK Art. 6).",
+    "Add VERBİS process mapping annotations above sensitive schema columns (`/// @compliance: KVKK_ART5_2C | Retention: 10Y`)."
   ],
   forbiddenPatterns: [
-    'onDelete: Cascade / models.CASCADE / cascadeOnDelete() (User ile Invoice/Payment arasında)',
-    'deletedAt: DateTime? koyup kullanıcının açık isim ve e-postasını DBde bırakmak',
-    'prisma.user.delete({ where: { id } }) / user.delete() doğrudan kalıcı çağrısı',
-    'openai.chat.completions.create({ messages: [{ content: userTcknAndEmail }] }) (KVKK Md. 9 yurt dışı aktarımı)',
-    'model User { healthHistory String } (Özel nitelikli veriyi User tablosunda plaintext tutmak)'
+    "onDelete: Cascade / models.CASCADE / cascadeOnDelete() between User and Invoice/Payment models",
+    "Setting deletedAt: DateTime? while leaving unmasked personal name and email in the database",
+    "Hard deleting user records via prisma.user.delete({ where: { id } }) or user.delete() without tombstoning financial records",
+    "openai.chat.completions.create({ messages: [{ content: userTcknAndEmail }] }) (Unlawful cross-border transfer under KVKK Art. 9)",
+    "model User { healthHistory String } (Storing special category personal data in plaintext)"
   ],
   compliantCodeSnippets: [
     {
@@ -165,7 +165,7 @@ Schema::create('invoices', function (Blueprint $table) {
 
 export const KVKK_UI_CONSENT_RULE: RuleDefinition = {
   id: 'kvkk-ui-consent-etk',
-  title: 'KVKK & ETK/İYS Ayrık Rıza ve Dark Pattern Yasağı',
+  title: "KVKK & Commercial Electronic Communication (ETK) Granular Consent and Pre-ticked Box Prohibition",
   jurisdiction: 'KVKK_TR',
   severity: 'CRITICAL',
   globs: ['**/*.tsx', '**/*.jsx', '**/*.vue', '**/components/forms/**/*.ts'],
@@ -182,17 +182,19 @@ export const KVKK_UI_CONSENT_RULE: RuleDefinition = {
       description: 'Ticari elektronik ileti gönderimi için alıcının önceden onayının alınması (İYS uyumu).'
     }
   ],
-  summary: 'Aydınlatma Metni bir onay kutusu değildir. Pazarlama/ETK onayı zorunlu veya önceden işaretli (pre-ticked) olamaz.',
+  summary: "Never bundle privacy policy acknowledgment with commercial electronic message consent. All consent checkboxes must be separate, explicit, and unchecked by default.",
   instructions: [
-    'Aydınlatma Metni için checkbox KOYMAYIN. "Üye olarak Aydınlatma Metnini okuduğunuzu beyan edersiniz" şeklinde şeffaf bilgilendirme linki kullanın.',
-    'Kullanım Koşulları ve Açık Rıza onaylarını tek bir kutuda BİRLEŞTİRMEYİN.',
-    'Pazarlama (SMS/E-posta) onayı ASLA `required` olamaz ve ASLA `defaultChecked={true}` yapılamaz.',
-    'Rıza logunu `AgreementAcceptanceLog` tablosunda zaman damgası, IP adresi ve metin versiyonu ile saklayın.'
+    "Separate Privacy Policy / Terms acknowledgment from Commercial Marketing (ETK / İYS) consent into two distinct checkboxes.",
+    "All consent checkboxes MUST be unchecked by default (`defaultChecked={false}`); pre-ticked checkboxes are strictly prohibited (Board Decision 2019/09).",
+    "Service access (registration, purchase, newsletter) MUST NOT be conditioned upon granting commercial communication consent (Prohibition of Bundled Consent / KVKK Art. 5).",
+    "Record explicit audit metadata for every consent granted: timestamp, consent version, IP address, and acceptance state in a `UserConsent` model.",
+    "Provide an accessible opt-out mechanism within user settings allowing one-click withdrawal of consent at any time (KVKK Art. 11)."
   ],
   forbiddenPatterns: [
-    '<input type="checkbox" defaultChecked={true} /> (Rıza formlarında)',
-    '<input type="checkbox" required /> (Pazarlama veya ETK onaylarında)',
-    '"Kullanım koşullarını ve kampanya e-postalarını kabul ediyorum" (Tek kutu)'
+    "<input type=\"checkbox\" defaultChecked={true} /> on any consent or marketing checkbox",
+    "Bundling privacy policy and marketing consent into a single unified checkbox",
+    "Disabling the signup submit button until the user agrees to marketing emails",
+    "Sending promotional emails or SMS without an explicit opt-in timestamp logged in the database"
   ],
   compliantCodeSnippets: [
     {
@@ -224,7 +226,7 @@ export const KVKK_UI_CONSENT_RULE: RuleDefinition = {
 
 export const GDPR_RIGHT_TO_ERASURE_RULE: RuleDefinition = {
   id: 'gdpr-right-to-be-forgotten',
-  title: 'GDPR Madde 17 Unutulma Hakkı ve Üçüncü Parti İtlaf Pipeline',
+  title: "GDPR Article 17 Right to Erasure (Right to be Forgotten) & Downstream Purge Pipeline",
   jurisdiction: 'GDPR_EU',
   severity: 'CRITICAL',
   globs: [
@@ -260,20 +262,17 @@ export const GDPR_RIGHT_TO_ERASURE_RULE: RuleDefinition = {
       description: 'Çocukların rızası ve yaş sınırları. 16 yaşından (veya üye devletçe belirlenen 13 yaşından) küçüklerin verisi veli/ebeveyn onayı olmadan işlenemez.'
     }
   ],
-  summary: 'Silme talebi sadece yerel DB silmesi değildir; üçüncü parti servisleri temizleyin, faturaları Art. 17(3)(b) ile koruyun, Art. 20 veri taşınabilirliği ve Art. 8 yaş kapısı sunun.',
+  summary: "Upon receipt of an erasure request, purge user personal data across internal databases and trigger downstream revocation webhooks to third-party processors (Stripe, Resend, Segment).",
   instructions: [
-    'Kullanıcı silme işleminde bir `UserErasureJob` asenkron olayı tetikleyin.',
-    'Harici üçüncü parti sistemlerdeki (Stripe customer, Resend contact, Mixpanel profile) kullanıcı kayıtlarını API üzerinden anonimleştirin veya silin.',
-    'Finansal ve muhasebe kayıtlarını (fatura/ödeme) GDPR Madde 17(3)(b) uyarınca yasal saklama yükümlülüğü nedeniyle ASLA cascade ile silmeyin; kullanıcı ilişkisini SetNull veya crypto-shredding ile kopararak saklayın.',
-    'Kullanıcının verilerini yapılandırılmış, yaygın kullanılan ve makinece okunabilir (JSON/CSV) formatta dışa aktarabileceği `exportUserData(userId)` veya `GET /api/user/export` endpointi oluşturun (GDPR Art. 20).',
-    'Genel kitleye açık platformlarda yaş doğrulama kapısı ekleyin; 16 yaş altı kullanıcılar için veli onay akışı sağlayın (GDPR Art. 8).',
-    'Yedekleme (backup) sistemlerindeki veriler için 30 günlük dönemsel cryptographic shredding anahtar imhası uygulayın.'
+    "Execute a deterministic data eradication pipeline upon confirmed erasure requests.",
+    "Dispatch asynchronous webhook notifications to all integrated third-party processors (Stripe, CRM, Email services) to ensure downstream erasure.",
+    "Retain anonymized tombstone identifiers where necessary to prevent account recreation and maintain statutory tax records.",
+    "Log cryptographic erasure verification tokens to prove compliance to data protection authorities."
   ],
   forbiddenPatterns: [
-    'Sadece tek tablodan DELETE çalıştırıp dış sistemleri (CRM/Analitik) unutmak',
-    'Hard delete ile audit trail (denetim izi) veya fatura kanıtını tamamen yok etmek',
-    'onDelete: Cascade (User ile Invoice/Billing modelleri arasında)',
-    'Kullanıcı hesabı sunup veri dışa aktarma (Data Portability / Export) imkanı sunmamak (GDPR Art. 20 ihlali)'
+    "Setting a soft-delete `deletedAt` timestamp while leaving plaintext user data indefinitely accessible in active tables",
+    "Failing to propagate user erasure requests to integrated third-party SaaS vendors and sub-processors",
+    "Deleting tax invoices or accounting records before the expiration of statutory commercial retention obligations"
   ],
   compliantCodeSnippets: [
     {
@@ -327,7 +326,7 @@ export async function exportUserDataHandler(req: Request) {
 
 export const EAA_ACCESSIBILITY_RULE: RuleDefinition = {
   id: 'eaa-wcag-accessibility',
-  title: 'European Accessibility Act (EAA 2025) & WCAG 2.1 AA Arayüz Standartları',
+  title: "European Accessibility Act (EAA 2025) & EN 301 549 / WCAG 2.1 AA UI Standards",
   jurisdiction: 'EAA_EU',
   severity: 'HIGH',
   globs: ['**/*.tsx', '**/*.jsx', '**/*.html', '**/*.css'],
@@ -344,19 +343,19 @@ export const EAA_ACCESSIBILITY_RULE: RuleDefinition = {
       description: 'Algılanabilir, Çalıştırılabilir, Anlaşılabilir ve Sağlam web standartları.'
     }
   ],
-  summary: 'Klavye navigasyonu, görünür focus halkası, >=44px dokunma hedefi ve ekran okuyucu etiketleri yasal zorunluluktur.',
+  summary: "Enforce visible keyboard focus indicators (:focus-visible), screen reader accessible names (aria-label), minimum 44px mobile touch targets, and 4.5:1 text color contrast across all interactive components.",
   instructions: [
-    'ASLA `outline: none` stilini görünür bir `:focus-visible` alternatifi olmadan kullanmayın.',
-    'Bütün interaktif buton ve linkler mobil ekranda en az 44x44px dokunma alanına (touch target) sahip olmalıdır.',
-    'İkon butonlarda (ikon tek başına kullanıldığında) mutlaka açıklayıcı `aria-label` bulunmalıdır.',
-    'Metin kontrastı APCA veya WCAG 2.1 AA standardına göre normal metinlerde en az 4.5:1 olmalıdır.',
-    'Form hata mesajlarını ekran okuyuculara duyurmak için `aria-invalid="true"`, `aria-describedby="{field}-error"` ve `role="alert"` veya `aria-live="polite"` kullanın (WCAG 3.3.1 / 3.3.2).'
+    "Maintain clear, high-contrast keyboard focus indicators (`:focus-visible`); NEVER set `outline: none` without a visible replacement.",
+    "Provide explicit accessible names (`aria-label` or `<span className=\"sr-only\">`) on all icon-only buttons and interactive controls.",
+    "Ensure all interactive touch targets meet or exceed 44x44 CSS pixels on mobile viewports.",
+    "Verify that normal text color contrast meets or exceeds 4.5:1 against its background (3:1 for large text).",
+    "Support full keyboard navigation (Tab, Enter, Space, Escape) and prevent focus traps in dialogs and modals."
   ],
   forbiddenPatterns: [
-    'outline: none (yerine focus ring tanımlanmadan)',
-    '<button><svg>...</svg></button> (aria-label olmadan ikon buton)',
-    '<div onClick={...}> (Klavye desteği ve role="button" olmadan tıklanabilir div)',
-    'Form hatalarını yalnızca kırmızı renk veya ikonla gösterip ekran okuyucu ARIA etiketlerini atlamak'
+    "outline: none or outline: 0 without visible focus-visible indicators",
+    "<button><svg ... /></button> icon buttons lacking text labels or aria-label attributes",
+    "Interactive buttons or touch targets smaller than 44px on mobile viewports",
+    "Color contrast ratios falling below 4.5:1 for standard body text"
   ],
   compliantCodeSnippets: [
     {
@@ -397,7 +396,7 @@ export const EAA_ACCESSIBILITY_RULE: RuleDefinition = {
 
 export const HIPAA_TECHNICAL_SAFEGUARDS_RULE: RuleDefinition = {
   id: 'hipaa-phi-technical-safeguards',
-  title: 'HIPAA Security Rule (45 CFR § 164.312) Teknik Güvenceler ve PHI İzolasyonu',
+  title: "HIPAA Security Rule (45 CFR § 164.312) PHI Technical Safeguards & Immutable Audit Trails",
   jurisdiction: 'HIPAA_US',
   severity: 'CRITICAL',
   globs: [
@@ -427,19 +426,18 @@ export const HIPAA_TECHNICAL_SAFEGUARDS_RULE: RuleDefinition = {
       description: 'Automatic Logoff. Terminal ve klinik web oturumlarında yetkisiz erişimi önlemek için maksimum 15 dakikalık hareketsizlik sonrası otomatik oturum kapatma.'
     }
   ],
-  summary: 'PHI verileri loglara basılamaz, açık tutulamaz, BAA sözleşmesiz LLMlere verilemez. SELECT * yasağı (Minimum Necessary) ve 15 dk otomatik oturum kapatma zorunludur.',
+  summary: "Isolate Protected Health Information (PHI) in dedicated encrypted schemas, enforce automatic 15-minute inactivity session timeouts, maintain immutable audit trails, and restrict queries to the minimum necessary standard.",
   instructions: [
-    'Hasta sağlık bilgileri (teşhis, reçete, lab sonucu) ile kimlik bilgilerini (ad, SSN) aynı açık tabloda tutmayın; şifreli veya takma adlı (pseudonymized) bağlayın.',
-    'BAA (Business Associate Agreement) imzalanmamış açık LLM APIlerine (OpenAI public tier, Anthropic public tier) asla ham PHI göndermeyin.',
-    'ASLA PHI modellerinde `SELECT *` veya projectsiz sorgu çalıştırmayın; yalnızca o anki işlem için gerekli alanları kısıtlayın (`select: { vitals: true }`) (45 CFR § 164.502(b)).',
-    'Klinik portallarda 15 dakikalık maksimum hareketsizlik durumunda oturumu otomatik kapatan (`HIPAA_MAX_INACTIVITY_MS = 15 * 60 * 1000`) oturum düşürme denetleyicisi uygulayın (45 CFR § 164.312(a)(2)(iii)).',
-    'Her PHI erişimini (okuma/yazma/silme) `ImmutableAuditLog` tablosuna aktör ID, işlem zamanı ve hasta ID ile kaydedin.'
+    "Isolate all Protected Health Information (PHI) within dedicated, encrypted database schemas (Encryption at Rest with AES-256).",
+    "Enforce an automatic session timeout of 15 minutes of user inactivity across all clinical and healthcare portals.",
+    "Maintain append-only, immutable audit trails capturing user ID, timestamp, patient ID, and accessed fields for every PHI read/write operation.",
+    "Apply the \"Minimum Necessary Standard\" by selecting only necessary projection fields (`select: { id: true, diagnosis: true }`) instead of wildcard `SELECT *`."
   ],
   forbiddenPatterns: [
-    'openai.chat.completions.create({ messages: [{ content: patientMedicalNotes }] }) (BAAsız)',
-    'logger.info({ diagnosis: patient.diagnosis })',
-    'prisma.patient.findUnique({ where: { id } }) (Select projeksiyonu olmadan tüm PHI kaydını çekmek)',
-    'SELECT * FROM medical_records / SELECT * FROM patients'
+    "Storing medical diagnoses, prescriptions, or clinical notes in unencrypted generic User tables",
+    "Configuring session timeouts exceeding 15 minutes of inactivity on healthcare applications",
+    "Executing un-audited `SELECT * FROM MedicalRecords` queries exposing unnecessary patient identifiers",
+    "Modifying or deleting historical audit log entries (Audit trails must be write-once, append-only)"
   ],
   compliantCodeSnippets: [
     {
@@ -488,7 +486,7 @@ export function checkClinicSession(lastActivityTimestamp: number) {
 
 export const AI_ACT_TRANSPARENCY_RULE: RuleDefinition = {
   id: 'ai-act-transparency',
-  title: 'EU AI Act Madde 50 Şeffaflık ve Madde 12 Denetim Logu Standartları',
+  title: "EU AI Act (Regulation 2024/1689) Article 50 Transparency & Synthetic Watermarking Standard",
   jurisdiction: 'AI_ACT_EU',
   severity: 'HIGH',
   globs: [
@@ -521,19 +519,17 @@ export const AI_ACT_TRANSPARENCY_RULE: RuleDefinition = {
       description: 'Right to Explanation. Kullanıcının yapay zekâ destekli bireysel kararlara ilişkin gerekçeli açıklama talep etme ve itiraz hakkı.'
     }
   ],
-  summary: 'AI içerikleri arayüzde şeffaflaştırılmalı, C2PA filigranı eklenmeli, Article 12 denetim logu tutulmalı ve Article 14 insan gözetimi (Human-in-the-loop) ile Article 86 itiraz mekanizması sağlanmalıdır.',
+  summary: "Affix prominent visual AI transparency badges to automated interactions, embed cryptographic C2PA watermarks into synthetic media, and provide human-in-the-loop escalation paths for high-impact automated classifications.",
   instructions: [
-    'Kullanıcı bir AI sohbet robotu veya aracıyla etkileşime girdiğinde "Bu yanıt bir yapay zekâ modeli tarafından üretilmiştir" ibaresi görünür olmalıdır.',
-    'AI tarafından üretilen görsel veya ses içeriklerinde makinece okunabilir şeffaflık metadata etiketi (`x-ai-generated: true`) döndürülmelidir.',
-    'Karar destek ve yüksek riskli (High-Risk - Annex III) süreçlerde kullanılan yapay zekâ çağrıları için Article 12 uyarınca otomatik sistem denetim logları (input hash, model versiyonu, timestamp, output hash) tutun.',
-    'Yüksek riskli veya kullanıcı üzerinde hukuki/mali etkisi olan AI kararlarında güven skoru düşük olduğunda (`confidenceScore < threshold`) veya kritik kararlarda süreci durdurup insan moderatör eskalasyon kuyruğuna (`escalateToHumanReview`) yönlendirin (Article 14).',
-    'AI destekli kararların yanında kullanıcıya gerekçeli açıklama talep etme ve karara itiraz etme hakkı tanıyan bir itiraz/insanla görüşme arayüzü (`RequestHumanInterventionButton`) sunun (Article 86).'
+    "Affix clear, prominent visual disclosure badges indicating that users are interacting with an artificial intelligence system (Article 50(1)).",
+    "Embed machine-readable, cryptographic provenance watermarks (C2PA / IPTC standard) into all generated synthetic images, audio, and video (Article 50(2)).",
+    "Establish human-in-the-loop escalation mechanisms (`evaluateAiDecisionWithOversight`) for high-impact automated scoring or classification decisions (Article 14).",
+    "Provide users with clear opt-out or human review contestation mechanisms for AI-generated determinations."
   ],
   forbiddenPatterns: [
-    'AI yanıtlarını doğrudan insan yanıtı gibi göstermek (No AI disclaimer)',
-    'AI üretimi içeriğin kaynağını gizlemek',
-    'Yüksek riskli AI kararlarında denetim kaydı (audit log) tutmadan doğrudan işlem yapmak',
-    'Kullanıcı haklarını veya mali durumunu etkileyen yüksek riskli AI kararlarını insan denetimi ve itiraz hakkı olmaksızın doğrudan kesinleştirmek'
+    "Deploying customer-facing AI chat agents without explicit disclosure that the system is an automated AI assistant",
+    "Publishing synthetic deepfake media or generative images without machine-readable provenance metadata",
+    "Executing fully autonomous, irrevocable high-impact decisions (credit, employment, health) without human review capabilities"
   ],
   compliantCodeSnippets: [
     {
@@ -574,7 +570,7 @@ export async function processAutomatedDecision(userApplication: any) {
 
 export const PII_LOGGER_GUARD_RULE: RuleDefinition = {
   id: 'sec-pii-logger-guard',
-  title: 'Log ve Telemetri Katmanında Sıfır PII/PHI Sızıntısı Standardı',
+  title: "AppSec & DevSecOps Log Sanitization and PII/PHI Scrubber Standard",
   jurisdiction: 'GLOBAL_SEC',
   severity: 'CRITICAL',
   globs: [
@@ -594,16 +590,17 @@ export const PII_LOGGER_GUARD_RULE: RuleDefinition = {
       description: 'Üçüncü parti log sunucularına (Datadog, CloudWatch, Sentry) kimlik, parola, token veya TCKN sızdırılamaz.'
     }
   ],
-  summary: 'console.log veya print ile ham nesne (req.body, user) basmayın. Otomatik redaksiyonlu logger kullanın.',
+  summary: "Never log raw request objects, credentials, tokens, national IDs, or health data to telemetry servers (Datadog, CloudWatch, Sentry). Use an automated redacting logger with deterministic PII scrubbing.",
   instructions: [
-    'ASLA `console.log(req.body)`, `console.log(user)`, `print(request.body)` veya `logger.info(user)` yazmayın.',
-    'Merkezi bir redaksiyon filtresi (`pino` redaction, Python `structlog` veya Go `slog`) kullanın.',
-    'E-posta, TCKN, IBAN, parola ve yetkilendirme token alanlarını her zaman maskeleyin (`j***@example.com`, `123*****789`).'
+    "NEVER log raw request bodies (`console.log(req.body)`, `print(request.body)`) or unredacted user models to standard output or telemetry sinks.",
+    "Deploy an automated redacting logger (`createRedactedLogger()`, `pino` redaction, or `structlog`) configured to scrub passwords, tokens, national IDs, and credit card numbers.",
+    "Sanitize exception stack traces and payloads before reporting to external observability tools (Sentry, Datadog).",
+    "Enforce strict telemetry masking across client-side error reporting libraries."
   ],
   forbiddenPatterns: [
-    'console.log(req.body) / print(request.body) / Log::info($request->all())',
-    'console.log(user) / logger.info(user) / log.Printf("%+v", user)',
-    'Sentry.captureException(err, { extra: { payload: req.body } })'
+    "console.log(\"User login:\", req.body) in API routes or middleware",
+    "Logging raw authorization headers, JWT tokens, or API keys to server logs",
+    "Transmitting unredacted customer emails or phone numbers to third-party monitoring platforms"
   ],
   compliantCodeSnippets: [
     {
@@ -675,7 +672,7 @@ Log::info('User login successful', [
 
 export const KVKK_DSR_TICKETING_RULE: RuleDefinition = {
   id: 'kvkk-dsr-ticketing',
-  title: 'KVKK Md. 11 & 13 Veri Sahibi Başvuru ve 30 Günlük SLA Yönetimi',
+  title: "KVKK Data Subject Access Requests (DSR) & 30-Day SLA Ticketing Workflow",
   jurisdiction: 'KVKK_TR',
   severity: 'CRITICAL',
   globs: [
@@ -705,17 +702,17 @@ export const KVKK_DSR_TICKETING_RULE: RuleDefinition = {
       description: 'Başvuruda ad-soyad, imza, TCKN/pasaport no, tebligat adresi, e-posta/telefon ve talep konusunun bulunması zorunludur.'
     }
   ],
-  summary: 'İlgili kişi başvurularını Tebliğ Md. 5/2 zorunlu unsurlarına göre doğrulayın; 30 günlük kesin ve uzatılamaz SLA ile takip edin; silme/düzeltme işlemlerinde üçüncü taraflara downstream bildirim gönderin.',
+  summary: "Process data subject access and erasure requests under KVKK Art. 11 & 13 within a non-extendable 30-day statutory SLA, validate mandatory identity fields, and notify downstream data processors.",
   instructions: [
-    'Tebliğ Md. 5/2 uyarınca başvuruda ad-soyad, imza/doğrulama, TCKN (veya pasaport no), tebligat adresi, e-posta/telefon ve talep konusu alanlarını zorunlu olarak doğrulayın.',
-    'Başvuru biletini `DsrEngine.createTicket` ile oluşturup başvuru tarihinden itibaren kesin 30 günlük geri sayım başlatın; bu süre kanunen uzatılamaz.',
-    'Veri silme veya düzeltme talebi onaylandığında, verilerin daha önce aktarıldığı tüm üçüncü parti sistemlere (CRM, e-posta listeleri, analitik) downstream bildirim iletin (KVKK Md. 11/1-f).',
-    'Talebin reddi durumunda gerekçeli ret kararını yazılı veya elektronik ortamda ilgili kişiye 30 gün içinde bildirin.'
+    "Implement an automated DSR state machine (`SUBMITTED` -> `IDENTITY_VERIFIED` -> `IN_REVIEW` -> `COMPLETED`) with a strict 30-calendar-day countdown.",
+    "Validate mandatory applicant identity fields (Turkish National ID / TCKN for citizens, passport number for foreign nationals, residential address, email, telephone) per Communiqué Art. 5/2.",
+    "Upon completing an erasure or anonymization request, trigger downstream webhook notifications to all third-party data processors (Stripe, Resend, CRM).",
+    "Record immutable audit log entries for every status transition and notification delivery."
   ],
   forbiddenPatterns: [
-    '30 günlük yasal cevap süresini aşmak veya gerekçesiz yanıtsız bırakmak',
-    'Tebliğ Md. 5/2 zorunlu kimlik/adres doğrulaması yapmadan anonim talepleri işleme almak',
-    'Veri silindiğinde aktarılan üçüncü taraflara downstream bildirim yapmayı atlamak'
+    "Permitting DSR ticket resolution beyond the strict 30-day statutory SLA window without escalating to DPO",
+    "Accepting data subject applications lacking mandatory identity validation fields (TCKN/Passport, Address)",
+    "Completing a deletion request internally without dispatching downstream erasure notifications to third-party processors"
   ],
   compliantCodeSnippets: [
     {
@@ -747,7 +744,7 @@ export async function handleKvkkDsrRequest(payload: any) {
 
 export const KVKK_COOKIE_CMP_RULE: RuleDefinition = {
   id: 'kvkk-cookie-cmp',
-  title: 'KVKK Çerez Rehberi & Simetrik Consent Management Platform (CMP)',
+  title: "KVKK Cookie Guidelines & Category-Based Prior Consent Management Platform (CMP)",
   jurisdiction: 'KVKK_TR',
   severity: 'CRITICAL',
   globs: [
@@ -771,18 +768,17 @@ export const KVKK_COOKIE_CMP_RULE: RuleDefinition = {
       description: 'Kişisel verilerin ilgili kişinin açık rızası olmaksızın işlenemeyeceği temel kuralı.'
     }
   ],
-  summary: 'Çerezleri 4 kategoriye ayırın. Zorunlu olmayan analitik ve pazarlama çerezlerini önceden açık rıza (Prior Consent) almadan yüklemeyin. Çerez banner\'ında "Kabul Et" ve "Reddet" butonlarını tamamen simetrik ve eşit hiyerarşide sunun.',
+  summary: "Classify cookies strictly by category (Strictly Necessary, Functional, Performance/Analytics, Advertising/Marketing). Gate non-essential cookies behind prior explicit consent and provide a symmetric reject button.",
   instructions: [
-    'Çerezleri Zorunlu (Strictly Necessary), İşlevsel (Functional), Analitik (Analytics) ve Pazarlama (Marketing) olarak 4 kategoriye ayırın.',
-    'Kullanıcı açıkça rıza vermeden (prior consent) Google Analytics, Hotjar, Facebook Pixel gibi üçüncü parti izleme scriptlerini ASLA çalıştırmayın.',
-    'Çerez banner\'ında "Tümünü Kabul Et" butonuyla tamamen aynı büyüklük, zıtlık ve kolaylıkta "Tümünü Reddet" butonu sunun (Simetrik buton ilkesi).',
-    'Rıza tercihlerini versiyonlanmış çerezde saklayın ve en geç 12 ayda bir rıza yenileme isteyin.',
-    'Cookie Wall veya manipülatif koyu desen (Dark Pattern) uygulamayın.'
+    "Categorize all cookies and local storage tokens into 4 distinct statutory groups: `necessary`, `functional`, `analytics`, and `marketing`.",
+    "Gate all non-essential analytics and marketing scripts behind explicit user consent prior to loading (`CookieConsentManager.isCategoryAllowed()`).",
+    "Provide a symmetric \"Reject All\" button with equal visual weight, color contrast, and font size as the \"Accept All\" button.",
+    "Enforce a maximum consent validity window of 12 months, prompting re-consent upon policy updates or expiration."
   ],
   forbiddenPatterns: [
-    'Kullanıcı rızası alınmadan doğrudan analitik veya pazarlama scripti yüklemek (Ungated scripts)',
-    'Bannerda sadece "Kabul Et" gösterip "Reddet" seçeneğini gizlemek veya zorlaştırmak',
-    'Hizmet kullanımını zorunlu olmayan çerezlerin kabulüne bağlamak (Cookie Wall)'
+    "Loading Google Tag Manager, Meta Pixel, or analytics scripts before the user explicitly clicks \"Accept\"",
+    "Providing only an \"Accept\" button while hiding the \"Reject\" option behind nested sub-menus (Dark Pattern)",
+    "Pre-selecting optional cookie categories as active inside preference modals"
   ],
   compliantCodeSnippets: [
     {
@@ -814,7 +810,7 @@ export function CookieBanner({ onAcceptAll, onRejectAll }: Props) {
 
 export const KVKK_TRANSFER_GEOFENCING_RULE: RuleDefinition = {
   id: 'kvkk-transfer-geofencing',
-  title: 'KVKK Madde 9 (2024 Reformu) Yurt Dışı Veri Aktarımı ve Veri Yerleşimi Standardı',
+  title: "KVKK Article 9 (2024 Reform) Cross-Border Data Transfer & Cloud Geo-Fencing",
   jurisdiction: 'KVKK_TR',
   severity: 'CRITICAL',
   globs: [
@@ -839,17 +835,17 @@ export const KVKK_TRANSFER_GEOFENCING_RULE: RuleDefinition = {
       description: 'Standart Sözleşmelerin (SCC) imzalanmasından itibaren 5 İŞ GÜNÜ İÇİNDE Kurul\'a bildirilmesi zorunluluğu.'
     }
   ],
-  summary: 'Türkiye\'deki kullanıcı verilerini varsayılan olarak yerel veri merkezlerinde (TR Region) barındırın (Geo-Fencing). Standart Sözleşme (SCC) imzalandığında 5 iş günü içinde Kurul\'a bildirim yapın. Uygun güvence olmadan yurt dışı LLM veya bulut API\'lerine PII aktarmayın.',
+  summary: "Prohibit transferring personal data to foreign cloud servers or LLM APIs without Standard Contractual Clauses (SCC) notified to the Board within 5 business days, Binding Corporate Rules (BCR), or Board authorization. Implement geo-routing and data residency.",
   instructions: [
-    'Türkiye\'deki kullanıcılara ait kimlik, finansal ve sağlık verilerini varsayılan olarak Türkiye bölgesi (TR Region) veritabanlarında saklayın (Data Residency / Geo-Fencing).',
-    'Yurt dışına veri aktarılacaksa Standart Sözleşme (SCC), Bağlayıcı Şirket Kuralları (BCR) veya Taahhütname/Kurul izni dayanağını doğrulayın.',
-    'Standart Sözleşme (SCC) imzalandıktan sonra en geç 5 İŞ GÜNÜ İÇİNDE Kurul\'a fiziken veya KEP üzerinden bildirim yapılmasını sistemsel olarak takip edin.',
-    'Yurt dışı LLM ve analiz API\'lerine (OpenAI, Anthropic, AWS US-East) doğrudan açık TCKN veya PII iletmeden önce yerel maskeleme uygulayın.'
+    "Route database storage and processing workloads involving Turkish resident personal data to in-country regions (e.g. TR-Central, EU Sovereign Cloud) by default.",
+    "When using overseas cloud providers (AWS, Azure, Vercel) or LLM endpoints (OpenAI, Anthropic), verify that executed Standard Contractual Clauses (SCC) have been filed with the Personal Data Protection Board within 5 business days.",
+    "Apply local pseudonymization or tokenization filters before transmitting user payloads to foreign APIs.",
+    "Log data residency tags (`dataResidencyRegion: \"TR\"`) across database records and telemetry events."
   ],
   forbiddenPatterns: [
-    'Uygun güvence (SCC/BCR/İzin) olmadan kullanıcı verilerini yurt dışı sunuculara veya LLM API\'lerine aktarmak',
-    'Standart Sözleşme 5 iş günü Kurul bildirim süresini kaçırmak veya kayıtsız aktarım yapmak',
-    'Coğrafi yönlendirme (geo-routing) olmaksızın küresel tek bölge veritabanı kullanmak'
+    "Transmitting raw, unmasked Turkish National IDs (TCKN) or user profiles directly to overseas LLM inference endpoints",
+    "Deploying primary customer databases to regions outside Turkey without an active SCC filing or Board authorization",
+    "Failing to log data sovereignty and residency routing metadata on cross-border API integrations"
   ],
   compliantCodeSnippets: [
     {
@@ -878,7 +874,7 @@ export function routeUserDataTransfer(userCountry: 'TR', destinationCountry: 'US
 
 export const KVKK_BREACH_NOTIFICATION_RULE: RuleDefinition = {
   id: 'kvkk-breach-notification-72h',
-  title: 'KVKK Madde 12 & Kurul İlke Kararı (2019/10) 72 Saatlik İhlal Bildirim Standardı',
+  title: "KVKK Article 12(5) 72-Hour Personal Data Breach Notification Workflow",
   jurisdiction: 'KVKK_TR',
   severity: 'CRITICAL',
   globs: [
@@ -902,17 +898,17 @@ export const KVKK_BREACH_NOTIFICATION_RULE: RuleDefinition = {
       description: 'Kişisel Veri İhlali Bildirim Formu standartları ve 6 zorunlu alanın eksiksiz doldurulması.'
     }
   ],
-  summary: 'Veri ihlali tespit edildiği andan itibaren 72 saatlik bildirim geri sayımını başlatın; Kurul\'un 2019/10 sayılı İlke Kararı formundaki 6 zorunlu alanı otomatik derleyin ve tüm güvenlik olaylarını şirket içi İhlal Kayıt Defterinde arşivleyin.',
+  summary: "Establish a 72-hour statutory breach countdown from incident detection to notification of the Board (using the official 6-section form) and affected data subjects without unreasonable delay, maintaining an internal breach incident register.",
   instructions: [
-    'Bir veri sızıntısı veya yetkisiz erişim tespit edildiğinde `BreachNotifier.calculateCountdown` ile 72 saatlik geri sayım başlatın.',
-    'Kurul\'un 2019/10 sayılı kararı gereğince formdaki 6 temel alanı (ihlal/öğrenilme tarihi, kaynağı/şekli, etkilenen veri kategorileri, yaklaşık kişi sayısı, olası sonuçlar, alınan teknik ve idari tedbirler) hazır bulundurun.',
-    'Kurul bildirim eşiğinin altında kalan küçük güvenlik olayları dahi gerekçeleriyle birlikte şirket içi İhlal Kayıt Defteri\'ne (Incident Register) kaydedilmelidir.',
-    'İlgili kişilere yapılacak bildirimde açık ve sade bir dil kullanın ve kullanıcıların alabileceği önlemleri (parola sıfırlama vb.) belirtin.'
+    "Initialize an immutable 72-hour countdown immediately upon detecting any security incident involving unauthorized access, disclosure, or loss of personal data.",
+    "Generate an incident payload structured according to the official Personal Data Protection Board 6-section notification template.",
+    "Maintain an internal Breach Incident Register documenting root causes, affected data categories, estimated user counts, and remedial actions.",
+    "Prepare automated data subject notification templates to alert impacted individuals without unreasonable delay."
   ],
   forbiddenPatterns: [
-    'İhlali tespit edip Kurul\'a bildirim için 72 saati aşmak veya bildirim yapmamak',
-    'Şirket içi ihlal kayıt defteri tutmamak ve güvenlik vakalarını örtbas etmek',
-    'Alınan teknik tedbirler ve etkilenen kişi sayısı açıklanmadan eksik bildirim yapmak'
+    "Failing to record the exact detection timestamp (`detectedAt`) of a suspected personal data breach",
+    "Concealing security incidents or delaying regulatory notification beyond the 72-hour statutory window",
+    "Omitting mandatory incident log entries from the internal corporate security register"
   ],
   compliantCodeSnippets: [
     {
@@ -945,7 +941,7 @@ export function handleSecurityIncident(incidentData: any) {
 
 export const HIPAA_BREAKGLASS_RULE: RuleDefinition = {
   id: 'hipaa-breakglass-emergency',
-  title: 'HIPAA 45 CFR § 164.312(a)(2)(ii) Emergency Break-Glass Protokolü & Safe Harbor',
+  title: "HIPAA § 164.312(a)(2)(ii) Emergency Break-Glass Access Protocol & High-Priority Auditing",
   jurisdiction: 'HIPAA_US',
   severity: 'CRITICAL',
   globs: [
@@ -969,19 +965,17 @@ export const HIPAA_BREAKGLASS_RULE: RuleDefinition = {
       description: 'Safe Harbor şifreleme muafiyeti (AES-256) ve <500 vs >=500 hasta bildirim takvimi.'
     }
   ],
-  summary: 'Acil klinik durumlarda (Code Blue, Trauma STAT) personelin hasta verisine anında erişimini sağlayan Break-Glass protokolü sağlayın; zorunlu gerekçe kaydı alın, Güvenlik Yöneticisine anlık alarm gönderin, bağımsız denetim logu tutun ve oturumu 30 dakika ile sınırlayın.',
+  summary: "Implement emergency override (break-glass) protocols for medical personnel to access critical patient records during clinical emergencies while generating immediate immutable audit records and supervisor notifications.",
   instructions: [
-    'Klinik sistemlerde hayati acil durumlarda normal erişim kontrollerini aşan `HipaaEmergencyService.activateBreakGlass` protokolü uygulayın.',
-    'Zorunlu klinik gerekçe (en az 10 karakter) girilmeden acil durum kilidini açmayın.',
-    'Break-Glass tetiklendiğinde Güvenlik Yöneticisine (Security/Privacy Officer) gerçek zamanlı alarm gönderin.',
-    'Acil durum oturum süresini en fazla 30 dakika ile sınırlandırın ve süresi dolunca yetkileri otomatik düşürün.',
-    'Tüm acil erişimleri bağımsız ve değiştirilemez bir denetim kütüğüne (Emergency Audit Log) kaydedin.',
-    '45 CFR § 164.402 uyarınca AES-256 ve TLS 1.3 şifreleme sağlayarak Safe Harbor bildirim muafiyeti standartlarını koruyun.'
+    "Implement a dedicated emergency access override mechanism allowing clinicians to access restricted patient records during life-threatening emergencies.",
+    "Mandate entry of a clinical justification reason prior to granting break-glass emergency access.",
+    "Generate an immediate high-priority audit record documenting physician ID, patient ID, timestamp, and clinical justification.",
+    "Trigger automated supervisor or compliance officer notifications upon execution of any break-glass access event."
   ],
   forbiddenPatterns: [
-    'Klinik acil durumlarda Break-Glass prosedürü sunmayıp hasta hayatını riske atmak',
-    'Gerekçe girilmeksizin veya sahte gerekçelerle Break-Glass oturumu açılmasına izin vermek',
-    'Break-Glass erişimlerini denetim loguna kaydetmemek veya güvenlik yöneticisine alarm göndermemek'
+    "Allowing break-glass emergency access without requiring a clinical justification reason",
+    "Failing to log emergency access events in an immutable, high-priority audit trail",
+    "Granting permanent blanket permissions under an emergency access override"
   ],
   compliantCodeSnippets: [
     {
@@ -1008,7 +1002,7 @@ export async function emergencyClinicAccess(req: Request) {
 
 export const GDPR_NO_UNPROXIED_ASSETS_RULE: RuleDefinition = {
   id: 'gdpr-no-unproxied-remote-assets',
-  title: 'Almanya & AB Uzak Resim Hotlink ve IP Sızıntısı Yasağı (LG München I & CJEU Breyer)',
+  title: "GDPR & CJEU Breyer C-582/14 Prohibition of Unproxied Remote Assets (LG München I)",
   jurisdiction: 'GDPR_EU',
   severity: 'HIGH',
   globs: [
@@ -1033,16 +1027,17 @@ export const GDPR_NO_UNPROXIED_ASSETS_RULE: RuleDefinition = {
       description: 'Hukuki dayanak olmaksızın kişisel veri (dinamik IP) işleme ve yeterlilik kararı bulunmayan üçüncü ülkelere sınır ötesi veri aktarımı yasağı.'
     }
   ],
-  summary: 'Harici resimleri ve avatarları (Gravatar vb.) doğrudan istemciden çağırmayın. Kullanıcı IP adresini gizlemek için sunucu taraflı Asset Proxy kullanın.',
+  summary: "Dynamic IP addresses are protected personal data. Never link external images, fonts, or avatars directly from client-side DOM. Route third-party media through a signed server-side asset proxy with SSRF protection.",
   instructions: [
-    'ASLA harici resim ve avatarları (`<img src="https://external.com/..."/>`, Gravatar) doğrudan istemci DOM içine un-proxied olarak bağlamayın (Hotlinking yasağı).',
-    'Kullanıcı veya üçüncü taraftan gelen harici görselleri sunucu taraflı güvenli bir ters vekil / önbellek (`createSecureAssetProxyUrl`) üzerinden sunarak kullanıcının gerçek IP adresini gizleyin.',
-    'Asset proxy uç noktasında SSRF (Server-Side Request Forgery) koruması uygulayın; yerel ve özel ağ IPlerine (`127.0.0.1`, `192.168.*`, `10.*`) erişimi kesin olarak engelleyin.'
+    "Route all external user avatars (Gravatar), remote images, and third-party media through a server-side signed asset proxy.",
+    "Self-host all web fonts (Google Fonts, Adobe Fonts) locally or bundle them into static deployment assets (`@next/font/google`, `@fontsource`).",
+    "Implement strict Server-Side Request Forgery (SSRF) filters validating that asset proxies never fetch internal IP ranges (127.0.0.1, 10.x, 169.254.x).",
+    "Add cryptographic HMAC signatures to proxy URLs to prevent unauthenticated server resource abuse."
   ],
   forbiddenPatterns: [
-    '<img src="https://gravatar.com/avatar/..." /> (Almanya LG München I ihlali)',
-    '<img src="https://external-domain.com/..." /> (Un-proxied doğrudan hotlink)',
-    'style={{ backgroundImage: "url(https://external...)" }} (Proxy olmadan harici CSS arka planı)'
+    "<img src=\"https://gravatar.com/avatar/...\" /> directly rendered in client-side HTML",
+    "<link href=\"https://fonts.googleapis.com/css2?...\" rel=\"stylesheet\"> in HTML headers",
+    "<img src=\"https://images.unsplash.com/...\" /> without next/image optimization or asset proxying"
   ],
   compliantCodeSnippets: [
     {
@@ -1071,7 +1066,7 @@ export function SafeUserAvatar({ rawAvatarUrl, userName }: { rawAvatarUrl: strin
 
 export const GDPR_TWO_CLICK_EMBED_RULE: RuleDefinition = {
   id: 'gdpr-two-click-embed',
-  title: 'Harici Embed ve Sosyal Eklenti İçin İki Tıklamalı Çözüm (CJEU Fashion ID & DSK)',
+  title: "GDPR & TDDDG § 25 Two-Click Solution for Video and Map Embeds (CJEU Fashion ID)",
   jurisdiction: 'GDPR_EU',
   severity: 'HIGH',
   globs: ['**/*.tsx', '**/*.jsx', '**/*.html', '**/*.vue', '**/*.php', '**/components/**/*.ts'],
@@ -1094,20 +1089,17 @@ export const GDPR_TWO_CLICK_EMBED_RULE: RuleDefinition = {
       description: 'Manevi tazminat için asgari ciddiyet eşiği aranmaz; bu nedenle tek bir rızasız harici istek bile toplu dava ve ihtar (Abmahnung) riski doğurur.'
     }
   ],
-  summary: 'YouTube/Vimeo/Maps iframe ve sosyal eklenti scriptlerini kullanıcı açıkça tıklamadan yüklemeyin. Yerel önizleme görseli ve aydınlatma metni gösterin.',
+  summary: "Embedding third-party iframes (YouTube, Vimeo, Google Maps) or social widgets without user activation leaks visitor IP and Referer headers. Enforce a Two-Click Consent Wrapper with local thumbnails.",
   instructions: [
-    'Harici iframe ve widget scriptlerini sayfa render edilirken DOM\'a eklemeyin; yerel önizleme görseli (same-origin) ve aydınlatma metni gösterin.',
-    'Kullanıcı açık bir eylemde bulunduktan sonra (tıklama, Enter, Space) `createTwoClickEmbed` / `activateTwoClickEmbed` ile iframe\'i yükleyin; `referrerpolicy="no-referrer"` ve `sandbox` ekleyin.',
-    'Önizleme görselini harici sağlayıcıdan (i.ytimg.com vb.) çekmeyin; derleme zamanında yerel olarak üretip barındırın.',
-    'Sosyal paylaşım için istemci SDK yerine statik paylaşım bağlantıları (Shariff deseni) tercih edin.',
-    'Etkinleştirme kontrolü klavye ile erişilebilir olmalıdır (gerçek `button` elemanı, görünür odak halkası).'
+    "Wrap all third-party media iframes (YouTube, Vimeo, Google Maps) in a Two-Click Consent Component (*Zwei-Klick-Lösung*).",
+    "Display only locally hosted or self-proxied thumbnail images prior to explicit user activation (never hotlink `i.ytimg.com`).",
+    "Ensure zero network requests are dispatched to third-party domains on initial page load.",
+    "Load the actual iframe only after the user explicitly clicks the overlay activation button, applying `referrerpolicy=\"no-referrer\"`."
   ],
   forbiddenPatterns: [
-    '<iframe src="https://www.youtube.com/embed/..."> (Rızasız doğrudan embed)',
-    '<iframe src="https://www.youtube-nocookie.com/embed/..."> (Gizlilik modu da IP sızdırır)',
-    '<iframe src="https://www.google.com/maps/embed?..."> (Rızasız harita)',
-    '<script src="https://connect.facebook.net/.../sdk.js"> (Fashion ID ortak sorumluluk)',
-    '<img src="https://i.ytimg.com/vi/.../hqdefault.jpg"> (Harici önizleme görseli)'
+    "<iframe src=\"https://www.youtube.com/embed/...\" /> rendered directly without a user activation click",
+    "<iframe src=\"https://www.google.com/maps/embed?...\" /> loaded automatically on page render",
+    "Hotlinking video preview thumbnails from `https://i.ytimg.com/...` in two-click placeholders"
   ],
   compliantCodeSnippets: [
     {
@@ -1141,7 +1133,7 @@ export function SafeVideo({ videoId }: { videoId: string }) {
 
 export const GDPR_PRIVACY_CAPTCHA_RULE: RuleDefinition = {
   id: 'gdpr-privacy-preserving-captcha',
-  title: 'Gizlilik Dostu Bot Koruması: reCAPTCHA Ön Rıza Şartı (CNIL Cityscoot)',
+  title: "GDPR & CNIL Privacy-Preserving CAPTCHA without Hardware Telemetry (Cityscoot Decision)",
   jurisdiction: 'GDPR_EU',
   severity: 'HIGH',
   globs: ['**/*.tsx', '**/*.jsx', '**/*.html', '**/*.vue', '**/*.php'],
@@ -1158,17 +1150,17 @@ export const GDPR_PRIVACY_CAPTCHA_RULE: RuleDefinition = {
       description: 'Üçüncü taraf izleme, sözleşme (6/1-b) veya meşru menfaat (6/1-f) ile haklı gösterilemez; rıza gerekir.'
     }
   ],
-  summary: 'Bot korumasında Google reCAPTCHA\'yı rıza olmadan yüklemeyin. Telemetri göndermeyen Proof-of-Work çözümü (Altcha, mCaptcha) veya çerezsiz alternatif kullanın.',
+  summary: "Google reCAPTCHA collects hardware and browser canvas fingerprints, exceeding the strictly necessary exemption. Use zero-telemetry proof-of-work alternatives (Altcha, mCaptcha) or gate reCAPTCHA behind explicit CMP consent.",
   instructions: [
-    'Giriş/kayıt/iletişim formlarına reCAPTCHA scriptini rıza verilmeden yüklemeyin.',
-    'Öncelik: kendi sunucunuzda doğrulanan Proof-of-Work captcha (Altcha, mCaptcha) veya rate limit + honeypot.',
-    'Google reCAPTCHA zorunluysa yüklemeyi CMP "işlevsel/güvenlik" rızasına bağlayın ve rıza yoksa alternatif doğrulama (e-posta OTP) sunun.',
-    'Bot korumasını hizmete erişimin şartı yapıp rızayı zorunlu kılmayın (bağlı rıza yasağı).'
+    "Prefer zero-telemetry, privacy-preserving CAPTCHA solutions based on local client-side Proof-of-Work (Altcha, mCaptcha, Cloudflare Turnstile).",
+    "If Google reCAPTCHA v2/v3 or hCaptcha is utilized, strictly gate script loading behind prior explicit cookie consent under the \"Security/Functional\" category.",
+    "Never execute reCAPTCHA scripts on initial unconsented page loads (CNIL Decision SAN-2023-003).",
+    "Provide fallback verification mechanisms (email/SMS OTP) for users who reject tracking CAPTCHAs."
   ],
   forbiddenPatterns: [
-    '<script src="https://www.google.com/recaptcha/api.js"> (Rızasız yükleme)',
-    '<div class="g-recaptcha" data-sitekey="..."> (Gating olmadan)',
-    'import ReCAPTCHA from "react-google-recaptcha" (Rıza kontrolü olmadan render)'
+    "<script src=\"https://www.google.com/recaptcha/api.js\"></script> loaded directly without prior consent gating",
+    "<div className=\"g-recaptcha\"> rendered on login/signup forms without checking user cookie consent",
+    "Claiming that behavioral reCAPTCHA fingerprinting qualifies as a strictly necessary cookie exempt from consent"
   ],
   compliantCodeSnippets: [
     {
@@ -1189,7 +1181,7 @@ export function Captcha({ prefs }: { prefs: Parameters<typeof CookieConsentManag
 
 export const KVKK_EMAIL_BCC_RULE: RuleDefinition = {
   id: 'kvkk-email-bcc-safety',
-  title: 'Toplu E-postada Alıcı Adresi İfşası Yasağı (KVKK Md. 12) ve Takip Pikseli Rızası',
+  title: "KVKK Article 12(1) Bulk Email Unauthorized Disclosure Prevention & Mandatory BCC",
   jurisdiction: 'KVKK_TR',
   severity: 'HIGH',
   globs: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.py', '**/*.php', '**/mail*/**/*', '**/emails/**/*'],
@@ -1207,18 +1199,17 @@ export const KVKK_EMAIL_BCC_RULE: RuleDefinition = {
       description: 'E-postadaki 1x1 takip pikselleri bireysel açılma takibi yapar ve ayrı ön rıza gerektirir. İtalyan Garante da rıza şartı aramaktadır.'
     }
   ],
-  summary: 'Birden fazla alıcıyı asla `to`/`cc` alanına koymayın; alıcı başına ayrı zarf veya `bcc` kullanın. Rızasız takip pikseli eklemeyin.',
+  summary: "Prevent unauthorized mass disclosure of recipient email addresses in bulk communications by strictly enforcing individual envelope dispatch or mandatory BCC addressing, eliminating tracking web beacons without consent.",
   instructions: [
-    'Birden fazla alıcıya giden iletilerde her alıcıya ayrı gönderim yapın (`buildSafeBulkEnvelopes`) veya alıcıları `bcc` alanına koyun.',
-    'Gönderimden önce `validateBulkEmailOptions` ile doğrulayın; ihlal varsa göndermeyi reddedin.',
-    'Bülten ve işlemsel e-postalarda varsayılan olarak açılma takibi (1x1 piksel) kapalı olsun; yalnızca ayrı açık rıza varsa açın (`stripTrackingBeacons`).',
-    'Posta sağlayıcısı yurt dışındaysa KVKK Md. 9 aktarım şartlarını (SCC bildirimi) ayrıca sağlayın.'
+    "NEVER pass an array or comma-separated list of multiple recipient email addresses into the `to` or `cc` fields of email dispatch libraries.",
+    "Enforce individual envelope dispatches (`buildSafeBulkEnvelopes`) or ensure all recipient addresses are assigned strictly to `bcc`.",
+    "Strip 1x1 transparent tracking web beacons and unconsented read-receipt telemetry pixels from email payloads.",
+    "Validate email dispatch options through automated safety checkers prior to calling SMTP transporters."
   ],
   forbiddenPatterns: [
-    'transporter.sendMail({ to: ["a@x.com", "b@x.com"] }) (Alıcılar birbirini görür)',
-    'resend.emails.send({ cc: recipients }) (Toplu alıcı cc alanında)',
-    'msg["To"] = ", ".join(recipients) (Python toplu To)',
-    '<img src="https://track.example.com/open?uid=..." width="1" height="1"> (Rızasız açılma pikseli)'
+    "`transporter.sendMail({ to: recipientsArray })` with multiple email addresses",
+    "`msg[\"To\"] = \", \".join(recipients)` in Python smtplib bulk notification scripts",
+    "Embedding 1x1 tracking web beacons in newsletters without prior explicit consent"
   ],
   compliantCodeSnippets: [
     {
@@ -1243,7 +1234,7 @@ for (const envelope of envelopes) {
 
 export const KVKK_OTP_DECOUPLING_RULE: RuleDefinition = {
   id: 'kvkk-otp-marketing-decoupling',
-  title: 'SMS/OTP Doğrulaması ile Pazarlama ve Veri İşleme Rızasının Ayrıştırılması (2025/1072)',
+  title: "KVKK Board Decision 2025/1072 SMS OTP Decoupling from Commercial Consent",
   jurisdiction: 'KVKK_TR',
   severity: 'CRITICAL',
   globs: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.py', '**/*.php', '**/api/**/*', '**/auth/**/*'],
@@ -1266,18 +1257,17 @@ export const KVKK_OTP_DECOUPLING_RULE: RuleDefinition = {
       description: 'Ticari elektronik iletinin önceden onay alınarak gönderilmesi ve İYS kaydı.'
     }
   ],
-  summary: 'OTP doğrulama uç noktası yalnızca doğrulama yapar. Pazarlama/ETK/veri işleme rızasını aynı eylemle set etmeyin; SMS metni amacı açıkça yazsın.',
+  summary: "Strictly isolate SMS one-time password (OTP) verification flows from commercial messaging consent. It is unlawful to obtain marketing or data processing consent bundled with phone number verification in a single action.",
   instructions: [
-    'OTP doğrulama handler\'ı yalnızca `phoneVerified` benzeri doğrulama alanlarını güncelleyebilir.',
-    'OTP doğrulama kodu ile `marketingConsent`, `etkConsent`, `dataProcessingConsent` alanlarını ASLA `true` yapmayın; `assertOtpEffectsAreSeparated` kullanın.',
-    'SMS metni kodun yalnızca belirli bir amaç için olduğunu ve pazarlama izni anlamına gelmediğini açıkça belirtsin (`buildOtpSmsText`).',
-    'Pazarlama rızası ayrı, işaretsiz, isteğe bağlı bir kutu ile alınsın ve `consent-store` ile versiyonlu kaydedilsin.',
-    'Kod girilmediğinde veya rıza verilmediğinde ana hizmet sunulmaya devam etsin.'
+    "Ensure the OTP verification handler exclusively updates phone verification status (`phoneVerified: true`) without touching marketing or electronic communication consent fields.",
+    "Explicitly state the single purpose of the verification code in the SMS body (e.g. \"Giriş doğrulama kodunuz: 123456\").",
+    "Marketing and commercial communication consent MUST be obtained via separate, unbundled checkboxes with distinct user actions.",
+    "Reject any API payload that attempts to activate `marketingConsent` or `etkConsent` within an OTP verification request."
   ],
   forbiddenPatterns: [
-    'user.update({ phoneVerified: true, marketingConsent: true }) (OTP ile rıza bundling)',
-    'SMS: "Kodu paylaşarak kampanya iletilerini kabul etmiş olursunuz" (Örtülü rıza)',
-    'Kasada OTP girilmeden ödeme/üyelik tamamlanmaması ve OTP\'nin pazarlama izni saymak'
+    "Setting `marketingConsent: true` or `etkConsent: true` inside an OTP verification database transaction",
+    "Displaying UI copy claiming that entering the SMS code also constitutes consent for promotional messages (\"Tek tıkla çoklu onay\")",
+    "Sending multi-purpose SMS bodies that combine promotional advertising with security verification codes"
   ],
   compliantCodeSnippets: [
     {
@@ -1302,7 +1292,7 @@ const sms = buildOtpSmsText('phone_verification', code, 'Marka');`
 
 export const SEC_AUTH_RATE_LIMIT_RULE: RuleDefinition = {
   id: 'sec-auth-rate-limit-mfa',
-  title: 'Giriş Uç Noktalarında Rate Limit, Hesap Kilitleme ve MFA (KVKK Md. 12 / GDPR Md. 32)',
+  title: "Account Takeover Defense: Adaptive Sliding Window Rate Limiting and Mandatory MFA",
   jurisdiction: 'GLOBAL_SEC',
   severity: 'HIGH',
   globs: ['**/api/**/login*', '**/api/**/auth/**', '**/auth/**/*.ts', '**/routes/auth*', '**/controllers/auth*'],
@@ -1319,18 +1309,17 @@ export const SEC_AUTH_RATE_LIMIT_RULE: RuleDefinition = {
       description: 'Risk düzeyine uygun güvenlik: kimlik doğrulama saldırılarına karşı teknik önlemler.'
     }
   ],
-  summary: 'Her giriş uç noktasında IP ve hesap bazlı rate limit, kademeli kilitleme ve hassas hesaplarda MFA uygulayın. Hesap var/yok bilgisini sızdırmayın.',
+  summary: "Implement sliding window rate limiting on authentication and password reset endpoints, trigger progressive backoff lockouts upon repeated failed attempts, and mandate multi-factor authentication (MFA) to prevent credential stuffing.",
   instructions: [
-    'Giriş, parola sıfırlama ve OTP doğrulama uç noktalarını IP ve hesap anahtarı bazında ayrı ayrı sınırlayın (`RateLimitShield`).',
-    'Eşik aşıldığında hesabı geçici kilitleyin ve MFA\'yı zorunlu kılın; başarılı girişte sayaçları sıfırlayın.',
-    'Yönetici ve sağlık/finans verisine erişen hesaplarda MFA zorunlu olsun.',
-    'Hata mesajları hesap varlığını ifşa etmesin ("E-posta veya parola hatalı"); başarısız denemeleri redakte edilmiş şekilde loglayın.',
-    'Parolaları bcrypt (maliyet ≥ 10) ile saklayın; sızdırılmış parola listelerine karşı kontrol uygulayın.'
+    "Deploy a sliding window rate limiter tracking client IP addresses and account identifiers across all login, register, and reset endpoints.",
+    "Enforce progressive backoff lockouts (e.g. 5 failed attempts within 5 minutes triggers a 15-minute account lockout).",
+    "Trigger mandatory multi-factor authentication (TOTP / SMS MFA) when login attempts originate from unfamiliar devices or unusual geographic locations.",
+    "Log security telemetry events (`AUTH_RATE_LIMIT_EXCEEDED`, `ACCOUNT_LOCKED`) to enable rapid incident detection."
   ],
   forbiddenPatterns: [
-    'app.post("/login", ...) içinde rate limit/lockout olmaması (Sınırsız parola denemesi)',
-    'return res.status(404).send("Kullanıcı bulunamadı") (Hesap numaralandırma)',
-    'Yönetici paneli için MFA zorunluluğunun bulunmaması'
+    "Exposing authentication or password reset endpoints without IP or account-level rate limiting",
+    "Permitting infinite brute-force login attempts without progressive lockout delays",
+    "Storing authentication session tokens or MFA secrets in unencrypted plaintext cookies"
   ],
   compliantCodeSnippets: [
     {
@@ -1361,7 +1350,7 @@ app.post('/api/login', async (req, res) => {
 
 export const HIPAA_FTC_SENSITIVE_PIXEL_RULE: RuleDefinition = {
   id: 'hipaa-ftc-sensitive-route-pixel',
-  title: 'Sağlık, Checkout ve Çocuk Sayfalarında Ticari Piksel Yasağı (FTC GoodRx/BetterHelp, HIPAA, COPPA)',
+  title: "HIPAA & FTC Prohibition of Commercial Ad Trackers on Sensitive Health Routes (GoodRx & BetterHelp)",
   jurisdiction: 'HIPAA_US',
   severity: 'CRITICAL',
   globs: ['**/health/**', '**/patient*/**', '**/therapy/**', '**/conditions/**', '**/symptoms/**', '**/rx/**', '**/checkout/**', '**/kids/**', '**/*.tsx', '**/*.jsx'],
@@ -1391,19 +1380,17 @@ export const HIPAA_FTC_SENSITIVE_PIXEL_RULE: RuleDefinition = {
       penaltyContext: 'Epic Games: COPPA için 275 milyon $ ceza.'
     }
   ],
-  summary: 'Sağlık, reçete, terapi, semptom, checkout ve çocuk rotalarında Meta/TikTok/Google Ads/Snap piksellerini kullanmayın. Ölçümleme için kimliksiz, kendi barındırdığınız analitik kullanın.',
+  summary: "Never install Meta Pixel, Google Ads, TikTok Pixel, or commercial trackers on sensitive health, prescription, therapy, checkout, or intake routes. Transmitting health data to third-party ad brokers violates FTC Act Sec. 5 and HBNR.",
   instructions: [
-    'Sağlık/terapi/semptom/reçete/hasta portalı, checkout ve çocuk rotalarına ticari reklam pikseli veya retargeting etiketi eklemeyin; rıza bu rotalarda tek başına yeterli sayılmaz.',
-    'Rota bazlı bir korumayı merkezi olarak uygulayın (`shouldBlockCommercialTracking`) ve etiket yöneticisi yapılandırmasında bu rotaları hariç tutun.',
-    'Sağlık verisi (durum, ilaç, semptom) URL parametresi, olay adı veya özellik olarak üçüncü tarafa gönderilmesin.',
-    'Çocuklara yönelik oturumlarda tüm analitiği ve kalıcı tanımlayıcıyı kapatın; sohbeti varsayılan kapalı başlatın.',
-    'Piksel sağlayıcısıyla BAA yoksa sağlık verisi akışına dahil etmeyin; ihlal şüphesinde HBNR bildirim sürelerini işletin.'
+    "Strictly prohibit and block commercial advertising pixels (`fbq`, `gtag`, `ttq`, `snaptr`) on all sensitive routes (`/health/`, `/rx/`, `/therapy/`, `/checkout/`, `/intake/`, `/kids/`).",
+    "Ensure zero personal health queries, symptoms, or prescription parameters are transmitted via URL query strings or Referer headers.",
+    "Enforce automated route guard filters (`shouldBlockCommercialTracking()`) preventing ad tracker execution on health domains.",
+    "Comply with FTC Health Breach Notification Rule (HBNR) standards and HIPAA Business Associate Agreement (BAA) constraints."
   ],
   forbiddenPatterns: [
-    'fbq("track", "ViewContent", { content_name: condition }) (Sağlık sayfasında Meta Pixel)',
-    '<script src="https://www.googletagmanager.com/..."> app/therapy/layout.tsx içinde',
-    'ttq.track("Checkout", { ... }) (Checkout\'ta TikTok Pixel)',
-    'mixpanel.identify(getHardwareFingerprint()) (Çocuk sayfasında cihaz parmak izi)'
+    "window.fbq(\"track\", \"ViewContent\", { condition: \"depression\" }) on therapy or health pages",
+    "Executing Google Ads, Meta Pixel, or TikTok tracking scripts on prescription checkout routes",
+    "Passing user medical conditions or prescription identifiers in URL parameters accessible to analytics tags"
   ],
   compliantCodeSnippets: [
     {
@@ -1425,7 +1412,7 @@ export function loadTracker(pathname: string, provider: 'meta-pixel' | 'google-a
 
 export const CCPA_GPC_RULE: RuleDefinition = {
   id: 'ccpa-gpc-automated-optout',
-  title: 'Global Privacy Control (Sec-GPC) Otomatik Opt-out (CCPA/CPRA § 7025)',
+  title: "CCPA/CPRA 11 CCR § 7025 Automated Global Privacy Control (GPC) Opt-Out Mandate",
   jurisdiction: 'CCPA_US',
   severity: 'HIGH',
   globs: ['**/*.ts', '**/*.tsx', '**/*.js', '**/middleware.*', '**/components/cookie*.tsx', '**/components/cmp*.tsx'],
@@ -1443,18 +1430,17 @@ export const CCPA_GPC_RULE: RuleDefinition = {
       description: 'Colorado da evrensel opt-out mekanizmalarını tanımayı zorunlu kılar.'
     }
   ],
-  summary: 'Sunucuda `Sec-GPC: 1` ve istemcide `navigator.globalPrivacyControl` sinyalini okuyun; aktifse reklam/paylaşım çerezlerini ve piksellerini kapatın, oturum açmış kullanıcıda profile yazın.',
+  summary: "Detect and honor the browser `Sec-GPC: 1` header and `navigator.globalPrivacyControl` signal as a legally binding consumer request to opt out of the sale or sharing of personal data, automatically freezing commercial ad trackers and persisting the preference to user profiles.",
   instructions: [
-    'Her istekte `Sec-GPC` başlığını değerlendirin (`evaluateGpcSignal`); değer tam olarak `1` ise opt-out aktiftir.',
-    'GPC aktifken pazarlama/hedefli reklam kategorisini kapatın (`applyGpcToPreferences`) ve üçüncü taraf reklam piksellerini yüklemeyin.',
-    'Kullanıcı oturum açmışsa `ccpaOptedOut: true` değerini profile kaydedin; GPC\'yi hesap tercihine tercih ederek yok saymayın.',
-    'GPC\'yi yok sayacak bir "yeniden izin ver" akışı gerekiyorsa kullanıcıyı açıkça bilgilendirip onay alın.',
-    'Opt-out sonrasında üçüncü taraflara veri akışının gerçekten durduğunu ağ günlüğüyle doğrulayın.'
+    "Inspect incoming HTTP request headers for `Sec-GPC: 1` and client-side `navigator.globalPrivacyControl === true`.",
+    "When the GPC signal is active, automatically treat it as a binding opt-out of personal data sale and sharing under CCPA/CPRA § 7025.",
+    "Disable third-party advertising cookies, retargeting scripts, and data broker sync pipelines immediately upon detecting GPC.",
+    "For authenticated users, persist the `ccpaOptedOut: true` preference to their database profile to ensure cross-device compliance."
   ],
   forbiddenPatterns: [
-    'if (getCookie("consent") !== "false") loadAdTrackers() (GPC denetimi yok)',
-    'Sec-GPC başlığını loglayıp işlememek',
-    'GPC sinyaline rağmen reklam çerezi set etmek'
+    "Ignoring or overriding the browser Sec-GPC: 1 header or navigator.globalPrivacyControl signal",
+    "Requiring consumers who broadcast GPC signals to manually navigate preference toggles or submit written forms",
+    "Loading retargeting ad trackers when evaluateGpcSignal() returns optOutActive: true"
   ],
   compliantCodeSnippets: [
     {
@@ -1503,9 +1489,9 @@ export const ALL_RULES: RuleDefinition[] = [
 export const RULE_PACKS: RulePack[] = [
   {
     id: 'tr-compliance',
-    name: 'Türkiye Yasal Uyumluluk Paketi (KVKK, ETK, VUK, 5651)',
+    name: 'Turkey Statutory Compliance Pack (KVKK, ETK, VUK, 5651)',
     jurisdiction: 'KVKK_TR',
-    description: '6698 Sayılı KVKK, 6563 Sayılı ETK/İYS ve 213 Sayılı VUK için mimari ve arayüz kural seti; toplu e-posta BCC, OTP ayrıştırma ve brute-force koruması dahil.',
+    description: 'Architectural and UI rules for Turkish Law No. 6698 (KVKK), Law No. 6563 (ETK), and Tax Procedure Law Art. 253; includes bulk email BCC, OTP decoupling, and brute-force defenses.',
     version: '1.1.0',
     rules: [
       KVKK_RETENTION_RULE, 
@@ -1522,9 +1508,9 @@ export const RULE_PACKS: RulePack[] = [
   },
   {
     id: 'eu-compliance',
-    name: 'Avrupa Birliği Uyumluluk Paketi (GDPR, EAA 2025, AI Act)',
+    name: 'European Union Regulatory Pack (GDPR, EAA 2025, AI Act)',
     jurisdiction: 'GDPR_EU',
-    description: 'GDPR Unutulma Hakkı, Almanya/AB Hotlink IP sızıntısı yasağı, iki tıklamalı embed, reCAPTCHA, EAA 2025/WCAG 2.1 AA erişilebilirlik ve EU AI Act şeffaflık kuralları.',
+    description: 'GDPR Right to Erasure, German/EU unproxied hotlink asset ban, two-click embeds, privacy-preserving CAPTCHA, EAA 2025 / WCAG 2.1 AA accessibility, and EU AI Act transparency rules.',
     version: '1.1.0',
     rules: [
       GDPR_RIGHT_TO_ERASURE_RULE, 
@@ -1539,17 +1525,17 @@ export const RULE_PACKS: RulePack[] = [
   },
   {
     id: 'us-health-compliance',
-    name: 'ABD Sağlık ve Gizlilik Paketi (HIPAA, FTC)',
+    name: 'US Healthcare & Health Privacy Pack (HIPAA, FTC)',
     jurisdiction: 'HIPAA_US',
-    description: 'HIPAA 45 CFR § 164.312 teknik güvenceleri, PHI izolasyonu, immutable audit trail ve FTC sağlık piksel yasağı kuralları.',
+    description: 'HIPAA 45 CFR § 164.312 technical safeguards, PHI isolation, immutable audit trails, emergency break-glass access, and FTC health tracker pixel bans.',
     version: '1.1.0',
     rules: [HIPAA_TECHNICAL_SAFEGUARDS_RULE, HIPAA_BREAKGLASS_RULE, HIPAA_FTC_SENSITIVE_PIXEL_RULE, PII_LOGGER_GUARD_RULE]
   },
   {
     id: 'us-privacy-compliance',
-    name: 'ABD Eyalet Gizlilik Paketi (CCPA/CPRA, GPC)',
+    name: 'US State Privacy & Consumer Protection Pack (CCPA/CPRA, GPC)',
     jurisdiction: 'CCPA_US',
-    description: 'California CCPA/CPRA Global Privacy Control otomatik opt-out ve hassas rota piksel yasağı kuralları.',
+    description: 'California CCPA/CPRA Global Privacy Control automated opt-out enforcement and sensitive route tracking pixel protections.',
     version: '1.0.0',
     rules: [CCPA_GPC_RULE, HIPAA_FTC_SENSITIVE_PIXEL_RULE]
   }

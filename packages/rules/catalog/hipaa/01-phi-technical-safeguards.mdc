@@ -1,31 +1,30 @@
 ---
-description: "HIPAA Security Rule (45 CFR § 164.312) Teknik Güvenceler ve PHI İzolasyonu"
+description: "HIPAA Security Rule (45 CFR § 164.312) PHI Technical Safeguards & Immutable Audit Trails"
 globs: ["**/api/**/*.ts","**/models/**/*.ts","**/services/**/*.ts","**/models.py","**/models/**/*.py","**/models/**/*.go","**/Models/**/*.php"]
 alwaysApply: false
 ---
 
-# [CompliRules] HIPAA Security Rule (45 CFR § 164.312) Teknik Güvenceler ve PHI İzolasyonu
-**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `HIPAA_US`
+# [CompliRules] HIPAA Security Rule (45 CFR § 164.312) PHI Technical Safeguards & Immutable Audit Trails
+**Severity:** `CRITICAL` | **Jurisdiction:** `HIPAA_US`
 
-## Yasal Dayanaklar (Legal Citations)
+## Legal Citations
 - **Health Insurance Portability and Accountability Act (HIPAA) (45 CFR § 164.312)**: Korumalı Sağlık Bilgileri (PHI) için Erişim Kontrolü, Denetim İzleri (Audit Controls) ve İletim Güvenliği.
 - **Health Insurance Portability and Accountability Act (HIPAA) (45 CFR § 164.502(b))**: Minimum Necessary Standard. Sağlık verilerine erişimde personelin yalnızca o anki klinik veya idari görevi için asgari düzeyde gerekli olan alanlara erişimini kısıtlama zorunluluğu.
 - **Health Insurance Portability and Accountability Act (HIPAA) (45 CFR § 164.312(a)(2)(iii))**: Automatic Logoff. Terminal ve klinik web oturumlarında yetkisiz erişimi önlemek için maksimum 15 dakikalık hareketsizlik sonrası otomatik oturum kapatma.
 
-## Kural Direktifleri
-- MUST: Hasta sağlık bilgileri (teşhis, reçete, lab sonucu) ile kimlik bilgilerini (ad, SSN) aynı açık tabloda tutmayın; şifreli veya takma adlı (pseudonymized) bağlayın.
-- MUST: BAA (Business Associate Agreement) imzalanmamış açık LLM APIlerine (OpenAI public tier, Anthropic public tier) asla ham PHI göndermeyin.
-- MUST: ASLA PHI modellerinde `SELECT *` veya projectsiz sorgu çalıştırmayın; yalnızca o anki işlem için gerekli alanları kısıtlayın (`select: { vitals: true }`) (45 CFR § 164.502(b)).
-- MUST: Klinik portallarda 15 dakikalık maksimum hareketsizlik durumunda oturumu otomatik kapatan (`HIPAA_MAX_INACTIVITY_MS = 15 * 60 * 1000`) oturum düşürme denetleyicisi uygulayın (45 CFR § 164.312(a)(2)(iii)).
-- MUST: Her PHI erişimini (okuma/yazma/silme) `ImmutableAuditLog` tablosuna aktör ID, işlem zamanı ve hasta ID ile kaydedin.
+## Rule Mandates
+- MUST: Isolate all Protected Health Information (PHI) within dedicated, encrypted database schemas (Encryption at Rest with AES-256).
+- MUST: Enforce an automatic session timeout of 15 minutes of user inactivity across all clinical and healthcare portals.
+- MUST: Maintain append-only, immutable audit trails capturing user ID, timestamp, patient ID, and accessed fields for every PHI read/write operation.
+- MUST: Apply the "Minimum Necessary Standard" by selecting only necessary projection fields (`select: { id: true, diagnosis: true }`) instead of wildcard `SELECT *`.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: openai.chat.completions.create({ messages: [{ content: patientMedicalNotes }] }) (BAAsız)
-- NEVER: logger.info({ diagnosis: patient.diagnosis })
-- NEVER: prisma.patient.findUnique({ where: { id } }) (Select projeksiyonu olmadan tüm PHI kaydını çekmek)
-- NEVER: SELECT * FROM medical_records / SELECT * FROM patients
+## Forbidden Anti-Patterns
+- NEVER: Storing medical diagnoses, prescriptions, or clinical notes in unencrypted generic User tables
+- NEVER: Configuring session timeouts exceeding 15 minutes of inactivity on healthcare applications
+- NEVER: Executing un-audited `SELECT * FROM MedicalRecords` queries exposing unnecessary patient identifiers
+- NEVER: Modifying or deleting historical audit log entries (Audit trails must be write-once, append-only)
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### PHI Redacted Audit Logging
 ```ts
 export async function logPhiAccess(actorId: string, patientId: string, action: 'VIEW' | 'EDIT') {

@@ -1,30 +1,30 @@
 ---
-description: "European Accessibility Act (EAA 2025) & WCAG 2.1 AA Arayüz Standartları"
+description: "European Accessibility Act (EAA 2025) & EN 301 549 / WCAG 2.1 AA UI Standards"
 globs: ["**/*.tsx","**/*.jsx","**/*.html","**/*.css"]
 alwaysApply: false
 ---
 
-# [CompliRules] European Accessibility Act (EAA 2025) & WCAG 2.1 AA Arayüz Standartları
-**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `EAA_EU`
+# [CompliRules] European Accessibility Act (EAA 2025) & EN 301 549 / WCAG 2.1 AA UI Standards
+**Severity:** `HIGH` | **Jurisdiction:** `EAA_EU`
 
-## Yasal Dayanaklar (Legal Citations)
+## Legal Citations
 - **European Accessibility Act (Directive 2019/882) (Annex I (Functional Accessibility Requirements))**: AB pazarında hizmet veren tüm e-ticaret, SaaS ve bankacılık arayüzlerinde zorunlu erişilebilirlik (Yürürlük: Haziran 2025).
 - **EN 301 549 & W3C WCAG 2.1 (Level AA)**: Algılanabilir, Çalıştırılabilir, Anlaşılabilir ve Sağlam web standartları.
 
-## Kural Direktifleri
-- MUST: ASLA `outline: none` stilini görünür bir `:focus-visible` alternatifi olmadan kullanmayın.
-- MUST: Bütün interaktif buton ve linkler mobil ekranda en az 44x44px dokunma alanına (touch target) sahip olmalıdır.
-- MUST: İkon butonlarda (ikon tek başına kullanıldığında) mutlaka açıklayıcı `aria-label` bulunmalıdır.
-- MUST: Metin kontrastı APCA veya WCAG 2.1 AA standardına göre normal metinlerde en az 4.5:1 olmalıdır.
-- MUST: Form hata mesajlarını ekran okuyuculara duyurmak için `aria-invalid="true"`, `aria-describedby="{field}-error"` ve `role="alert"` veya `aria-live="polite"` kullanın (WCAG 3.3.1 / 3.3.2).
+## Rule Mandates
+- MUST: Maintain clear, high-contrast keyboard focus indicators (`:focus-visible`); NEVER set `outline: none` without a visible replacement.
+- MUST: Provide explicit accessible names (`aria-label` or `<span className="sr-only">`) on all icon-only buttons and interactive controls.
+- MUST: Ensure all interactive touch targets meet or exceed 44x44 CSS pixels on mobile viewports.
+- MUST: Verify that normal text color contrast meets or exceeds 4.5:1 against its background (3:1 for large text).
+- MUST: Support full keyboard navigation (Tab, Enter, Space, Escape) and prevent focus traps in dialogs and modals.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: outline: none (yerine focus ring tanımlanmadan)
-- NEVER: <button><svg>...</svg></button> (aria-label olmadan ikon buton)
-- NEVER: <div onClick={...}> (Klavye desteği ve role="button" olmadan tıklanabilir div)
-- NEVER: Form hatalarını yalnızca kırmızı renk veya ikonla gösterip ekran okuyucu ARIA etiketlerini atlamak
+## Forbidden Anti-Patterns
+- NEVER: outline: none or outline: 0 without visible focus-visible indicators
+- NEVER: <button><svg ... /></button> icon buttons lacking text labels or aria-label attributes
+- NEVER: Interactive buttons or touch targets smaller than 44px on mobile viewports
+- NEVER: Color contrast ratios falling below 4.5:1 for standard body text
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### EAA Uyumlu İkon Buton (Tailwind & Radix/Native)
 ```tsx
 <button

@@ -1,32 +1,30 @@
 ---
-description: "Sağlık, Checkout ve Çocuk Sayfalarında Ticari Piksel Yasağı (FTC GoodRx/BetterHelp, HIPAA, COPPA)"
+description: "HIPAA & FTC Prohibition of Commercial Ad Trackers on Sensitive Health Routes (GoodRx & BetterHelp)"
 globs: ["**/health/**","**/patient*/**","**/therapy/**","**/conditions/**","**/symptoms/**","**/rx/**","**/checkout/**","**/kids/**","**/*.tsx","**/*.jsx"]
 alwaysApply: false
 ---
 
-# [CompliRules] Sağlık, Checkout ve Çocuk Sayfalarında Ticari Piksel Yasağı (FTC GoodRx/BetterHelp, HIPAA, COPPA)
-**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `HIPAA_US`
+# [CompliRules] HIPAA & FTC Prohibition of Commercial Ad Trackers on Sensitive Health Routes (GoodRx & BetterHelp)
+**Severity:** `CRITICAL` | **Jurisdiction:** `HIPAA_US`
 
-## Yasal Dayanaklar (Legal Citations)
-- **FTC v. GoodRx Holdings (2023) (FTC Act Sec. 5 & Health Breach Notification Rule (16 CFR Part 318))**: İlaç ve sağlık bilgisinin Meta ve Google reklam sistemlerine pikselle aktarılması; HBNR kapsamındaki ilk yaptırım. *[Yaptırım: 1,5 milyon $ sivil ceza ve sağlık verisini reklam amaçlı paylaşma yasağı.]*
-- **FTC v. BetterHelp (2023) & FTC v. Flo Health (2021) (FTC Act Sec. 5)**: Terapi anketi yanıtları ve e-posta/IP'nin reklam ağlarıyla paylaşılması aldatıcı ve haksız uygulamadır. *[Yaptırım: BetterHelp: 7,8 milyon $ tüketici iadesi.]*
+## Legal Citations
+- **FTC v. GoodRx Holdings (2023) (FTC Act Sec. 5 & Health Breach Notification Rule (16 CFR Part 318))**: İlaç ve sağlık bilgisinin Meta ve Google reklam sistemlerine pikselle aktarılması; HBNR kapsamındaki ilk yaptırım. *[Sanction: 1,5 milyon $ sivil ceza ve sağlık verisini reklam amaçlı paylaşma yasağı.]*
+- **FTC v. BetterHelp (2023) & FTC v. Flo Health (2021) (FTC Act Sec. 5)**: Terapi anketi yanıtları ve e-posta/IP'nin reklam ağlarıyla paylaşılması aldatıcı ve haksız uygulamadır. *[Sanction: BetterHelp: 7,8 milyon $ tüketici iadesi.]*
 - **HIPAA 45 CFR § 164.502 / § 164.308(b) & AHA v. Becerra (N.D. Tex., 20.06.2024) (İzleme teknolojileri)**: Kimliği doğrulanmış hasta portallarında izleme teknolojileri BAA gerektirir. Mahkeme HHS bülteninin kimliksiz genel sayfa kısmını iptal etmiştir; ancak FTC yetkisi ve portal kuralları sürmektedir, bu yüzden koruma muhafazakâr tutulur.
-- **COPPA — 15 U.S.C. §§ 6501-6506, 16 CFR Part 312 (FTC v. Epic Games, 2022) (Kalıcı tanımlayıcılar)**: 13 yaş altı çocuklara yönelik hizmetlerde doğrulanabilir ebeveyn izni olmadan IP, cihaz ve çerez kimliği toplamak yasaktır. *[Yaptırım: Epic Games: COPPA için 275 milyon $ ceza.]*
+- **COPPA — 15 U.S.C. §§ 6501-6506, 16 CFR Part 312 (FTC v. Epic Games, 2022) (Kalıcı tanımlayıcılar)**: 13 yaş altı çocuklara yönelik hizmetlerde doğrulanabilir ebeveyn izni olmadan IP, cihaz ve çerez kimliği toplamak yasaktır. *[Sanction: Epic Games: COPPA için 275 milyon $ ceza.]*
 
-## Kural Direktifleri
-- MUST: Sağlık/terapi/semptom/reçete/hasta portalı, checkout ve çocuk rotalarına ticari reklam pikseli veya retargeting etiketi eklemeyin; rıza bu rotalarda tek başına yeterli sayılmaz.
-- MUST: Rota bazlı bir korumayı merkezi olarak uygulayın (`shouldBlockCommercialTracking`) ve etiket yöneticisi yapılandırmasında bu rotaları hariç tutun.
-- MUST: Sağlık verisi (durum, ilaç, semptom) URL parametresi, olay adı veya özellik olarak üçüncü tarafa gönderilmesin.
-- MUST: Çocuklara yönelik oturumlarda tüm analitiği ve kalıcı tanımlayıcıyı kapatın; sohbeti varsayılan kapalı başlatın.
-- MUST: Piksel sağlayıcısıyla BAA yoksa sağlık verisi akışına dahil etmeyin; ihlal şüphesinde HBNR bildirim sürelerini işletin.
+## Rule Mandates
+- MUST: Strictly prohibit and block commercial advertising pixels (`fbq`, `gtag`, `ttq`, `snaptr`) on all sensitive routes (`/health/`, `/rx/`, `/therapy/`, `/checkout/`, `/intake/`, `/kids/`).
+- MUST: Ensure zero personal health queries, symptoms, or prescription parameters are transmitted via URL query strings or Referer headers.
+- MUST: Enforce automated route guard filters (`shouldBlockCommercialTracking()`) preventing ad tracker execution on health domains.
+- MUST: Comply with FTC Health Breach Notification Rule (HBNR) standards and HIPAA Business Associate Agreement (BAA) constraints.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: fbq("track", "ViewContent", { content_name: condition }) (Sağlık sayfasında Meta Pixel)
-- NEVER: <script src="https://www.googletagmanager.com/..."> app/therapy/layout.tsx içinde
-- NEVER: ttq.track("Checkout", { ... }) (Checkout'ta TikTok Pixel)
-- NEVER: mixpanel.identify(getHardwareFingerprint()) (Çocuk sayfasında cihaz parmak izi)
+## Forbidden Anti-Patterns
+- NEVER: window.fbq("track", "ViewContent", { condition: "depression" }) on therapy or health pages
+- NEVER: Executing Google Ads, Meta Pixel, or TikTok tracking scripts on prescription checkout routes
+- NEVER: Passing user medical conditions or prescription identifiers in URL parameters accessible to analytics tags
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### Rota Bazlı İzleme Engeli
 ```ts
 import { shouldBlockCommercialTracking } from '@complirules/primitives';

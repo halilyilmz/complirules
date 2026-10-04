@@ -12,25 +12,25 @@ export function handleCheckUiDarkPatterns(input: CheckUiDarkPatternsInput): stri
     ...noBundledConsentRule.check(filePath, componentCode)
   ];
 
-  // EAA 2025 erişilebilirlik kontrolleri
+  // EAA 2025 accessibility checks
   const eaaIssues: string[] = [];
   if (/<button[^>]*>\s*<svg[^>]*>[\s\S]*?<\/svg>\s*<\/button>/i.test(componentCode) && !/aria-label=/i.test(componentCode)) {
-    eaaIssues.push('⚠️ [EAA 2025 / WCAG 2.1 AA] İkon Buton Eksikliği: Buton içerisinde sadece ikon var ancak ekran okuyucular için `aria-label` tanımlanmamış.');
+    eaaIssues.push('⚠️ [EAA 2025 / WCAG 2.1 AA] Missing Accessible Name: Icon-only button lacks an `aria-label` description for screen readers.');
   }
 
   if (/outline:\s*none/i.test(componentCode) && !/focus-visible/i.test(componentCode)) {
-    eaaIssues.push('⚠️ [EAA 2025 / WCAG 2.1 AA] Klavye Odak Tuzağı: `outline: none` kullanılmış ancak görünür bir `focus-visible` halkası eklenmemiş.');
+    eaaIssues.push('⚠️ [EAA 2025 / WCAG 2.1 AA] Keyboard Focus Trap: `outline: none` removes focus indication without providing a visible `:focus-visible` replacement ring.');
   }
 
   if (violations.length === 0 && eaaIssues.length === 0) {
-    return '✅ UI/Form Uyumluluk Denetimi: Formda Dark Pattern (önceden işaretli onay, birleştirilmiş rıza) veya EAA erişilebilirlik ihlali bulunamadı.';
+    return '✅ UI/Form Compliance Audit: No dark patterns (pre-ticked consent, bundled opt-in) or EAA accessibility violations detected.';
   }
 
   const reports = violations.map(v => 
-    `- Satır ${v.line}: **${v.message}**\n  *Kod:* \`${v.matchedSnippet}\`\n  *Dayanak:* ${v.lawCitation}\n  *Düzeltme:* ${v.suggestedFix}`
+    `- Line ${v.line}: **${v.message}**\n  *Code:* \`${v.matchedSnippet}\`\n  *Citation:* ${v.lawCitation}\n  *Suggested Fix:* ${v.suggestedFix}`
   );
 
-  return `### 🛑 CompliRules UI & Hukuki Örüntü Denetimi\n\n` +
-    (reports.length > 0 ? `**Hukuki İhlaller (KVKK / GDPR):**\n${reports.join('\n\n')}\n\n` : '') +
-    (eaaIssues.length > 0 ? `**Erişilebilirlik İhlalleri (EAA 2025):**\n${eaaIssues.join('\n\n')}\n\n` : '');
+  return `### 🛑 CompliRules UI & Dark Pattern Audit Report\n\n` +
+    (reports.length > 0 ? `**Statutory Consent Violations (KVKK / GDPR):**\n${reports.join('\n\n')}\n\n` : '') +
+    (eaaIssues.length > 0 ? `**Accessibility Violations (EAA 2025 / WCAG 2.1 AA):**\n${eaaIssues.join('\n\n')}\n\n` : '');
 }

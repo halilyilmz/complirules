@@ -1,28 +1,30 @@
 ---
-description: "KVKK & ETK/İYS Ayrık Rıza ve Dark Pattern Yasağı"
+description: "KVKK & Commercial Electronic Communication (ETK) Granular Consent and Pre-ticked Box Prohibition"
 globs: ["**/*.tsx","**/*.jsx","**/*.vue","**/components/forms/**/*.ts"]
 alwaysApply: false
 ---
 
-# [CompliRules] KVKK & ETK/İYS Ayrık Rıza ve Dark Pattern Yasağı
-**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `KVKK_TR`
+# [CompliRules] KVKK & Commercial Electronic Communication (ETK) Granular Consent and Pre-ticked Box Prohibition
+**Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
-## Yasal Dayanaklar (Legal Citations)
+## Legal Citations
 - **6698 Sayılı KVKK (Madde 3 & Md. 5 (Kurul İlke Kararı 2019/09))**: Açık rızanın belirli bir konuya ilişkin olması ve hizmet şartına bağlanamaması (Bundled Consent yasağı).
 - **6563 Sayılı Elektronik Ticaretin Düzenlenmesi Hakkında Kanun (ETK) (Madde 6)**: Ticari elektronik ileti gönderimi için alıcının önceden onayının alınması (İYS uyumu).
 
-## Kural Direktifleri
-- MUST: Aydınlatma Metni için checkbox KOYMAYIN. "Üye olarak Aydınlatma Metnini okuduğunuzu beyan edersiniz" şeklinde şeffaf bilgilendirme linki kullanın.
-- MUST: Kullanım Koşulları ve Açık Rıza onaylarını tek bir kutuda BİRLEŞTİRMEYİN.
-- MUST: Pazarlama (SMS/E-posta) onayı ASLA `required` olamaz ve ASLA `defaultChecked={true}` yapılamaz.
-- MUST: Rıza logunu `AgreementAcceptanceLog` tablosunda zaman damgası, IP adresi ve metin versiyonu ile saklayın.
+## Rule Mandates
+- MUST: Separate Privacy Policy / Terms acknowledgment from Commercial Marketing (ETK / İYS) consent into two distinct checkboxes.
+- MUST: All consent checkboxes MUST be unchecked by default (`defaultChecked={false}`); pre-ticked checkboxes are strictly prohibited (Board Decision 2019/09).
+- MUST: Service access (registration, purchase, newsletter) MUST NOT be conditioned upon granting commercial communication consent (Prohibition of Bundled Consent / KVKK Art. 5).
+- MUST: Record explicit audit metadata for every consent granted: timestamp, consent version, IP address, and acceptance state in a `UserConsent` model.
+- MUST: Provide an accessible opt-out mechanism within user settings allowing one-click withdrawal of consent at any time (KVKK Art. 11).
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: <input type="checkbox" defaultChecked={true} /> (Rıza formlarında)
-- NEVER: <input type="checkbox" required /> (Pazarlama veya ETK onaylarında)
-- NEVER: "Kullanım koşullarını ve kampanya e-postalarını kabul ediyorum" (Tek kutu)
+## Forbidden Anti-Patterns
+- NEVER: <input type="checkbox" defaultChecked={true} /> on any consent or marketing checkbox
+- NEVER: Bundling privacy policy and marketing consent into a single unified checkbox
+- NEVER: Disabling the signup submit button until the user agrees to marketing emails
+- NEVER: Sending promotional emails or SMS without an explicit opt-in timestamp logged in the database
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### React/TSX Form Bileşeni (KVKK & ETK Uyumlu)
 ```tsx
 // Aydınlatma metni bilgilendirme metnidir; checkbox gerektirmez.

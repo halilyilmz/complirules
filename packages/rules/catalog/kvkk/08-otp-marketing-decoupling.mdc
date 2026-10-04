@@ -1,30 +1,29 @@
 ---
-description: "SMS/OTP Doğrulaması ile Pazarlama ve Veri İşleme Rızasının Ayrıştırılması (2025/1072)"
+description: "KVKK Board Decision 2025/1072 SMS OTP Decoupling from Commercial Consent"
 globs: ["**/*.ts","**/*.tsx","**/*.js","**/*.py","**/*.php","**/api/**/*","**/auth/**/*"]
 alwaysApply: false
 ---
 
-# [CompliRules] SMS/OTP Doğrulaması ile Pazarlama ve Veri İşleme Rızasının Ayrıştırılması (2025/1072)
-**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `KVKK_TR`
+# [CompliRules] KVKK Board Decision 2025/1072 SMS OTP Decoupling from Commercial Consent
+**Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
-## Yasal Dayanaklar (Legal Citations)
-- **KVKK Kurulu 10.06.2025 tarihli ve 2025/1072 sayılı İlke Kararı (RG 26.06.2025, 32938) (SMS ile Doğrulama Kodu Uygulamaları)**: Tek bir SMS doğrulama koduyla üyelik sözleşmesi, ticari elektronik ileti izni ve kişisel veri işleme izninin birlikte alınması yasaktır. Kodun amacı SMS ve görevli tarafından açıkça belirtilmeli; kod verilmese de hizmet sunulmalıdır. *[Yaptırım: Geçersiz rıza ile veri işleme (KVKK Md. 5, 18) ve ETK Md. 12 idari para cezaları.]*
+## Legal Citations
+- **KVKK Kurulu 10.06.2025 tarihli ve 2025/1072 sayılı İlke Kararı (RG 26.06.2025, 32938) (SMS ile Doğrulama Kodu Uygulamaları)**: Tek bir SMS doğrulama koduyla üyelik sözleşmesi, ticari elektronik ileti izni ve kişisel veri işleme izninin birlikte alınması yasaktır. Kodun amacı SMS ve görevli tarafından açıkça belirtilmeli; kod verilmese de hizmet sunulmalıdır. *[Sanction: Geçersiz rıza ile veri işleme (KVKK Md. 5, 18) ve ETK Md. 12 idari para cezaları.]*
 - **KVKK Kurulu 2020/173 (Amazon Türkiye) (Açık Rıza — Kullanım Şartları Onayı)**: Siteyi ziyaret etmek veya kullanım şartlarını kabul etmek ticari ileti için geçerli açık rıza yerine geçmez.
 - **6563 Sayılı ETK (Madde 6)**: Ticari elektronik iletinin önceden onay alınarak gönderilmesi ve İYS kaydı.
 
-## Kural Direktifleri
-- MUST: OTP doğrulama handler'ı yalnızca `phoneVerified` benzeri doğrulama alanlarını güncelleyebilir.
-- MUST: OTP doğrulama kodu ile `marketingConsent`, `etkConsent`, `dataProcessingConsent` alanlarını ASLA `true` yapmayın; `assertOtpEffectsAreSeparated` kullanın.
-- MUST: SMS metni kodun yalnızca belirli bir amaç için olduğunu ve pazarlama izni anlamına gelmediğini açıkça belirtsin (`buildOtpSmsText`).
-- MUST: Pazarlama rızası ayrı, işaretsiz, isteğe bağlı bir kutu ile alınsın ve `consent-store` ile versiyonlu kaydedilsin.
-- MUST: Kod girilmediğinde veya rıza verilmediğinde ana hizmet sunulmaya devam etsin.
+## Rule Mandates
+- MUST: Ensure the OTP verification handler exclusively updates phone verification status (`phoneVerified: true`) without touching marketing or electronic communication consent fields.
+- MUST: Explicitly state the single purpose of the verification code in the SMS body (e.g. "Giriş doğrulama kodunuz: 123456").
+- MUST: Marketing and commercial communication consent MUST be obtained via separate, unbundled checkboxes with distinct user actions.
+- MUST: Reject any API payload that attempts to activate `marketingConsent` or `etkConsent` within an OTP verification request.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: user.update({ phoneVerified: true, marketingConsent: true }) (OTP ile rıza bundling)
-- NEVER: SMS: "Kodu paylaşarak kampanya iletilerini kabul etmiş olursunuz" (Örtülü rıza)
-- NEVER: Kasada OTP girilmeden ödeme/üyelik tamamlanmaması ve OTP'nin pazarlama izni saymak
+## Forbidden Anti-Patterns
+- NEVER: Setting `marketingConsent: true` or `etkConsent: true` inside an OTP verification database transaction
+- NEVER: Displaying UI copy claiming that entering the SMS code also constitutes consent for promotional messages ("Tek tıkla çoklu onay")
+- NEVER: Sending multi-purpose SMS bodies that combine promotional advertising with security verification codes
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### OTP Doğrulama ve Rızanın Ayrı Yönetimi
 ```ts
 import { assertOtpEffectsAreSeparated, buildOtpSmsText } from '@complirules/primitives';

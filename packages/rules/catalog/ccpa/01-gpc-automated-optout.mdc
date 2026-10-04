@@ -1,29 +1,28 @@
 ---
-description: "Global Privacy Control (Sec-GPC) Otomatik Opt-out (CCPA/CPRA § 7025)"
+description: "CCPA/CPRA 11 CCR § 7025 Automated Global Privacy Control (GPC) Opt-Out Mandate"
 globs: ["**/*.ts","**/*.tsx","**/*.js","**/middleware.*","**/components/cookie*.tsx","**/components/cmp*.tsx"]
 alwaysApply: false
 ---
 
-# [CompliRules] Global Privacy Control (Sec-GPC) Otomatik Opt-out (CCPA/CPRA § 7025)
-**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `CCPA_US`
+# [CompliRules] CCPA/CPRA 11 CCR § 7025 Automated Global Privacy Control (GPC) Opt-Out Mandate
+**Severity:** `HIGH` | **Jurisdiction:** `CCPA_US`
 
-## Yasal Dayanaklar (Legal Citations)
-- **California Code of Regulations, Title 11 (§ 7025 (opt-out preference signals))**: `Sec-GPC: 1` başlığı veya `navigator.globalPrivacyControl` sinyali kişisel verinin satışı/paylaşımı için bağlayıcı opt-out talebidir. Oturum açmış kullanıcıda sinyal kullanıcının profiline işlenir; hesap tercihiyle çelişirse işletme ancak kullanıcıyı bilgilendirip onayını alarak devam edebilir. *[Yaptırım: California AG v. Sephora (2022): 1,2 milyon $; DoorDash (2024): 375.000 $.]*
+## Legal Citations
+- **California Code of Regulations, Title 11 (§ 7025 (opt-out preference signals))**: `Sec-GPC: 1` başlığı veya `navigator.globalPrivacyControl` sinyali kişisel verinin satışı/paylaşımı için bağlayıcı opt-out talebidir. Oturum açmış kullanıcıda sinyal kullanıcının profiline işlenir; hesap tercihiyle çelişirse işletme ancak kullanıcıyı bilgilendirip onayını alarak devam edebilir. *[Sanction: California AG v. Sephora (2022): 1,2 milyon $; DoorDash (2024): 375.000 $.]*
 - **Colorado Privacy Act (4 CCR 904-3, Rule 5.11)**: Colorado da evrensel opt-out mekanizmalarını tanımayı zorunlu kılar.
 
-## Kural Direktifleri
-- MUST: Her istekte `Sec-GPC` başlığını değerlendirin (`evaluateGpcSignal`); değer tam olarak `1` ise opt-out aktiftir.
-- MUST: GPC aktifken pazarlama/hedefli reklam kategorisini kapatın (`applyGpcToPreferences`) ve üçüncü taraf reklam piksellerini yüklemeyin.
-- MUST: Kullanıcı oturum açmışsa `ccpaOptedOut: true` değerini profile kaydedin; GPC'yi hesap tercihine tercih ederek yok saymayın.
-- MUST: GPC'yi yok sayacak bir "yeniden izin ver" akışı gerekiyorsa kullanıcıyı açıkça bilgilendirip onay alın.
-- MUST: Opt-out sonrasında üçüncü taraflara veri akışının gerçekten durduğunu ağ günlüğüyle doğrulayın.
+## Rule Mandates
+- MUST: Inspect incoming HTTP request headers for `Sec-GPC: 1` and client-side `navigator.globalPrivacyControl === true`.
+- MUST: When the GPC signal is active, automatically treat it as a binding opt-out of personal data sale and sharing under CCPA/CPRA § 7025.
+- MUST: Disable third-party advertising cookies, retargeting scripts, and data broker sync pipelines immediately upon detecting GPC.
+- MUST: For authenticated users, persist the `ccpaOptedOut: true` preference to their database profile to ensure cross-device compliance.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: if (getCookie("consent") !== "false") loadAdTrackers() (GPC denetimi yok)
-- NEVER: Sec-GPC başlığını loglayıp işlememek
-- NEVER: GPC sinyaline rağmen reklam çerezi set etmek
+## Forbidden Anti-Patterns
+- NEVER: Ignoring or overriding the browser Sec-GPC: 1 header or navigator.globalPrivacyControl signal
+- NEVER: Requiring consumers who broadcast GPC signals to manually navigate preference toggles or submit written forms
+- NEVER: Loading retargeting ad trackers when evaluateGpcSignal() returns optOutActive: true
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### Sunucu Tarafı GPC Değerlendirmesi (Next.js Middleware)
 ```ts
 import { evaluateGpcSignal, applyGpcToPreferences, CookieConsentManager } from '@complirules/primitives';

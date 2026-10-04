@@ -1,29 +1,28 @@
 ---
-description: "Toplu E-postada Alıcı Adresi İfşası Yasağı (KVKK Md. 12) ve Takip Pikseli Rızası"
+description: "KVKK Article 12(1) Bulk Email Unauthorized Disclosure Prevention & Mandatory BCC"
 globs: ["**/*.ts","**/*.tsx","**/*.js","**/*.py","**/*.php","**/mail*/**/*","**/emails/**/*"]
 alwaysApply: false
 ---
 
-# [CompliRules] Toplu E-postada Alıcı Adresi İfşası Yasağı (KVKK Md. 12) ve Takip Pikseli Rızası
-**Önem Derecesi:** `HIGH` | **Yargı Alanı:** `KVKK_TR`
+# [CompliRules] KVKK Article 12(1) Bulk Email Unauthorized Disclosure Prevention & Mandatory BCC
+**Severity:** `HIGH` | **Jurisdiction:** `KVKK_TR`
 
-## Yasal Dayanaklar (Legal Citations)
-- **6698 Sayılı KVKK (Madde 12(1))**: Veri sorumlusu, kişisel verilerin hukuka aykırı erişimini önlemek için gerekli her türlü teknik ve idari tedbiri almak zorundadır. E-posta adreslerini toplu iletide `to`/`cc` alanında açık bırakmak yetkisiz ifşadır. *[Yaptırım: KVKK Md. 18/1-b uyarınca veri güvenliği yükümlülüğünü yerine getirmeme idari para cezası.]*
+## Legal Citations
+- **6698 Sayılı KVKK (Madde 12(1))**: Veri sorumlusu, kişisel verilerin hukuka aykırı erişimini önlemek için gerekli her türlü teknik ve idari tedbiri almak zorundadır. E-posta adreslerini toplu iletide `to`/`cc` alanında açık bırakmak yetkisiz ifşadır. *[Sanction: KVKK Md. 18/1-b uyarınca veri güvenliği yükümlülüğünü yerine getirmeme idari para cezası.]*
 - **ePrivacy Direktifi / CNIL (14.04.2026 tavsiyesi, uyum süresi 14.07.2026) (Md. 5(3))**: E-postadaki 1x1 takip pikselleri bireysel açılma takibi yapar ve ayrı ön rıza gerektirir. İtalyan Garante da rıza şartı aramaktadır.
 
-## Kural Direktifleri
-- MUST: Birden fazla alıcıya giden iletilerde her alıcıya ayrı gönderim yapın (`buildSafeBulkEnvelopes`) veya alıcıları `bcc` alanına koyun.
-- MUST: Gönderimden önce `validateBulkEmailOptions` ile doğrulayın; ihlal varsa göndermeyi reddedin.
-- MUST: Bülten ve işlemsel e-postalarda varsayılan olarak açılma takibi (1x1 piksel) kapalı olsun; yalnızca ayrı açık rıza varsa açın (`stripTrackingBeacons`).
-- MUST: Posta sağlayıcısı yurt dışındaysa KVKK Md. 9 aktarım şartlarını (SCC bildirimi) ayrıca sağlayın.
+## Rule Mandates
+- MUST: NEVER pass an array or comma-separated list of multiple recipient email addresses into the `to` or `cc` fields of email dispatch libraries.
+- MUST: Enforce individual envelope dispatches (`buildSafeBulkEnvelopes`) or ensure all recipient addresses are assigned strictly to `bcc`.
+- MUST: Strip 1x1 transparent tracking web beacons and unconsented read-receipt telemetry pixels from email payloads.
+- MUST: Validate email dispatch options through automated safety checkers prior to calling SMTP transporters.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: transporter.sendMail({ to: ["a@x.com", "b@x.com"] }) (Alıcılar birbirini görür)
-- NEVER: resend.emails.send({ cc: recipients }) (Toplu alıcı cc alanında)
-- NEVER: msg["To"] = ", ".join(recipients) (Python toplu To)
-- NEVER: <img src="https://track.example.com/open?uid=..." width="1" height="1"> (Rızasız açılma pikseli)
+## Forbidden Anti-Patterns
+- NEVER: `transporter.sendMail({ to: recipientsArray })` with multiple email addresses
+- NEVER: `msg["To"] = ", ".join(recipients)` in Python smtplib bulk notification scripts
+- NEVER: Embedding 1x1 tracking web beacons in newsletters without prior explicit consent
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### Alıcı Başına Ayrı Zarf (Node.js)
 ```ts
 import { buildSafeBulkEnvelopes, validateBulkEmailOptions, stripTrackingBeacons } from '@complirules/primitives';

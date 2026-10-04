@@ -2,35 +2,35 @@ import path from 'path';
 import { scanDirectory } from '@complirules/linter';
 
 export function executeCheck(targetPath = '.'): boolean {
-  console.log(`\n🔍 CompliRules Statik Regülasyon ve Güvenlik Denetimi Başlatılıyor...`);
-  console.log(`📂 Hedef Yol: ${path.resolve(targetPath)}\n`);
+  console.log(`\n🔍 CompliRules Static Regulatory & Security Audit Starting...`);
+  console.log(`📂 Target Path: ${path.resolve(targetPath)}\n`);
 
   const result = scanDirectory(targetPath);
 
-  console.log(`📊 Taranan Dosya Sayısı: ${result.checkedFilesCount}`);
+  console.log(`📊 Scanned Files Count: ${result.checkedFilesCount}`);
 
   if (result.violations.length === 0) {
-    console.log('✅ Tebrikler! Projede herhangi bir regülasyon veya PII sızıntısı ihlali tespit edilmedi.\n');
+    console.log('✅ Congratulations! No regulatory violations or PII leaks detected in your codebase.\n');
     return true;
   }
 
-  console.log(`\n🚨 TESPİT EDİLEN İHLALLER (${result.violations.length} adet):`);
-  console.log(`   Kritik: ${result.summary.critical} | Yüksek: ${result.summary.high} | Orta: ${result.summary.medium}\n`);
+  console.log(`\n🚨 DETECTED VIOLATIONS (${result.violations.length} total):`);
+  console.log(`   Critical: ${result.summary.critical} | High: ${result.summary.high} | Medium: ${result.summary.medium}\n`);
 
   for (const v of result.violations) {
     const icon = v.severity === 'CRITICAL' ? '🛑' : v.severity === 'HIGH' ? '⚠️' : 'ℹ️';
     console.log(`${icon} [${v.severity}] ${v.ruleId} — ${v.file}:${v.line}:${v.column}`);
-    console.log(`   Mevzuat Dayanağı: ${v.lawCitation}`);
-    console.log(`   Mesaj: ${v.message}`);
-    console.log(`   İhlal Eden Kod: \`${v.matchedSnippet}\``);
+    console.log(`   Statutory Citation: ${v.lawCitation}`);
+    console.log(`   Message: ${v.message}`);
+    console.log(`   Offending Code: \`${v.matchedSnippet}\``);
     if (v.suggestedFix) {
-      console.log(`   💡 Önerilen Düzeltme: ${v.suggestedFix}`);
+      console.log(`   💡 Suggested Fix: ${v.suggestedFix}`);
     }
     console.log('   ' + '-'.repeat(60));
   }
 
   if (result.summary.critical > 0 || result.summary.high > 0) {
-    console.log('\n❌ HATA: Projede kritik/yüksek düzeyde yasal uyumluluk ihlali bulunmaktadır. CI/CD kontrolü başarısız oldu.\n');
+    console.log('\n❌ ERROR: Critical or high-severity statutory compliance violations exist. CI/CD check failed.\n');
     return false;
   }
 

@@ -1,29 +1,29 @@
 ---
-description: "KVKK Md. 11 & 13 Veri Sahibi Başvuru ve 30 Günlük SLA Yönetimi"
+description: "KVKK Data Subject Access Requests (DSR) & 30-Day SLA Ticketing Workflow"
 globs: ["**/api/**/*.ts","**/services/dsr*.ts","**/routes/**/*.ts","**/controllers/**/*.ts","**/*dsr*.py","**/*ticket*.go"]
 alwaysApply: false
 ---
 
-# [CompliRules] KVKK Md. 11 & 13 Veri Sahibi Başvuru ve 30 Günlük SLA Yönetimi
-**Önem Derecesi:** `CRITICAL` | **Yargı Alanı:** `KVKK_TR`
+# [CompliRules] KVKK Data Subject Access Requests (DSR) & 30-Day SLA Ticketing Workflow
+**Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
 
-## Yasal Dayanaklar (Legal Citations)
-- **6698 Sayılı KVKK (Madde 13)**: Veri sorumlusuna başvuru taleplerinin en kısa sürede ve en geç otuz gün içinde ücretsiz olarak sonuçlandırılması zorunluluğu (Uzatılamaz kesin süre). *[Yaptırım: KVKK Md. 18 uyarınca ağır idari para cezası.]*
+## Legal Citations
+- **6698 Sayılı KVKK (Madde 13)**: Veri sorumlusuna başvuru taleplerinin en kısa sürede ve en geç otuz gün içinde ücretsiz olarak sonuçlandırılması zorunluluğu (Uzatılamaz kesin süre). *[Sanction: KVKK Md. 18 uyarınca ağır idari para cezası.]*
 - **6698 Sayılı KVKK (Madde 11 & Md. 11/1-f)**: İlgili kişinin hakları ve düzeltme/silme işlemlerinin verilerin aktarıldığı üçüncü kişilere bildirilmesi yükümlülüğü (Downstream Notification).
 - **Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ (Madde 5/2)**: Başvuruda ad-soyad, imza, TCKN/pasaport no, tebligat adresi, e-posta/telefon ve talep konusunun bulunması zorunludur.
 
-## Kural Direktifleri
-- MUST: Tebliğ Md. 5/2 uyarınca başvuruda ad-soyad, imza/doğrulama, TCKN (veya pasaport no), tebligat adresi, e-posta/telefon ve talep konusu alanlarını zorunlu olarak doğrulayın.
-- MUST: Başvuru biletini `DsrEngine.createTicket` ile oluşturup başvuru tarihinden itibaren kesin 30 günlük geri sayım başlatın; bu süre kanunen uzatılamaz.
-- MUST: Veri silme veya düzeltme talebi onaylandığında, verilerin daha önce aktarıldığı tüm üçüncü parti sistemlere (CRM, e-posta listeleri, analitik) downstream bildirim iletin (KVKK Md. 11/1-f).
-- MUST: Talebin reddi durumunda gerekçeli ret kararını yazılı veya elektronik ortamda ilgili kişiye 30 gün içinde bildirin.
+## Rule Mandates
+- MUST: Implement an automated DSR state machine (`SUBMITTED` -> `IDENTITY_VERIFIED` -> `IN_REVIEW` -> `COMPLETED`) with a strict 30-calendar-day countdown.
+- MUST: Validate mandatory applicant identity fields (Turkish National ID / TCKN for citizens, passport number for foreign nationals, residential address, email, telephone) per Communiqué Art. 5/2.
+- MUST: Upon completing an erasure or anonymization request, trigger downstream webhook notifications to all third-party data processors (Stripe, Resend, CRM).
+- MUST: Record immutable audit log entries for every status transition and notification delivery.
 
-## Yasaklı Desenler (Forbidden Anti-Patterns)
-- NEVER: 30 günlük yasal cevap süresini aşmak veya gerekçesiz yanıtsız bırakmak
-- NEVER: Tebliğ Md. 5/2 zorunlu kimlik/adres doğrulaması yapmadan anonim talepleri işleme almak
-- NEVER: Veri silindiğinde aktarılan üçüncü taraflara downstream bildirim yapmayı atlamak
+## Forbidden Anti-Patterns
+- NEVER: Permitting DSR ticket resolution beyond the strict 30-day statutory SLA window without escalating to DPO
+- NEVER: Accepting data subject applications lacking mandatory identity validation fields (TCKN/Passport, Address)
+- NEVER: Completing a deletion request internally without dispatching downstream erasure notifications to third-party processors
 
-## Referans Uyumlu Kod Örnekleri
+## Reference Compliant Code Snippets
 ### TypeScript / Node.js DSR Başvuru ve Downstream Bildirim
 ```ts
 import { DsrEngine } from '@complirules/primitives';

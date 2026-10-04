@@ -10,13 +10,13 @@ import {
 } from '@complirules/rules';
 
 export function executeAdd(target: string, targetDir = '.'): void {
-  console.log(`\n📦 Modüler Kural Paketi İndiriliyor: "${target}"...\n`);
+  console.log(`\n📦 Downloading Modular Rule Pack: "${target}"...\n`);
 
   const matchedRules = resolveRulesFromQuery(target);
   if (matchedRules.length === 0) {
-    console.log(`❌ "${target}" sorgusuyla eşleşen kural veya ülke paketi bulunamadı.`);
-    console.log(`   Kullanılabilir Kısaltmalar: tr, kvkk, eu, gdpr, eaa, us, hipaa, ai-act, sec`);
-    console.log(`   Tüm paketleri görmek için: \`complirules packs\`\n`);
+    console.log(`❌ No rules or jurisdiction packs matched query "${target}".`);
+    console.log(`   Available Aliases: tr, kvkk, eu, gdpr, eaa, us, hipaa, ccpa, ai-act, sec`);
+    console.log(`   To view all available packs: \`complirules list\`\n`);
     return;
   }
 
@@ -27,10 +27,10 @@ export function executeAdd(target: string, targetDir = '.'): void {
     const mdcContent = renderMdcRule(rule);
     const fileName = `${rule.id}.mdc`;
     fs.writeFileSync(path.join(cursorRulesDir, fileName), mdcContent, 'utf-8');
-    console.log(`  ✓ İndirildi & Kuruldu: .cursor/rules/${fileName} [${rule.jurisdiction}]`);
+    console.log(`  ✓ Downloaded & Installed: .cursor/rules/${fileName} [${rule.jurisdiction}]`);
   }
 
-  // Mevcut kurulu tüm kuralları tara ve AGENTS.md / CLAUDE.md güncelle
+  // Scan all currently installed rules and update AGENTS.md / CLAUDE.md
   const allInstalledRuleIds = fs.readdirSync(cursorRulesDir)
     .filter(f => f.endsWith('.mdc'))
     .map(f => f.replace('.mdc', ''));
@@ -44,10 +44,10 @@ export function executeAdd(target: string, targetDir = '.'): void {
   if (activeRules.length > 0) {
     fs.writeFileSync(path.join(targetDir, 'AGENTS.md'), renderAgentsMd(activeRules), 'utf-8');
     fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), renderClaudeMd(activeRules), 'utf-8');
-    console.log(`  ✓ Güncellendi: AGENTS.md ve CLAUDE.md (${activeRules.length} aktif kural)`);
+    console.log(`  ✓ Updated: AGENTS.md and CLAUDE.md (${activeRules.length} active rules)`);
   }
 
-  // .cursor/mcp.json kontrolü
+  // Configure .cursor/mcp.json if not present
   const cursorMcpJsonPath = path.join(targetDir, '.cursor', 'mcp.json');
   if (!fs.existsSync(cursorMcpJsonPath)) {
     const mcpConfig = {
@@ -59,8 +59,8 @@ export function executeAdd(target: string, targetDir = '.'): void {
       }
     };
     fs.writeFileSync(cursorMcpJsonPath, JSON.stringify(mcpConfig, null, 2), 'utf-8');
-    console.log(`  ✓ Yapılandırıldı: .cursor/mcp.json`);
+    console.log(`  ✓ Configured: .cursor/mcp.json`);
   }
 
-  console.log(`\n✨ Başarılı! "${target}" için ${matchedRules.length} adet modüler kural projenize eklendi.\n`);
+  console.log(`\n✨ Success! ${matchedRules.length} modular rule(s) added to your project for "${target}".\n`);
 }
