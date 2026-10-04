@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090a0f">
+  <meta name="theme-color" content="#09090b">
   <meta name="color-scheme" content="dark">
   <title>CompliRules — AI Kodlama Asistanları İçin Yasal Uyum Kalkanı</title>
-  <meta name="description" content="Cursor, Claude Code ve Windsurf için KVKK, GDPR ve HIPAA kurallarını zorunlu kılan telif korumalı ücretsiz kural kütüphanesi.">
+  <meta name="description" content="Cursor, Claude Code ve Windsurf için KVKK, GDPR ve HIPAA mevzuatını zorunlu kılan telif korumalı ücretsiz kural kütüphanesi.">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -29,38 +29,40 @@
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="min-h-screen text-slate-100 selection:bg-blue-500/30 selection:text-blue-200 relative">
+<body class="min-h-screen text-zinc-100 selection:bg-blue-500/30 selection:text-blue-200 relative bg-[#09090b]">
 
   <!-- Skip to Content Accessibility -->
   <a href="#rules" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-lg">
     İçeriğe Atla
   </a>
 
-  <!-- Subtle Ambient Glow -->
-  <div class="subtle-hero-glow"></div>
+  <!-- Subtle Ambient Linear Grid -->
+  <div class="bg-grid-pattern absolute inset-0 pointer-events-none"></div>
 
   <!-- Header / Navigation -->
-  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#090a0f]/80 border-b border-white/[0.08]">
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#09090b]/80 border-b border-white/[0.08]">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-base shadow-md shadow-blue-600/30">
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-sm shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
           🛡️
         </div>
-        <span class="font-bold text-lg tracking-tight text-white">CompliRules</span>
-        <span class="hidden sm:inline-block text-[11px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2 py-0.5 rounded-full ml-1">
-          v1.0 • Ücretsiz
-        </span>
+        <div class="flex items-baseline gap-2">
+          <span class="font-extrabold text-base sm:text-lg tracking-tight text-white">CompliRules</span>
+          <span class="hidden sm:inline-block text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2 py-0.5 rounded-full">
+            v1.0 • Ücretsiz Kullanım
+          </span>
+        </div>
       </a>
 
-      <nav class="hidden md:flex items-center gap-7 text-xs font-medium text-slate-400">
+      <nav class="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-400">
         <a href="#rules" class="hover:text-white transition-colors">24 Kural Kataloğu</a>
         <a href="#how-it-works" class="hover:text-white transition-colors">Nasıl Çalışır?</a>
-        <a href="#terminal" class="hover:text-white transition-colors">Linter Demo</a>
-        <a href="#" class="open-disclaimer-trigger hover:text-white transition-colors">Yasal Sorumluluk Reddi</a>
+        <a href="#demo" class="hover:text-white transition-colors">Canlı Simülasyon</a>
+        <a href="#" class="open-disclaimer-trigger hover:text-white transition-colors">Yasal Uyarı</a>
       </nav>
 
       <div class="flex items-center gap-3">
-        <a href="https://github.com/halilyilmz/complirules" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-slate-200 transition-colors">
+        <a href="https://github.com/halilyilmz/complirules" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-zinc-200 transition-colors">
           <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
           <span>GitHub</span>
         </a>
@@ -69,31 +71,31 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="relative pt-20 pb-16 px-4 sm:px-6 max-w-4xl mx-auto text-center z-10">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium mb-6">
-      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+  <section class="relative pt-24 pb-16 px-4 sm:px-6 max-w-4xl mx-auto text-center z-10">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-semibold mb-8 backdrop-blur-md">
+      <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
       <span>Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)</span>
     </div>
 
-    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 leading-[1.15]">
-      Vibe coding yaparken<br>
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 leading-[1.12]">
+      Yapay zekanız kod yazarken,<br>
       <span class="bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">
-        yasal cezalara takılmayın.
+        şirketinizi cezalardan koruyun.
       </span>
     </h1>
 
-    <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
-      Cursor, Claude Code ve Windsurf gibi yapay zeka ajanlarının kod üretirken KVKK, GDPR, HIPAA ve ePrivacy mevzuatını ihlal etmesini engelleyen <strong>deterministik kural ve linter kalkanı</strong>.
+    <p class="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+      Cursor, Claude Code ve Windsurf'ün KVKK, GDPR, HIPAA ve ePrivacy mevzuatına aykırı kod üretmesini engelleyen <strong>deterministik kural ve AST linter motoru</strong>.
     </p>
 
     <!-- One-click CLI Box -->
-    <div class="max-w-lg mx-auto mb-10">
-      <div class="card-clean p-2 rounded-xl flex items-center justify-between gap-3 shadow-xl">
+    <div class="max-w-md mx-auto mb-12">
+      <div class="bento-card p-2 rounded-xl flex items-center justify-between gap-3 shadow-2xl">
         <div class="flex items-center gap-2.5 pl-3 font-mono text-xs sm:text-sm text-cyan-300 overflow-x-auto">
-          <span class="text-slate-500 select-none">$</span>
+          <span class="text-zinc-500 select-none">$</span>
           <span id="install-cmd-text" class="whitespace-nowrap font-medium">npx complirules init</span>
         </div>
-        <button id="copy-install-btn" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 whitespace-nowrap active:scale-95" aria-label="Komutu Kopyala">
+        <button id="copy-install-btn" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-all flex items-center gap-1.5 whitespace-nowrap active:scale-95 shadow-md shadow-blue-600/30" aria-label="Komutu Kopyala">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
           <span>Kopyala</span>
         </button>
@@ -103,81 +105,148 @@
       </p>
     </div>
 
-    <!-- 3 Simple Pillars -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left pt-6 border-t border-white/[0.08]">
-      <div class="card-clean p-4 rounded-xl">
-        <div class="text-xl mb-2">📜</div>
-        <h2 class="text-sm font-bold text-white mb-1">24 Hazır Kural</h2>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          KVKK, GDPR, HIPAA ve BIPA için `.cursor/rules` ve `AGENTS.md` dosyalarını projenize anında enjekte eder.
-        </p>
+    <!-- Quick Stat Badges -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto pt-6 border-t border-white/[0.08] text-center">
+      <div class="p-3 rounded-lg bg-white/[0.02] border border-white/[0.05]">
+        <div class="text-xl font-extrabold text-white">24</div>
+        <div class="text-[11px] text-zinc-400 mt-0.5">MDC Kural Seti</div>
       </div>
-      <div class="card-clean p-4 rounded-xl">
-        <div class="text-xl mb-2">⚡</div>
-        <h2 class="text-sm font-bold text-white mb-1">AST Linter Motoru</h2>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Yapay zekanın yazdığı kodları derleme ağacından inceler; rızasız Google Fonts veya açık log sızıntılarını yakalar.
-        </p>
+      <div class="p-3 rounded-lg bg-white/[0.02] border border-white/[0.05]">
+        <div class="text-xl font-extrabold text-cyan-400">16</div>
+        <div class="text-[11px] text-zinc-400 mt-0.5">Canlı MCP Aracı</div>
       </div>
-      <div class="card-clean p-4 rounded-xl">
-        <div class="text-xl mb-2">🛡️</div>
-        <h2 class="text-sm font-bold text-white mb-1">Sıfır Maliyet</h2>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Geliştiriciler ve mühendislik ekipleri için tamamen ücretsizdir. Forklama ve satışa karşı telif korumalıdır.
-        </p>
+      <div class="p-3 rounded-lg bg-white/[0.02] border border-white/[0.05]">
+        <div class="text-xl font-extrabold text-emerald-400">AST</div>
+        <div class="text-[11px] text-zinc-400 mt-0.5">Derin Statik Analiz</div>
+      </div>
+      <div class="p-3 rounded-lg bg-white/[0.02] border border-white/[0.05]">
+        <div class="text-xl font-extrabold text-purple-400">0 TL</div>
+        <div class="text-[11px] text-zinc-400 mt-0.5">Ömür Boyu Ücretsiz</div>
       </div>
     </div>
   </section>
 
-  <!-- Interactive Terminal Simulator -->
-  <section id="terminal" class="py-12 px-4 sm:px-6 max-w-4xl mx-auto z-10 relative">
-    <div class="terminal-box terminal-window rounded-xl overflow-hidden shadow-2xl">
-      <div class="terminal-topbar px-4 py-2.5 flex items-center justify-between">
+  <!-- Interactive Visual IDE & Terminal Showcase (The Core Experience) -->
+  <section id="demo" class="py-14 px-4 sm:px-6 max-w-5xl mx-auto z-10 relative">
+    <div class="text-center mb-8">
+      <span class="text-xs font-bold text-cyan-400 tracking-wider uppercase mb-1 block">Canlı Karşılaştırma</span>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-white">CompliRules Nasıl Koruma Sağlar?</h2>
+      <p class="text-xs sm:text-sm text-zinc-400 mt-1 max-w-xl mx-auto">
+        Yapay zeka modelinizin yazdığı riskli kodları gerçek zamanlı tespit eder ve güvenli alternatifi uygulatır.
+      </p>
+    </div>
+
+    <!-- IDE Mockup -->
+    <div class="ide-window terminal-window rounded-2xl overflow-hidden shadow-2xl">
+      <!-- Top Title Bar -->
+      <div class="px-4 py-3 bg-[#0d0e15] border-b border-white/[0.08] flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block"></span>
-          <span class="text-xs text-slate-400 font-mono ml-2">bash — npx complirules check</span>
+          <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+          <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+          <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+          <span class="text-xs text-zinc-400 font-mono ml-2">Cursor IDE — src/components/Header.tsx</span>
         </div>
-        <button id="terminal-replay-btn" class="text-xs text-slate-400 hover:text-white px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 transition-colors font-mono">
-          ↺ Yeniden Oynat
-        </button>
+        <div class="flex items-center gap-2">
+          <button id="toggle-tab-ide" class="px-3 py-1 rounded text-xs font-mono bg-blue-600 text-white font-medium">IDE Görünümü</button>
+          <button id="toggle-tab-cli" class="px-3 py-1 rounded text-xs font-mono bg-white/5 hover:bg-white/10 text-zinc-400 font-medium">Terminal Çıktısı</button>
+          <button id="terminal-replay-btn" class="text-xs text-zinc-400 hover:text-white px-2 py-1 rounded bg-white/5 hover:bg-white/10 transition-colors font-mono">
+            ↺ Yeniden Oynat
+          </button>
+        </div>
       </div>
 
-      <div id="terminal-output-body" class="p-5 font-mono text-xs sm:text-sm min-h-[220px] max-h-[300px] overflow-y-auto space-y-1">
-        <!-- Rendered by app.js -->
+      <!-- IDE Tab View -->
+      <div id="view-ide" class="p-6 font-mono text-xs sm:text-sm space-y-4">
+        <div class="border-b border-white/5 pb-3">
+          <div class="text-zinc-500 text-xs mb-1">// 1. Yapay Zekanın Yazmaya Çalıştığı Riskli Kod (IP Sızıntısı):</div>
+          <div class="p-3 rounded-lg bg-rose-950/20 border border-rose-500/30 text-rose-300 font-medium">
+            &lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter" /&gt;
+          </div>
+          <div class="mt-2 text-xs text-rose-400 flex items-center gap-1.5 font-sans">
+            <span>⚠️</span>
+            <span><strong>Emsal Ceza Engellendi:</strong> LG München I (3 O 17493/20) — Ziyaretçi IP adresi rızasız ABD sunucularına aktarılıyor.</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="text-zinc-500 text-xs mb-1">// 2. CompliRules'un Otomatik Zorunlu Kıldığı Güvenli Çözüm:</div>
+          <div class="p-3 rounded-lg bg-emerald-950/20 border border-emerald-500/30 text-emerald-300 font-medium">
+            import '@fontsource/inter'; // Yerel statik paket — 0 harici IP sızıntısı
+          </div>
+          <div class="mt-2 text-xs text-emerald-400 flex items-center gap-1.5 font-sans">
+            <span>🛡️</span>
+            <span><strong>Uyum Sağlandı:</strong> KVKK & GDPR tam koruma altında, dış sunucuya hiçbir telemetri sızmaz.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terminal Tab View -->
+      <div id="view-cli" class="p-6 font-mono text-xs sm:text-sm min-h-[220px] max-h-[320px] overflow-y-auto space-y-1 hidden">
+        <div id="terminal-output-body">
+          <!-- Rendered by app.js -->
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- How It Works (3 Steps) -->
-  <section id="how-it-works" class="py-16 px-4 sm:px-6 max-w-4xl mx-auto z-10 relative">
-    <div class="text-center mb-10">
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Nasıl Çalışır?</h2>
-      <p class="text-xs sm:text-sm text-slate-400">Karmaşık hukuki süreçleri 3 basit adıma indirger.</p>
+  <!-- Bento Grid: The 4 Invariants -->
+  <section id="features" class="py-16 px-4 sm:px-6 max-w-6xl mx-auto z-10 relative">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="text-xs font-bold text-cyan-400 tracking-wider uppercase mb-1 block">Mimari Güvence</span>
+      <h2 class="text-3xl font-extrabold text-white">Neden CompliRules?</h2>
+      <p class="text-xs sm:text-sm text-zinc-400 mt-2">
+        Standart AI promptları zamanla gevşer veya unutulur. CompliRules kuralları deterministiktir.
+      </p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="card-clean p-6 rounded-xl">
-        <span class="text-xs font-mono text-blue-400 font-bold mb-2 block">ADIM 01</span>
-        <h3 class="text-base font-bold text-white mb-2">Tek Komutla Kurun</h3>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Proje klasörünüzde <code class="text-cyan-300 font-mono">npx complirules init</code> çalıştırın. Stack'iniz (Next.js, Django vb.) otomatik tanınır.
+      <div class="bento-card p-6 rounded-2xl md:col-span-2">
+        <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-xl mb-4">
+          📜
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">24 Hazır Yasal Regülasyon Kuralı</h3>
+        <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-4">
+          KVKK, GDPR, HIPAA, BIPA, ePrivacy ve EU AI Act gerekliliklerini kod seviyesinde zorunlu kılan RFC 2119 standartlarında kural seti. Cursor ve Claude Code için anında `.cursor/rules/*.mdc` olarak kurulur.
         </p>
+        <div class="flex flex-wrap gap-2 text-[11px] font-mono text-zinc-300">
+          <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10">🇹🇷 KVKK (8 Kural)</span>
+          <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10">🇪🇺 GDPR & ePrivacy (7 Kural)</span>
+          <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10">🇺🇸 HIPAA & BIPA (5 Kural)</span>
+          <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10">🔒 Güvenlik (2 Kural)</span>
+        </div>
       </div>
-      <div class="card-clean p-6 rounded-xl">
-        <span class="text-xs font-mono text-cyan-400 font-bold mb-2 block">ADIM 02</span>
-        <h3 class="text-base font-bold text-white mb-2">Ajanınız Kuralları Öğrenir</h3>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Cursor, Claude Code veya Windsurf, oluşturulan <code class="text-cyan-300 font-mono">.cursor/rules/*.mdc</code> kurallarını otomatik olarak bağlamına alır.
+
+      <div class="bento-card p-6 rounded-2xl">
+        <div class="w-10 h-10 rounded-xl bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center text-xl mb-4">
+          🔒
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Tamamen Yerel & Gizli</h3>
+        <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-4">
+          Kodlarınız hiçbir harici sunucuya veya üçüncü taraf yapay zeka servisine gönderilmez. Bütün AST denetimleri kendi yerel ortamınızda çalışır.
         </p>
+        <span class="text-xs font-mono text-cyan-400 font-semibold">0 Harici Telemetri</span>
       </div>
-      <div class="card-clean p-6 rounded-xl">
-        <span class="text-xs font-mono text-emerald-400 font-bold mb-2 block">ADIM 03</span>
-        <h3 class="text-base font-bold text-white mb-2">Yasal Sınırlar Korunur</h3>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Yapay zeka yasaklı veri toplama veya sızıntı yapacak kod yazamaz; yazmaya kalkarsa uyarılıp güvenli alternatife yönlendirilir.
+
+      <div class="bento-card p-6 rounded-2xl">
+        <div class="w-10 h-10 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-xl mb-4">
+          ⚡
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Çift Katmanlı Koruma</h3>
+        <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-4">
+          Hem Cursor ve Claude Code prompt aşamasında (MDC), hem de kod yazıldıktan sonra CI/CD ve terminal aşamasında (`npx complirules check`) çift kalkan.
         </p>
+        <span class="text-xs font-mono text-emerald-400 font-semibold">MDC + TypeScript AST</span>
+      </div>
+
+      <div class="bento-card p-6 rounded-2xl md:col-span-2">
+        <div class="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-xl mb-4">
+          🛡️
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Fikri Mülkiyet & Telif Korumalı Ücretsiz Kullanım</h3>
+        <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-4">
+          Tüm geliştiriciler, startup'lar ve şirket içi ekipler CompliRules'u tamamen <strong>ücretsiz</strong> kullanabilir. Projenin çatallanarak (fork) satılması veya kopyalanması lisansla kesin olarak yasaklanmıştır.
+        </p>
+        <span class="text-xs font-mono text-purple-400 font-semibold">Free-to-Use Protected Software License</span>
       </div>
     </div>
   </section>
@@ -185,9 +254,10 @@
   <!-- Interactive 24 Rules Explorer -->
   <section id="rules" class="py-16 px-4 sm:px-6 max-w-6xl mx-auto z-10 relative">
     <div class="text-center max-w-2xl mx-auto mb-8">
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">24 Kural & Mevzuat Kataloğu</h2>
-      <p class="text-xs sm:text-sm text-slate-400 mb-6">
-        Her bir kural doğrudan yasal içtihatlara, kanun maddelerine ve emsal ceza kararlarına dayanır.
+      <span class="text-xs font-bold text-cyan-400 tracking-wider uppercase mb-1 block">Tek Kaynak Gerçeklik</span>
+      <h2 class="text-3xl font-extrabold text-white">24 Kural & Mevzuat Kataloğu</h2>
+      <p class="text-xs sm:text-sm text-zinc-400 mt-2 mb-6">
+        Kuralları arayın veya mevzuat kategorisine göre filtreleyin.
       </p>
 
       <!-- Search Input -->
@@ -195,10 +265,10 @@
         <input 
           type="text" 
           id="rules-search-input" 
-          placeholder="Kural veya mevzuat ara (ör: çerez, log, rıza, bipa)..." 
-          class="w-full px-4 py-2.5 pl-10 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
+          placeholder="Kural veya kanun maddesi ara (ör: çerez, log, rıza, hipaa)..." 
+          class="w-full px-4 py-2.5 pl-10 rounded-xl bg-white/[0.04] border border-white/10 text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
         >
-        <span class="absolute left-3.5 top-3 text-slate-500 text-xs">🔍</span>
+        <span class="absolute left-3.5 top-3 text-zinc-500 text-xs">🔍</span>
       </div>
 
       <!-- Category Filter Tabs -->
@@ -206,24 +276,24 @@
         <button data-category="all" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white/15 text-white border border-white/20">
           Tümü (24)
         </button>
-        <button data-category="kvkk" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 border border-transparent hover:text-white">
+        <button data-category="kvkk" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-zinc-400 border border-transparent hover:text-white">
           🇹🇷 KVKK (8)
         </button>
-        <button data-category="gdpr" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 border border-transparent hover:text-white">
+        <button data-category="gdpr" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-zinc-400 border border-transparent hover:text-white">
           🇪🇺 GDPR & ePrivacy (7)
         </button>
-        <button data-category="us" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 border border-transparent hover:text-white">
+        <button data-category="us" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-zinc-400 border border-transparent hover:text-white">
           🇺🇸 HIPAA & BIPA (5)
         </button>
-        <button data-category="eaa-ai" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 border border-transparent hover:text-white">
+        <button data-category="eaa-ai" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-zinc-400 border border-transparent hover:text-white">
           🇪🇺 EAA & AI Act (2)
         </button>
-        <button data-category="security" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 border border-transparent hover:text-white">
+        <button data-category="security" class="rule-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-zinc-400 border border-transparent hover:text-white">
           🔒 Güvenlik (2)
         </button>
       </div>
 
-      <div id="rules-count-label" class="text-[11px] font-mono text-slate-500 mt-3">
+      <div id="rules-count-label" class="text-[11px] font-mono text-zinc-500 mt-3">
         24 kural listeleniyor
       </div>
     </div>
@@ -234,19 +304,51 @@
     </div>
   </section>
 
-  <!-- Legal Disclaimer & Zero Liability Notice -->
+  <!-- How It Works (3 Steps) -->
+  <section id="how-it-works" class="py-16 px-4 sm:px-6 max-w-4xl mx-auto z-10 relative">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">3 Adımda Nasıl Çalışır?</h2>
+      <p class="text-xs sm:text-sm text-zinc-400">Karmaşık hukuki gereksinimleri tek bir komuta indirger.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bento-card p-6 rounded-2xl">
+        <span class="text-xs font-mono text-blue-400 font-bold mb-2 block">ADIM 01</span>
+        <h3 class="text-base font-bold text-white mb-2">Tek Komutla Kurun</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Proje kök dizininde <code class="text-cyan-300 font-mono">npx complirules init</code> çalıştırın. Stack'iniz (Next.js, Prisma vb.) otomatik tanınır.
+        </p>
+      </div>
+      <div class="bento-card p-6 rounded-2xl">
+        <span class="text-xs font-mono text-cyan-400 font-bold mb-2 block">ADIM 02</span>
+        <h3 class="text-base font-bold text-white mb-2">Ajanınız Kuralları Öğrenir</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Cursor, Claude Code veya Windsurf, üretilen <code class="text-cyan-300 font-mono">.cursor/rules/*.mdc</code> kurallarını otomatik bağlamına alır.
+        </p>
+      </div>
+      <div class="bento-card p-6 rounded-2xl">
+        <span class="text-xs font-mono text-emerald-400 font-bold mb-2 block">ADIM 03</span>
+        <h3 class="text-base font-bold text-white mb-2">Yasal Sınırlar Korunur</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Yapay zeka yasaklı yöntemleri kodlayamaz; denediğinde uyarılır ve otomatik güvenli koda yönlendirilir.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Legal Disclaimer & Zero Liability Section -->
   <section class="py-12 px-4 sm:px-6 max-w-4xl mx-auto z-10 relative">
-    <div class="card-clean p-6 sm:p-8 rounded-2xl border border-white/10 text-left">
+    <div class="bento-card p-6 sm:p-8 rounded-2xl border border-white/10 text-left">
       <div class="flex items-center gap-3 mb-3">
         <span class="text-xl">⚖️</span>
         <h2 class="text-base sm:text-lg font-bold text-white">Yasal Sorumluluk Reddi (Zero Liability)</h2>
       </div>
-      <p class="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4 font-normal">
-        CompliRules, geliştiricilerin kod üretimini kolaylaştırmak amacıyla sağlanan <strong>kullanımı ücretsiz (Free-to-Use)</strong> ve telif korumalı bir statik kural aracıdır. Yazılım <strong>"OLDUĞU GİBİ" (AS-IS)</strong> sunulmakta olup; resmi hukuki mütalaa veya sertifikasyon değildir. Bu aracın kullanılmasından veya çıktılarından doğabilecek idari para cezalarından veya veri ihlallerinden CompliRules geliştiricileri sorumlu tutulamaz.
+      <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-4">
+        CompliRules, geliştiricilerin kod üretimini kolaylaştırmak amacıyla sağlanan <strong>kullanımı ücretsiz (Free-to-Use)</strong> ve telif korumalı bir statik kural aracıdır. Yazılım <strong>"OLDUĞU GİBİ" (AS-IS)</strong> sunulmakta olup; resmi hukuki danışmanlık veya sertifikasyon değildir. Bu aracın kullanılmasından veya çıktılarından doğabilecek idari para cezalarından veya veri ihlallerinden CompliRules yapımcıları sorumlu tutulamaz.
       </p>
       <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/10 text-xs">
-        <span class="text-slate-500 font-mono">6698 s. K. • GDPR 2016/679 • 45 CFR § 164</span>
-        <button class="open-disclaimer-trigger text-cyan-400 hover:text-cyan-300 font-medium underline">
+        <span class="text-zinc-500 font-mono">6698 s. K. • GDPR 2016/679 • 45 CFR § 164</span>
+        <button class="open-disclaimer-trigger text-cyan-400 hover:text-cyan-300 font-semibold underline">
           Tam Sözleşme Metnini Oku (TR/EN) →
         </button>
       </div>
@@ -254,25 +356,25 @@
   </section>
 
   <!-- Footer -->
-  <footer class="border-t border-white/[0.08] py-10 px-4 sm:px-6 max-w-6xl mx-auto text-center text-xs text-slate-500 z-10 relative">
+  <footer class="border-t border-white/[0.08] py-10 px-4 sm:px-6 max-w-6xl mx-auto text-center text-xs text-zinc-500 z-10 relative">
     <div class="flex flex-wrap items-center justify-center gap-6 mb-4">
-      <a href="https://github.com/halilyilmz/complirules" class="hover:text-slate-300 transition-colors">GitHub Repository</a>
-      <a href="#rules" class="hover:text-slate-300 transition-colors">Kural Kataloğu</a>
-      <a href="#" class="open-disclaimer-trigger hover:text-slate-300 transition-colors">Sorumluluk Reddi Beyanı</a>
-      <a href="https://github.com/halilyilmz/complirules/blob/main/LICENSE" class="hover:text-slate-300 transition-colors">Kullanım Lisansı (Free-to-Use)</a>
+      <a href="https://github.com/halilyilmz/complirules" class="hover:text-zinc-300 transition-colors">GitHub Repository</a>
+      <a href="#rules" class="hover:text-zinc-300 transition-colors">24 Kural Kataloğu</a>
+      <a href="#" class="open-disclaimer-trigger hover:text-zinc-300 transition-colors">Sorumluluk Reddi Beyanı</a>
+      <a href="https://github.com/halilyilmz/complirules/blob/main/LICENSE" class="hover:text-zinc-300 transition-colors">Kullanım Lisansı (Free-to-Use)</a>
     </div>
     <p>© 2026 İbrahim Halil Yılmaz (CompliRules). Free to Use for Vibe Coders & Engineering Teams.</p>
   </footer>
 
   <!-- Modal: Full Legal Disclaimer -->
-  <div id="disclaimer-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden" role="dialog" aria-modal="true" aria-labelledby="disclaimer-modal-title">
-    <div class="card-clean max-w-2xl w-full max-h-[85vh] rounded-2xl p-6 sm:p-7 flex flex-col shadow-2xl overflow-hidden border border-white/20">
+  <div id="disclaimer-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden" role="dialog" aria-modal="true" aria-labelledby="disclaimer-modal-title">
+    <div class="bento-card max-w-2xl w-full max-h-[85vh] rounded-2xl p-6 sm:p-7 flex flex-col shadow-2xl overflow-hidden border border-white/20">
       <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
         <h3 id="disclaimer-modal-title" class="font-bold text-base text-white">Yasal Sorumluluk Reddi & Şartlar</h3>
-        <button id="close-disclaimer-btn" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300 hover:text-white transition-colors" aria-label="Kapat">✕</button>
+        <button id="close-disclaimer-btn" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-zinc-300 hover:text-white transition-colors" aria-label="Kapat">✕</button>
       </div>
 
-      <div class="overflow-y-auto space-y-4 text-xs text-slate-300 pr-2 leading-relaxed">
+      <div class="overflow-y-auto space-y-4 text-xs text-zinc-300 pr-2 leading-relaxed">
         <h4 class="font-bold text-white text-sm">1. Hukuki ve Güvenlik Tavsiyesi Niteliğinde Değildir</h4>
         <p>CompliRules tarafından sağlanan 24 kural, linter ve primitiveler geliştiricilere rehberlik amacı taşır. Bu araç baro üyesi bir avukatın hukuki danışmanlığının veya akredite bağımsız penetrasyon testinin yerini almaz.</p>
 
@@ -283,7 +385,7 @@
         <p>Canlıya alınacak ve hassas veri (sağlık, biyometrik, ödeme vb.) işleyen sistemlerin bağımsız siber güvenlik uzmanları ve bilişim hukukçuları tarafından gözden geçirilmesi önerilir.</p>
 
         <h4 class="font-bold text-white text-sm">4. Statutory Waiver (English)</h4>
-        <p class="font-mono text-[11px] text-slate-400">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. UNDER NO CIRCUMSTANCES SHALL THE AUTHORS BE LIABLE FOR ANY REGULATORY FINES (GDPR, KVKK, HIPAA, BIPA), DATA COMPROMISE, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OF THESE HEURISTICS.</p>
+        <p class="font-mono text-[11px] text-zinc-400">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. UNDER NO CIRCUMSTANCES SHALL THE AUTHORS BE LIABLE FOR ANY REGULATORY FINES (GDPR, KVKK, HIPAA, BIPA), DATA COMPROMISE, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OF THESE HEURISTICS.</p>
       </div>
 
       <div class="pt-4 border-t border-white/10 mt-4 text-right">
