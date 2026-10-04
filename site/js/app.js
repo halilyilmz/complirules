@@ -5,10 +5,10 @@
 const DICTIONARY = {
   en: {
     nav_disclaimer: "Disclaimer",
-    hero_badge: "Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)",
+    hero_badge: "100% Free to Use",
     hero_title_1: "Move fast.",
     hero_title_2: "Break no laws.",
-    hero_sub: "While your AI generates your project, it can silently violate KVKK or GDPR. CompliRules adds ready-made rules to Cursor and Claude Code that quietly block those risks in the background.",
+    hero_sub: "While your AI generates your project, it can silently violate GDPR, HIPAA, or KVKK. CompliRules adds ready-made rules to Cursor and Claude Code that quietly block those risks in the background.",
     copy_btn: "Copy",
     copy_btn_done: "Copied!",
     copy_caption: "One command — rules land in .cursor/rules automatically",
@@ -38,10 +38,10 @@ const DICTIONARY = {
   },
   tr: {
     nav_disclaimer: "Yasal Sorumluluk Reddi",
-    hero_badge: "Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)",
+    hero_badge: "Geliştiriciler İçin %100 Ücretsiz",
     hero_title_1: "Hızlı ilerle.",
     hero_title_2: "Kanunları çiğneme.",
-    hero_sub: "Yapay zekanız projenizi üretirken farkında olmadan KVKK veya GDPR'ı ihlal edebilir. CompliRules, Cursor ve Claude Code'a eklenen hazır kurallarla bu riskleri arka planda sessizce engeller.",
+    hero_sub: "Yapay zekanız projenizi üretirken farkında olmadan GDPR, HIPAA veya KVKK kurallarını ihlal edebilir. CompliRules, Cursor ve Claude Code'a eklenen hazır kurallarla bu riskleri arka planda sessizce engeller.",
     copy_btn: "Kopyala",
     copy_btn_done: "Kopyalandı!",
     copy_caption: "Tek komutla çalıştırın, kurallar .cursor/rules içine otomatik insin",

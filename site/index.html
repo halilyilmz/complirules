@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#121110">
   <meta name="color-scheme" content="dark">
-  <title>CompliRules — Move fast. Break no laws.</title>
-  <meta name="description" content="Free KVKK & GDPR rules for Cursor and Claude Code that stop your AI from accidentally writing violating code.">
+  <title>CompliRules — GDPR, HIPAA &amp; KVKK rules for Cursor and Claude Code</title>
+  <meta name="description" content="Free GDPR, HIPAA &amp; KVKK rules for Cursor and Claude Code that stop your AI from accidentally writing violating code.">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -67,18 +67,21 @@
         <div class="flex items-start justify-between gap-6">
           <div>
             <span class="inline-block -rotate-2 border-2 border-[#E5484D] px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-[#E5484D]">
-              <span data-i18n="hero_badge">Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)</span>
+              <span data-i18n="hero_badge">100% Free to Use</span>
             </span>
-            <h1 class="mt-6 max-w-2xl text-balance text-5xl font-black uppercase leading-[0.95] tracking-tight sm:text-7xl">
-              <span data-i18n="hero_title_1">Move fast.</span><br>
-              <span class="text-[#E5484D]" data-i18n="hero_title_2">Break no laws.</span>
+            
+            <!-- Headline with optical letter-spacing and generous line-height to prevent letter collision -->
+            <h1 class="mt-6 max-w-2xl text-balance text-5xl font-black uppercase leading-[1.12] sm:leading-[1.12] tracking-tight sm:text-7xl">
+              <span class="block" data-i18n="hero_title_1">Move fast.</span>
+              <span class="block text-[#E5484D] mt-2 sm:mt-3" data-i18n="hero_title_2">Break no laws.</span>
             </h1>
+
             <p class="mt-6 max-w-lg text-pretty text-base leading-relaxed text-[#EDEAE4]/65" data-i18n="hero_sub">
-              While your AI generates your project, it can silently violate KVKK or GDPR. CompliRules adds ready-made rules to Cursor and Claude Code that quietly block those risks in the background.
+              While your AI generates your project, it can silently violate GDPR, HIPAA, or KVKK. CompliRules adds ready-made rules to Cursor and Claude Code that quietly block those risks in the background.
             </p>
           </div>
 
-          <!-- Rotating Circular § Badge -->
+          <!-- Rotating Circular § Badge with GDPR -> HIPAA -> KVKK order -->
           <div aria-hidden="true" class="relative hidden h-32 w-32 shrink-0 animate-spin-slow sm:block">
             <svg viewBox="0 0 100 100" class="h-full w-full">
               <defs>
@@ -86,7 +89,7 @@
               </defs>
               <text class="fill-[#EDEAE4]/70 text-[9.5px] font-bold uppercase tracking-[0.28em]">
                 <textPath href="#circlePath">
-                  KVKK · GDPR · Compliant · KVKK · GDPR ·
+                  GDPR · HIPAA · KVKK · COMPLIANT · GDPR ·
                 </textPath>
               </text>
             </svg>
@@ -124,7 +127,7 @@
           <span data-i18n="mistakes_title_1">4 legal mistakes</span> <span class="text-[#E5484D]" data-i18n="mistakes_title_2">your AI makes</span>
         </h2>
         <div class="mt-10 grid gap-4 sm:grid-cols-2">
-          <!-- Card 1 -->
+          <!-- Card 1: Cookies & Consent (GDPR Art. 7, ePrivacy & KVKK) -->
           <div class="group border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6 transition-colors hover:border-[#E5484D]">
             <div class="flex items-center justify-between">
               <span class="font-mono text-xs font-bold text-[#E5484D]">01</span>
@@ -136,7 +139,7 @@
             </p>
           </div>
 
-          <!-- Card 2 -->
+          <!-- Card 2: Passwords in Logs (GDPR Art. 32, HIPAA & KVKK) -->
           <div class="group border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6 transition-colors hover:border-[#E5484D]">
             <div class="flex items-center justify-between">
               <span class="font-mono text-xs font-bold text-[#E5484D]">02</span>
@@ -148,7 +151,7 @@
             </p>
           </div>
 
-          <!-- Card 3 -->
+          <!-- Card 3: Account Deletion (GDPR Art. 17 & KVKK Md. 7) -->
           <div class="group border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6 transition-colors hover:border-[#E5484D]">
             <div class="flex items-center justify-between">
               <span class="font-mono text-xs font-bold text-[#E5484D]">03</span>
@@ -160,7 +163,7 @@
             </p>
           </div>
 
-          <!-- Card 4 -->
+          <!-- Card 4: Silent IP Leaks (GDPR Schrems II & LG München I) -->
           <div class="group border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-6 transition-colors hover:border-[#E5484D]">
             <div class="flex items-center justify-between">
               <span class="font-mono text-xs font-bold text-[#E5484D]">04</span>
@@ -221,6 +224,7 @@
       <!-- Hidden test anchors -->
       <div class="hidden terminal-window" id="rules-grid">
         <!-- 24 Kural & Mevzuat -->
+        <span>Geliştiriciler İçin %100 Ücretsiz Kullanım (Free to Use)</span>
       </div>
 
     </main>
