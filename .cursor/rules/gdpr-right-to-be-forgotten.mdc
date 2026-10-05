@@ -1,0 +1,74 @@
+---
+description: "GDPR Article 17 Right to Erasure (Right to be Forgotten) & Downstream Purge Pipeline"
+globs: ["**/*.prisma","**/api/**/*.ts","**/services/user*.ts","**/models.py","**/models/**/*.py","**/models/**/*.go","**/Models/**/*.php"]
+alwaysApply: false
+---
+
+# [CompliRules] GDPR Article 17 Right to Erasure (Right to be Forgotten) & Downstream Purge Pipeline
+**Severity:** `CRITICAL` | **Jurisdiction:** `GDPR_EU`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **General Data Protection Regulation (GDPR) (Article 17 & 25)**: Right to erasure ("right to be forgotten") and Data protection by design and by default. *[Sanction: İhlal durumunda 20 milyon Euro veya küresel cironun %4üne varan idari para cezası.]*
+- **General Data Protection Regulation (GDPR) (Article 17(3)(b) & (e))**: Hukuki saklama yükümlülüğü (vergi/muhasebe) ve hukuki taleplerin savunulması istisnası. Fatura ve mali kayıtlar fiziksel olarak silinemez; kullanıcı ile ilişkisi koparılmalıdır.
+- **General Data Protection Regulation (GDPR) (Article 20)**: Right to Data Portability. Kullanıcının kişisel verilerini yapılandırılmış, yaygın kullanılan ve makinece okunabilir formatta (JSON/CSV) alma ve taşıma hakkı.
+- **General Data Protection Regulation (GDPR) (Article 8)**: Çocukların rızası ve yaş sınırları. 16 yaşından (veya üye devletçe belirlenen 13 yaşından) küçüklerin verisi veli/ebeveyn onayı olmadan işlenemez.
+
+## Rule Mandates
+- MUST: Execute a deterministic data eradication pipeline upon confirmed erasure requests.
+- MUST: Dispatch asynchronous webhook notifications to all integrated third-party processors (Stripe, CRM, Email services) to ensure downstream erasure.
+- MUST: Retain anonymized tombstone identifiers where necessary to prevent account recreation and maintain statutory tax records.
+- MUST: Log cryptographic erasure verification tokens to prove compliance to data protection authorities.
+
+## Forbidden Anti-Patterns
+- NEVER: Setting a soft-delete `deletedAt` timestamp while leaving plaintext user data indefinitely accessible in active tables
+- NEVER: Failing to propagate user erasure requests to integrated third-party SaaS vendors and sub-processors
+- NEVER: Deleting tax invoices or accounting records before the expiration of statutory commercial retention obligations
+
+## Reference Compliant Code Snippets
+### TypeScript De-identification Pipeline
+```ts
+export async function executeRightToBeForgotten(userId: string) {
+  // 1. Dış servislerden temizle
+  await Promise.allSettled([
+    resend.contacts.remove({ email: user.email }),
+    posthog.capture({ distinctId: userId, event: '$delete_user' })
+  ]);
+  
+  // 2. Yerel verileri kriptografik olarak yok et (Crypto-shredding)
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      email: `erased-${crypto.randomUUID()}@anonymized.invalid`,
+      name: 'DE-IDENTIFIED USER',
+      phone: null,
+      isAnonymized: true,
+      anonymizedAt: new Date()
+    }
+  });
+}
+```
+
+### GDPR Article 20 Taşınabilir Veri Dışa Aktarma (JSON Export)
+```ts
+import { generateDataPortabilityBundle } from '@complirules/primitives';
+
+// GET /api/user/export
+export async function exportUserDataHandler(req: Request) {
+  const user = await db.user.findUnique({ where: { id: req.userId } });
+  const invoices = await db.invoice.findMany({ where: { userId: req.userId } });
+  const consents = await db.agreementLog.findMany({ where: { userId: req.userId } });
+
+  const exportBundle = generateDataPortabilityBundle(user, {
+    activityHistory: invoices,
+    consentRecords: consents
+  });
+
+  return Response.json(exportBundle, {
+    headers: {
+      'Content-Disposition': `attachment; filename="data-export-${req.userId}.json"`
+    }
+  });
+}
+```

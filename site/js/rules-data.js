@@ -1,5 +1,5 @@
 /**
- * CompliRules - 24 Kural & Mevzuat Kataloğu Verisi
+ * CompliRules - 28 Kural & Mevzuat Kataloğu Verisi
  */
 
 window.RULES_DATA = [
@@ -218,5 +218,42 @@ window.RULES_DATA = [
     severity: "HIGH",
     citation: "OWASP ASVS & KVKK Veri Sorumlusu Kusuru Kararları",
     summary: "Giriş ve şifre sıfırlama rotalarında IP ve kullanıcı bazlı kayan pencere (sliding-window) hız sınırlandırması ve şüpheli girişte 2FA şart koşar."
+  }
+,
+  {
+    id: "gdpr-data-portability-endpoint",
+    title: "GDPR Art. 20 Makinece Okunabilir Veri Taşınabilirliği",
+    category: "gdpr",
+    jurisdiction: "🇪🇺 GDPR",
+    severity: "HIGH",
+    citation: "GDPR Art. 20 & EDPB WP 242",
+    summary: "Kullanıcı verilerini talep ettiğinde salt PDF/HTML yerine otomatik olarak yapılandırılmış JSON/CSV çıktısı üreten ve hız sınırlamalı endpoint standardı."
+  },
+  {
+    id: "hipaa-baa-telemetry-isolation",
+    title: "HIPAA BAA & Telemetri İzolasyonu (Sentry/Datadog)",
+    category: "hipaa",
+    jurisdiction: "🇺🇸 HIPAA / HHS OCR",
+    severity: "CRITICAL",
+    citation: "45 CFR § 164.502(e) & Raleigh Orthopaedic Kararı",
+    summary: "Hata takip ve telemetri servislerinde sendDefaultPii: false yapılmasını, SSN/MRN temizlenmesini ve BAA anlaşması olmadan harici AI/bulut çağrılarını bloke eder."
+  },
+  {
+    id: "eaa-accessible-checkout-mfa",
+    title: "EAA 2025 Çok Modlu Biyometrik Alternatif & Erişilebilir Ödeme",
+    category: "eaa",
+    jurisdiction: "🇪🇺 EAA 2025 / EN 301 549",
+    severity: "CRITICAL",
+    citation: "Directive (EU) 2019/882 & EN 301 549 Md. 5.3",
+    summary: "Yalnızca biyometrik (FaceID/parmak izi) kimlik doğrulamaya zorlamayı yasaklar; engelli kullanıcılar için paralel TOTP/SMS alternatifi ve klavye odak halkaları şart koşar."
+  },
+  {
+    id: "ai-act-prohibited-practices",
+    title: "EU AI Act Madde 5 Yasaklı Yapay Zeka Uygulamaları",
+    category: "ai-act",
+    jurisdiction: "🇪🇺 EU AI Act (Şubat 2025)",
+    severity: "CRITICAL",
+    citation: "Reg. (EU) 2024/1689 Art. 5(1)(e)-(f) (€35M / %7 Ciro)",
+    summary: "İş yeri ve eğitimde duygu analizi yapılmasını, internetten izinsiz yüz tanıma verisi kazınmasını (scraping) ve sosyal puanlamayı AST düzeyinde yasaklar."
   }
 ];

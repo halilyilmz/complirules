@@ -1,0 +1,47 @@
+---
+description: "GDPR & CJEU Breyer C-582/14 Prohibition of Unproxied Remote Assets (LG München I)"
+globs: ["**/*.tsx","**/*.jsx","**/*.html","**/*.vue","**/*.php","**/components/**/*.ts"]
+alwaysApply: false
+---
+
+# [CompliRules] GDPR & CJEU Breyer C-582/14 Prohibition of Unproxied Remote Assets (LG München I)
+**Severity:** `HIGH` | **Jurisdiction:** `GDPR_EU`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **LG München I (3 O 17493/20) & CJEU Breyer (C-582/14) (IP Adreslerinin Üçüncü Taraflara Rızasız İletimi)**: Harici resimler (<img src="https://...">), Gravatar avatarları veya remote fontların doğrudan istemciye bağlanması (Hotlinking), ziyaretçi IP adresi ve Referer başlığını üçüncü taraf sunuculara sızdırır. Rıza olmaksızın veya güvenli proxy kullanılmaksızın yapılması tazminat ve idari yaptırım doğurur. *[Sanction: Almanya mahkemelerince ziyaretçi başına 100€+ manevi tazminat, ihtiyati tedbir ve GDPR Md. 83 idari para cezaları.]*
+- **General Data Protection Regulation (GDPR) (Article 6(1) & Article 44+)**: Hukuki dayanak olmaksızın kişisel veri (dinamik IP) işleme ve yeterlilik kararı bulunmayan üçüncü ülkelere sınır ötesi veri aktarımı yasağı.
+
+## Rule Mandates
+- MUST: Route all external user avatars (Gravatar), remote images, and third-party media through a server-side signed asset proxy.
+- MUST: Self-host all web fonts (Google Fonts, Adobe Fonts) locally or bundle them into static deployment assets (`@next/font/google`, `@fontsource`).
+- MUST: Implement strict Server-Side Request Forgery (SSRF) filters validating that asset proxies never fetch internal IP ranges (127.0.0.1, 10.x, 169.254.x).
+- MUST: Add cryptographic HMAC signatures to proxy URLs to prevent unauthenticated server resource abuse.
+
+## Forbidden Anti-Patterns
+- NEVER: <img src="https://gravatar.com/avatar/..." /> directly rendered in client-side HTML
+- NEVER: <link href="https://fonts.googleapis.com/css2?..." rel="stylesheet"> in HTML headers
+- NEVER: <img src="https://images.unsplash.com/..." /> without next/image optimization or asset proxying
+
+## Reference Compliant Code Snippets
+### Güvenli Resim Proxy Entegrasyonu (React / Next.js & @complirules/primitives)
+```tsx
+import { createSecureAssetProxyUrl } from '@complirules/primitives';
+
+export function SafeUserAvatar({ rawAvatarUrl, userName }: { rawAvatarUrl: string; userName: string }) {
+  // Kullanıcının IP adresini korumak için doğrudan Gravatar/Unsplash URL'i yerine imzalı yerel proxy kullanılır
+  const safeProxyUrl = createSecureAssetProxyUrl(rawAvatarUrl, {
+    proxyEndpoint: '/api/compliance/proxy-image'
+  });
+
+  return (
+    <img
+      src={safeProxyUrl}
+      alt={userName}
+      className="w-10 h-10 rounded-full object-cover"
+      loading="lazy"
+    />
+  );
+}
+```

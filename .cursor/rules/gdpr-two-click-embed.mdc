@@ -1,0 +1,53 @@
+---
+description: "GDPR & TDDDG § 25 Two-Click Solution for Video and Map Embeds (CJEU Fashion ID)"
+globs: ["**/*.tsx","**/*.jsx","**/*.html","**/*.vue","**/*.php","**/components/**/*.ts"]
+alwaysApply: false
+---
+
+# [CompliRules] GDPR & TDDDG § 25 Two-Click Solution for Video and Map Embeds (CJEU Fashion ID)
+**Severity:** `HIGH` | **Jurisdiction:** `GDPR_EU`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **CJEU C-40/17 Fashion ID (29.07.2019) (GDPR Md. 26 — Ortak Veri Sorumluluğu)**: Facebook Beğen gibi bir eklentiyi gömen site sahibi, verinin toplanması ve aktarımı aşamasında eklenti sağlayıcısıyla ortak veri sorumlusudur; eklenti yüklenirken ziyaretçi tıklamasa bile IP ve tarayıcı verisi aktarılır. *[Sanction: Hukuki dayanak (rıza) ve aydınlatma eksikliğinde GDPR Md. 83 idari para cezaları ve Md. 82 tazminat.]*
+- **Alman DSK Telemedya Rehberi / TDDDG § 25 (Zwei-Klick-Lösung)**: YouTube, Vimeo ve Google Maps iframe'leri (youtube-nocookie.com dahil) sayfa açılır açılmaz IP ve Referer bilgisini iletir. Kullanıcı etkinleştirmeden önce harici sunucuya hiçbir istek atılmamalıdır.
+- **CJEU C-300/21 Österreichische Post (04.05.2023) (GDPR Md. 82)**: Manevi tazminat için asgari ciddiyet eşiği aranmaz; bu nedenle tek bir rızasız harici istek bile toplu dava ve ihtar (Abmahnung) riski doğurur.
+
+## Rule Mandates
+- MUST: Wrap all third-party media iframes (YouTube, Vimeo, Google Maps) in a Two-Click Consent Component (*Zwei-Klick-Lösung*).
+- MUST: Display only locally hosted or self-proxied thumbnail images prior to explicit user activation (never hotlink `i.ytimg.com`).
+- MUST: Ensure zero network requests are dispatched to third-party domains on initial page load.
+- MUST: Load the actual iframe only after the user explicitly clicks the overlay activation button, applying `referrerpolicy="no-referrer"`.
+
+## Forbidden Anti-Patterns
+- NEVER: <iframe src="https://www.youtube.com/embed/..." /> rendered directly without a user activation click
+- NEVER: <iframe src="https://www.google.com/maps/embed?..." /> loaded automatically on page render
+- NEVER: Hotlinking video preview thumbnails from `https://i.ytimg.com/...` in two-click placeholders
+
+## Reference Compliant Code Snippets
+### İki Tıklamalı YouTube Embed (React & @complirules/primitives)
+```tsx
+import { useState } from 'react';
+import { createTwoClickEmbed, activateTwoClickEmbed } from '@complirules/primitives';
+
+export function SafeVideo({ videoId }: { videoId: string }) {
+  const embed = createTwoClickEmbed('https://www.youtube-nocookie.com/embed/' + videoId, {
+    localThumbnailPath: '/thumbs/' + videoId + '.webp',
+    title: 'Tanıtım videosu'
+  });
+  const [active, setActive] = useState(false);
+
+  if (!active) {
+    return (
+      <div>
+        <img src={embed.localThumbnailPath} alt={embed.title} width={640} height={360} />
+        <p>{embed.disclosureText}</p>
+        <button type="button" onClick={() => setActive(true)}>Videoyu yükle</button>
+      </div>
+    );
+  }
+  const attrs = activateTwoClickEmbed(embed, true);
+  return <iframe {...attrs} width={640} height={360} />;
+}
+```

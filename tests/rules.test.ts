@@ -70,4 +70,13 @@ describe('CompliRules Catalog & Rules Engine', () => {
     expect(rules.some(r => r.id === 'bipa-biometric-retention')).toBe(true);
     expect(rules.some(r => r.id === 'multi-jurisdiction-conflict-quarantine')).toBe(true);
   });
+
+  it('GDPR Data Portability, HIPAA BAA İzolasyonu, EAA Çok Modlu 2FA ve AI Act Yasaklı Uygulamalar kurallarını yükler', () => {
+    const rules = getAllRules();
+    expect(rules.length).toBe(28);
+    expect(rules.some(r => r.id === 'gdpr-data-portability-endpoint')).toBe(true);
+    expect(rules.some(r => r.id === 'hipaa-baa-telemetry-isolation')).toBe(true);
+    expect(rules.some(r => r.id === 'eaa-accessible-checkout-mfa')).toBe(true);
+    expect(rules.some(r => r.id === 'ai-act-prohibited-practices')).toBe(true);
+  });
 });

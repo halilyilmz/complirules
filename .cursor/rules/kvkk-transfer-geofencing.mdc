@@ -1,0 +1,47 @@
+---
+description: "KVKK Article 9 (2024 Reform) Cross-Border Data Transfer & Cloud Geo-Fencing"
+globs: ["**/api/**/*.ts","**/services/**/*.ts","**/infra/**/*.ts","**/config/**/*.ts","**/*transfer*.py","**/*router*.go"]
+alwaysApply: false
+---
+
+# [CompliRules] KVKK Article 9 (2024 Reform) Cross-Border Data Transfer & Cloud Geo-Fencing
+**Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **6698 Sayılı KVKK (Madde 9 (12 Mart 2024 Reformu))**: Yurt dışına veri aktarımında Standart Sözleşme (SCC), BCR veya Kurul izni zorunluluğu. *[Sanction: KVKK Md. 18/1-e (1.000.000 TL - 5.000.000 TL idari para cezası) & TCK Md. 136 hapis yaptırımı.]*
+- **Yurt Dışına Kişisel Veri Aktarımına İlişkin Usul ve Esaslar Hakkında Yönetmelik (Madde 14 (10 Temmuz 2024))**: Standart Sözleşmelerin (SCC) imzalanmasından itibaren 5 İŞ GÜNÜ İÇİNDE Kurul'a bildirilmesi zorunluluğu.
+
+## Rule Mandates
+- MUST: Route database storage and processing workloads involving Turkish resident personal data to in-country regions (e.g. TR-Central, EU Sovereign Cloud) by default.
+- MUST: When using overseas cloud providers (AWS, Azure, Vercel) or LLM endpoints (OpenAI, Anthropic), verify that executed Standard Contractual Clauses (SCC) have been filed with the Personal Data Protection Board within 5 business days.
+- MUST: Apply local pseudonymization or tokenization filters before transmitting user payloads to foreign APIs.
+- MUST: Log data residency tags (`dataResidencyRegion: "TR"`) across database records and telemetry events.
+
+## Forbidden Anti-Patterns
+- NEVER: Transmitting raw, unmasked Turkish National IDs (TCKN) or user profiles directly to overseas LLM inference endpoints
+- NEVER: Deploying primary customer databases to regions outside Turkey without an active SCC filing or Board authorization
+- NEVER: Failing to log data sovereignty and residency routing metadata on cross-border API integrations
+
+## Reference Compliant Code Snippets
+### Geo-Routing ve SCC Bildirim Denetleyicisi
+```ts
+import { GeoRouter } from '@complirules/primitives';
+
+export function routeUserDataTransfer(userCountry: 'TR', destinationCountry: 'US', hasScc: boolean) {
+  const decision = GeoRouter.evaluateTransfer({
+    originCountry: userCountry,
+    destinationCountry,
+    hasExecutedScc: hasScc
+  });
+
+  if (!decision.allowed) {
+    throw new Error(`Yurt dışı aktarım engellendi: ${decision.reason}`);
+  }
+
+  if (decision.requiresKurulSccNotification) {
+    console.log(`⚠️ DİKKAT: Standart Sözleşme ${decision.sccNotificationDeadlineBusinessDays} iş günü içinde Kurul'a bildirilmelidir!`);
+  }
+}
+```

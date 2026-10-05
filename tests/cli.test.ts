@@ -78,7 +78,7 @@ describe('CompliRules CLI Commands', () => {
     // 2. EAA ekle
     executeAdd('eaa', tempProjectDir);
     installedFiles = fs.readdirSync(cursorRulesDir);
-    expect(installedFiles.length).toBe(kvkkCount + 1);
+    expect(installedFiles.length).toBe(kvkkCount + 2);
     expect(installedFiles.some(f => f.startsWith('eaa'))).toBe(true);
 
     // 3. EAA kaldır

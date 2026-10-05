@@ -1,0 +1,61 @@
+---
+description: "EU AI Act (Regulation 2024/1689) Article 50 Transparency & Synthetic Watermarking Standard"
+globs: ["**/*.tsx","**/*.jsx","**/api/generate/**/*.ts","**/*.py","**/*.go"]
+alwaysApply: false
+---
+
+# [CompliRules] EU AI Act (Regulation 2024/1689) Article 50 Transparency & Synthetic Watermarking Standard
+**Severity:** `HIGH` | **Jurisdiction:** `AI_ACT_EU`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **European Union Artificial Intelligence Act (EU AI Act) (Article 50)**: Yapay zekâ sistemleri ile etkileşimde bulunan kullanıcının bilgilendirilmesi ve üretilen içeriğin makinece okunabilir şekilde işaretlenmesi.
+- **European Union Artificial Intelligence Act (EU AI Act) (Article 12)**: Yüksek riskli (High-Risk - Annex III) yapay zekâ sistemleri için otomatik olay ve işlem kaydı tutma (record-keeping / audit trail) yükümlülüğü.
+- **European Union Artificial Intelligence Act (EU AI Act) (Article 14)**: Human Oversight (Human-in-the-loop / Human-on-the-loop). Yüksek riskli otonom sistemlerde kararların insanlar tarafından denetlenebilmesi, durdurulabilmesi veya geçersiz kılınabilmesi (override) zorunluluğu.
+- **European Union Artificial Intelligence Act (EU AI Act) (Article 86)**: Right to Explanation. Kullanıcının yapay zekâ destekli bireysel kararlara ilişkin gerekçeli açıklama talep etme ve itiraz hakkı.
+
+## Rule Mandates
+- MUST: Affix clear, prominent visual disclosure badges indicating that users are interacting with an artificial intelligence system (Article 50(1)).
+- MUST: Embed machine-readable, cryptographic provenance watermarks (C2PA / IPTC standard) into all generated synthetic images, audio, and video (Article 50(2)).
+- MUST: Establish human-in-the-loop escalation mechanisms (`evaluateAiDecisionWithOversight`) for high-impact automated scoring or classification decisions (Article 14).
+- MUST: Provide users with clear opt-out or human review contestation mechanisms for AI-generated determinations.
+
+## Forbidden Anti-Patterns
+- NEVER: Deploying customer-facing AI chat agents without explicit disclosure that the system is an automated AI assistant
+- NEVER: Publishing synthetic deepfake media or generative images without machine-readable provenance metadata
+- NEVER: Executing fully autonomous, irrevocable high-impact decisions (credit, employment, health) without human review capabilities
+
+## Reference Compliant Code Snippets
+### AI Şeffaflık Rozeti Bileşeni
+```tsx
+<div className="flex items-center gap-1.5 text-xs text-neutral-500 py-1" role="status">
+  <SparklesIcon className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" />
+  <span>Yapay zekâ tarafından oluşturulmuştur. Hatalar içerebilir, lütfen doğrulayınız.</span>
+</div>
+```
+
+### EU AI Act Article 14 Human-in-the-loop & Eskalasyon Mekanizması
+```ts
+import { evaluateAiDecisionWithOversight } from '@complirules/primitives';
+
+export async function processAutomatedDecision(userApplication: any) {
+  const aiResult = await runModelInference(userApplication);
+
+  // Article 14: Eşik altı kararlar insan moderatöre yönlendirilir
+  const decisionRecord = evaluateAiDecisionWithOversight({
+    modelId: 'risk-scoring-v2',
+    inputPayload: userApplication,
+    outputPayload: aiResult,
+    confidenceScore: aiResult.score,
+    threshold: 0.85
+  });
+
+  if (decisionRecord.requiresHumanReview) {
+    await queueForHumanReview(decisionRecord);
+    return { status: 'PENDING_HUMAN_REVIEW', message: 'Karar insan denetçisi incelemesine yönlendirildi.' };
+  }
+
+  return { status: 'APPROVED', result: aiResult };
+}
+```

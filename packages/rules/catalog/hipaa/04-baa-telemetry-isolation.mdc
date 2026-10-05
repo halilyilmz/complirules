@@ -1,0 +1,61 @@
+---
+description: "HIPAA 45 CFR § 164.502(e) Business Associate Agreement (BAA) & Telemetry Guard"
+globs: ["**/lib/sentry*.*","**/lib/monitoring/**","**/lib/ai/**","**/services/*.*","**/config/sentry*.*"]
+alwaysApply: false
+---
+
+# [CompliRules] HIPAA 45 CFR § 164.502(e) Business Associate Agreement (BAA) & Telemetry Guard
+**Severity:** `CRITICAL` | **Jurisdiction:** `HIPAA_US`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **HIPAA Privacy & Security Rules (45 CFR) (45 CFR § 164.502(e) & § 164.504(e))**: Disclosures to Business Associates: Covered entities may disclose PHI only to vendors with executed BAAs establishing permitted uses and strict security safeguards. *[Sanction: Tier 3/4 HIPAA civil monetary penalties up to $2,067,813 per violation category per year.]*
+- **HHS OCR Resolution Agreements (Enforcement Precedents)**: OCR v. Raleigh Orthopaedic ($750k fine) and cloud enforcement cases penalizing un-sanitized exception dumps or PHI transmissions without BAAs.
+
+## Rule Mandates
+- MUST: MUST set sendDefaultPii: false in Sentry and crash reporting configurations.
+- MUST: MUST implement beforeSend scrubbing filters redacting SSNs, MRNs (Medical Record Numbers), emails, and patient identifiers from error messages.
+- MUST: NEVER initialize third-party LLM or telemetry APIs without verifying process.env.HIPAA_BAA_EXECUTED === "true" or an active enterprise BAA.
+- MUST: MUST strip request cookies and authorization headers from outbound crash report payloads.
+
+## Forbidden Anti-Patterns
+- NEVER: Sentry.init with sendDefaultPii: true in healthcare applications
+- NEVER: Streaming un-sanitized patient notes or raw exception traces to cloud telemetry without BAA
+
+## Reference Compliant Code Snippets
+### HIPAA-Compliant Sentry & PHI Scrubber
+```typescript
+import * as Sentry from '@sentry/nextjs';
+
+const PHI_PATTERNS = {
+  ssn: /\b\d{3}-\d{2}-\d{4}\b/g,
+  mrn: /\bMRN[-:]?\s*\d{6,10}\b/gi,
+  email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g
+};
+
+export function initCompliantSentry() {
+  Sentry.init({
+    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    sendDefaultPii: false,
+    beforeSend(event) {
+      if (event.exception?.values) {
+        event.exception.values.forEach(exception => {
+          if (exception.value) {
+            exception.value = exception.value
+              .replace(PHI_PATTERNS.ssn, '[REDACTED-SSN]')
+              .replace(PHI_PATTERNS.mrn, '[REDACTED-MRN]')
+              .replace(PHI_PATTERNS.email, '[REDACTED-EMAIL]');
+          }
+        });
+      }
+      if (event.request) {
+        delete event.request.cookies;
+        delete event.request.headers?.['authorization'];
+        delete event.request.headers?.['cookie'];
+      }
+      return event;
+    }
+  });
+}
+```

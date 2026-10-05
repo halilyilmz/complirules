@@ -1,0 +1,129 @@
+---
+description: "KVKK & Tax Procedure Code Data Retention and Tombstone Anonymization Standard"
+globs: ["**/*.prisma","**/schema.ts","**/models/**/*.ts","**/db/**/*.ts","**/models.py","**/models/**/*.py","**/models/**/*.go","**/migrations/*.php","**/Models/**/*.php"]
+alwaysApply: false
+---
+
+# [CompliRules] KVKK & Tax Procedure Code Data Retention and Tombstone Anonymization Standard
+**Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **6698 Sayılı KVKK (Madde 7)**: Kişisel verilerin silinmesi, yok edilmesi veya anonim hale getirilmesi yükümlülüğü. *[Sanction: Hukuka aykırı saklama durumunda TCK Md. 138 uyarınca hapis cezası ve idari para cezası.]*
+- **6698 Sayılı KVKK (Madde 9 (2024 Reformu))**: Yurt dışına veri aktarımı kısıtları. Standart Sözleşme (SCC) veya Kurul izni olmadan yurt dışı LLM (OpenAI, Anthropic) veya bulut (AWS, Vercel) servislerine açık PII aktarılamaz. *[Sanction: KVKK Md. 18 ağır idari para cezaları ve TCK Md. 136 hapis yaptırımı.]*
+- **6698 Sayılı KVKK (Madde 6)**: Özel nitelikli kişisel verilerin (sağlık, biyometri, adli sicil) işlenmesinde Zarf Şifreleme (Envelope Encryption) ve anahtarların ayrı tutulması zorunluluğu.
+- **213 Sayılı Vergi Usul Kanunu (VUK) (Madde 253)**: Defter ve belgelerin (fatura, ödeme, sipariş kayıtları) 5 yıl saklanması zorunluluğu (TTK Md. 82: 10 yıl).
+- **6698 Sayılı KVKK & VERBİS Yönetmeliği (Madde 16)**: Veri Sorumluları Siciline (VERBİS) kayıt ve Veri İşleme Envanteri (RoPA) yükümlülüğü. Yabancı veri sorumluları için çalışan/ciro eşiği aranmaksızın Türkiye Temsilcisi atama ve kayıt zorunluluğu. *[Sanction: KVKK Md. 18/1-ç uyarınca en üst hadden idari para cezası.]*
+
+## Rule Mandates
+- MUST: NEVER configure `onDelete: Cascade` (Django: `models.CASCADE`, Laravel: `cascadeOnDelete()`) between User models and Financial/Invoice/Order models.
+- MUST: When handling a user deletion or Right to be Forgotten request, anonymize personal fields (name, email, phone, national ID) deterministically rather than executing a hard SQL DROP.
+- MUST: Maintain `isAnonymized: Boolean` and `anonymizedAt: DateTime?` columns on the User model.
+- MUST: Establish a `RetentionPolicy` and an `AuditLog` table to document deletion and anonymization actions.
+- MUST: Never transmit unmasked national IDs or direct personal data to overseas LLM or cloud APIs (OpenAI, Anthropic, Resend, AWS US-East); apply local pseudonymization filters (KVKK Art. 9).
+- MUST: Never store special category personal data (health, biometric, criminal records) in plaintext in the User table; use Envelope Encryption (DEK & KEK) (KVKK Art. 6).
+- MUST: Add VERBİS process mapping annotations above sensitive schema columns (`/// @compliance: KVKK_ART5_2C | Retention: 10Y`).
+
+## Forbidden Anti-Patterns
+- NEVER: onDelete: Cascade / models.CASCADE / cascadeOnDelete() between User and Invoice/Payment models
+- NEVER: Setting deletedAt: DateTime? while leaving unmasked personal name and email in the database
+- NEVER: Hard deleting user records via prisma.user.delete({ where: { id } }) or user.delete() without tombstoning financial records
+- NEVER: openai.chat.completions.create({ messages: [{ content: userTcknAndEmail }] }) (Unlawful cross-border transfer under KVKK Art. 9)
+- NEVER: model User { healthHistory String } (Storing special category personal data in plaintext)
+
+## Reference Compliant Code Snippets
+### Prisma Şeması (VERBİS Etiketleri & Tombstone & SetNull)
+```prisma
+model User {
+  id             String    @id @default(uuid())
+  /// @compliance: KVKK_MD5_2C | GDPR_ART6_1B | Category: IDENTITY | Retention: MEMBERSHIP_PLUS_10Y
+  email          String    // Anonimleştiğinde: "anon-{hash}@anonymized.local"
+  name           String    // Anonimleştiğinde: "ANONIM KULLANICI"
+  phone          String?   // Anonimleştiğinde: null
+  tckn           String?   // Anonimleştiğinde: null
+  isAnonymized   Boolean   @default(false)
+  anonymizedAt   DateTime?
+  createdAt      DateTime  @default(now())
+  
+  // Finansal kayıtlar asla cascade ile silinmez!
+  invoices       Invoice[] @relation("UserInvoices")
+  auditLogs      AuditLog[]
+}
+
+model Invoice {
+  id          String   @id @default(uuid())
+  userId      String?  // SetNull yapılarak kullanıcı silinse bile fatura saklanır
+  user        User?    @relation("UserInvoices", fields: [userId], references: [id], onDelete: SetNull)
+  amountCents Int
+  taxNumber   String
+  createdAt   DateTime @default(now()) // VUK Md. 253 gereği 5 yıl zorunlu saklama
+}
+
+// KVKK Md. 6: Özel nitelikli veriler ayrı ve zarf şifreli modelde tutulur
+model EncryptedHealthProfile {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  encryptedData String   // AES-256-GCM DEK ile şifrelenmiş veri
+  encryptedKey  String   // KMS KEK ile şifrelenmiş DEK zarfı
+  iv            String
+  tag           String
+  updatedAt     DateTime @updatedAt
+}
+```
+
+### Python / Django ORM (Tombstone & models.SET_NULL)
+```python
+from django.db import models
+
+class User(models.Model):
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=255)
+    tckn = models.CharField(max_length=11, null=True, blank=True)
+    is_anonymized = models.BooleanField(default=False)
+    anonymized_at = models.DateTimeField(null=True, blank=True)
+
+class Invoice(models.Model):
+    # VUK Md. 253: ASLA models.CASCADE KULLANMAYIN!
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='invoices')
+    amount_cents = models.PositiveIntegerField()
+    tax_number = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True) # 5 yıl zorunlu saklama
+```
+
+### Go / GORM (Tombstone & SET NULL Constraint)
+```go
+package models
+
+import "time"
+
+type User struct {
+    ID           string     `gorm:"primaryKey"`
+    Email        string     `gorm:"not null"`
+    Name         string     `gorm:"not null"`
+    IsAnonymized bool       `gorm:"default:false"`
+    AnonymizedAt *time.Time
+}
+
+type Invoice struct {
+    ID          string `gorm:"primaryKey"`
+    UserID      *string
+    // VUK Md. 253: OnDelete:SET NULL
+    User        User   `gorm:"constraint:OnDelete:SET NULL;"`
+    AmountCents int64
+    CreatedAt   time.Time
+}
+```
+
+### PHP / Laravel Eloquent Migration (nullOnDelete)
+```php
+// database/migrations/..._create_invoices_table.php
+Schema::create('invoices', function (Blueprint $table) {
+    $table->uuid('id')->primary();
+    // VUK Md. 253: cascadeOnDelete ASLA KULLANILMAZ!
+    $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+    $table->unsignedInteger('amount_cents');
+    $table->string('tax_number');
+    $table->timestamps();
+});
+```

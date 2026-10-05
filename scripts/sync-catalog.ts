@@ -1,4 +1,4 @@
-﻿import fs from 'node:fs';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ALL_RULES } from '../packages/rules/src/catalog-data.js';
@@ -32,7 +32,11 @@ const RULE_PATH_MAPPING: Record<string, string> = {
   'gdpr-eprivacy-consent-decoupling': 'gdpr/05-eprivacy-consent-decoupling.mdc',
   'schrems-ii-transfer-tia': 'gdpr/06-schrems-ii-transfer-tia.mdc',
   'bipa-biometric-retention': 'ccpa/02-bipa-biometric-retention.mdc',
-  'multi-jurisdiction-conflict-quarantine': 'gdpr/07-multi-jurisdiction-conflict-quarantine.mdc'
+  'multi-jurisdiction-conflict-quarantine': 'gdpr/07-multi-jurisdiction-conflict-quarantine.mdc',
+  'gdpr-data-portability-endpoint': 'gdpr/08-data-portability-endpoint.mdc',
+  'hipaa-baa-telemetry-isolation': 'hipaa/04-baa-telemetry-isolation.mdc',
+  'eaa-accessible-checkout-mfa': 'eaa-a11y/02-accessible-checkout-mfa.mdc',
+  'ai-act-prohibited-practices': 'ai-act/02-prohibited-practices.mdc'
 };
 
 console.log('🔄 CompliRules MDC Katalog Dosyaları Senkronize Ediliyor...');

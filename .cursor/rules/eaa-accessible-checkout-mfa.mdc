@@ -1,0 +1,56 @@
+---
+description: "EAA 2025 & EN 301 549 Multi-Modal Accessible Authentication & Checkout Standards"
+globs: ["**/components/**/*auth*.*","**/components/**/*mfa*.*","**/components/**/*checkout*.*","**/app/checkout/**","**/app/auth/**"]
+alwaysApply: false
+---
+
+# [CompliRules] EAA 2025 & EN 301 549 Multi-Modal Accessible Authentication & Checkout Standards
+**Severity:** `CRITICAL` | **Jurisdiction:** `EAA_EU`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **Directive (EU) 2019/882 (European Accessibility Act - EAA 2025) (Annex I, Section I & III)**: E-commerce services and identification methods must provide accessible, perceivable, and operable user interfaces without discriminatory technical barriers.
+- **Harmonised European Standard EN 301 549 v3.2.1 (Clause 5.3 (Biometrics))**: Where ICT uses biological characteristics for authentication, it shall not rely on any single biological characteristic and shall provide at least one non-biometric alternative.
+
+## Rule Mandates
+- MUST: MUST provide at least one non-biometric authentication alternative (TOTP authenticator app, accessible code, or password) on the same tier whenever biometric/passkey auth is offered (EN 301 549 Clause 5.3).
+- MUST: NEVER create a biometric-only lockout for users unable to provide facial or fingerprint scans.
+- MUST: MUST maintain visible, unobscured focus rings (:focus-visible) across all interactive checkout and authentication controls.
+- MUST: MUST announce form errors via role="alert" and inline error text next to the offending input.
+
+## Forbidden Anti-Patterns
+- NEVER: Biometric-only 2FA or passkey flow without accessible fallback
+- NEVER: outline: none or outline: 0 without visible focus replacement on checkout buttons
+
+## Reference Compliant Code Snippets
+### Accessible Multi-Modal MFA Switcher
+```typescript
+export function AccessibleMfaSelector({ selectedModality, onSelect }: { 
+  selectedModality: 'BIOMETRIC' | 'TOTP_APP'; 
+  onSelect: (m: 'BIOMETRIC' | 'TOTP_APP') => void;
+}) {
+  return (
+    <div role="tablist" aria-label="Authentication Modalities" className="grid grid-cols-2 gap-2">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={selectedModality === 'BIOMETRIC'}
+        onClick={() => onSelect('BIOMETRIC')}
+        className="p-2.5 text-xs font-semibold rounded-md border focus-visible:ring-2 focus-visible:ring-blue-500"
+      >
+        Biometrics / Passkey
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={selectedModality === 'TOTP_APP'}
+        onClick={() => onSelect('TOTP_APP')}
+        className="p-2.5 text-xs font-semibold rounded-md border focus-visible:ring-2 focus-visible:ring-blue-500"
+      >
+        Authenticator Code (TOTP)
+      </button>
+    </div>
+  );
+}
+```

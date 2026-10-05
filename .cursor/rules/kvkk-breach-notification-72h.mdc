@@ -1,0 +1,51 @@
+---
+description: "KVKK Article 12(5) 72-Hour Personal Data Breach Notification Workflow"
+globs: ["**/services/incident*.ts","**/lib/breach*.ts","**/api/security/**/*.ts","**/*breach*.py","**/*incident*.go"]
+alwaysApply: false
+---
+
+# [CompliRules] KVKK Article 12(5) 72-Hour Personal Data Breach Notification Workflow
+**Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **6698 Sayılı KVKK (Madde 12/5)**: Kişisel verilerin kanuni olmayan yollarla başkaları tarafından elde edilmesi halinde en geç 72 saat içinde Kurul'a ve ilgili kişiye bildirim zorunluluğu. *[Sanction: KVKK Md. 18/1-b uyarınca ağır idari para cezası.]*
+- **KVKK Kurul İlke Kararı (24.01.2019 - 2019/10)**: Kişisel Veri İhlali Bildirim Formu standartları ve 6 zorunlu alanın eksiksiz doldurulması.
+
+## Rule Mandates
+- MUST: Initialize an immutable 72-hour countdown immediately upon detecting any security incident involving unauthorized access, disclosure, or loss of personal data.
+- MUST: Generate an incident payload structured according to the official Personal Data Protection Board 6-section notification template.
+- MUST: Maintain an internal Breach Incident Register documenting root causes, affected data categories, estimated user counts, and remedial actions.
+- MUST: Prepare automated data subject notification templates to alert impacted individuals without unreasonable delay.
+
+## Forbidden Anti-Patterns
+- NEVER: Failing to record the exact detection timestamp (`detectedAt`) of a suspected personal data breach
+- NEVER: Concealing security incidents or delaying regulatory notification beyond the 72-hour statutory window
+- NEVER: Omitting mandatory incident log entries from the internal corporate security register
+
+## Reference Compliant Code Snippets
+### 72 Saatlik İhlal Takibi ve Kurul JSON Form Üretimi
+```ts
+import { BreachNotifier, InternalIncidentRegister } from '@complirules/primitives';
+
+export function handleSecurityIncident(incidentData: any) {
+  const register = new InternalIncidentRegister();
+  const incident = register.recordIncident({
+    title: 'Şüpheli Veri İndirme Girişimi',
+    isReportable: true,
+    formDetails: incidentData
+  });
+
+  const countdown = BreachNotifier.calculateCountdown(incident.discoveryTimestamp);
+  console.log(`Kalan Süre: ${countdown.remainingHours} saat ${countdown.remainingMinutes} dakika`);
+
+  const formJson = BreachNotifier.generateKurulFormJson({
+    organizationName: 'Acme Holding',
+    contactPerson: 'Veri Koruma İrtibat Kişisi',
+    contactEmail: 'dpo@acme.com',
+    form: incidentData
+  });
+  return formJson;
+}
+```

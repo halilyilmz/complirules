@@ -1,0 +1,89 @@
+---
+description: "AppSec & DevSecOps Log Sanitization and PII/PHI Scrubber Standard"
+globs: ["**/api/**/*.ts","**/controllers/**/*.ts","**/lib/logger.ts","**/middleware/**/*.ts","**/*.py","**/*.go","**/*.php"]
+alwaysApply: true
+---
+
+# [CompliRules] AppSec & DevSecOps Log Sanitization and PII/PHI Scrubber Standard
+**Severity:** `CRITICAL` | **Jurisdiction:** `GLOBAL_SEC`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **GDPR / KVKK / HIPAA Ortak İlkesi (Veri Minimizasyonu & Gizlilik Güvenliği)**: Üçüncü parti log sunucularına (Datadog, CloudWatch, Sentry) kimlik, parola, token veya TCKN sızdırılamaz.
+
+## Rule Mandates
+- MUST: NEVER log raw request bodies (`console.log(req.body)`, `print(request.body)`) or unredacted user models to standard output or telemetry sinks.
+- MUST: Deploy an automated redacting logger (`createRedactedLogger()`, `pino` redaction, or `structlog`) configured to scrub passwords, tokens, national IDs, and credit card numbers.
+- MUST: Sanitize exception stack traces and payloads before reporting to external observability tools (Sentry, Datadog).
+- MUST: Enforce strict telemetry masking across client-side error reporting libraries.
+
+## Forbidden Anti-Patterns
+- NEVER: console.log("User login:", req.body) in API routes or middleware
+- NEVER: Logging raw authorization headers, JWT tokens, or API keys to server logs
+- NEVER: Transmitting unredacted customer emails or phone numbers to third-party monitoring platforms
+
+## Reference Compliant Code Snippets
+### TypeScript / Node.js (Redaksiyonlu Logger)
+```ts
+import { createRedactedLogger } from '@complirules/primitives';
+
+export const logger = createRedactedLogger({
+  redactKeys: ['password', 'tckn', 'creditCard', 'token', 'authorization']
+});
+
+logger.info('Kullanıcı girişi başarılı', { userId: user.id });
+```
+
+### Python (structlog / logging.Filter PII Redaction)
+```python
+import logging
+
+class PiiMaskingFilter(logging.Filter):
+    SENSITIVE_KEYS = {'password', 'tckn', 'credit_card', 'token', 'authorization'}
+
+    def filter(self, record):
+        if isinstance(record.msg, dict):
+            record.msg = {
+                k: '[REDACTED_PII]' if k.lower() in self.SENSITIVE_KEYS else v 
+                for k, v in record.msg.items()
+            }
+        return True
+
+logger = logging.getLogger('complirules_app')
+logger.addFilter(PiiMaskingFilter())
+logger.info({'event': 'user_login', 'user_id': user.id})
+```
+
+### Go (slog.Handler with PII Masking)
+```go
+package logger
+
+import (
+    "log/slog"
+    "os"
+    "strings"
+)
+
+func NewCompliantLogger() *slog.Logger {
+    opts := &slog.HandlerOptions{
+        ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+            key := strings.ToLower(a.Key)
+            if key == "password" || key == "tckn" || key == "token" {
+                return slog.String(a.Key, "[REDACTED_PII]")
+            }
+            return a
+        },
+    }
+    return slog.New(slog.NewJSONHandler(os.Stdout, opts))
+}
+```
+
+### PHP / Laravel (Log Context Redaction)
+```php
+// app/Logging/SanitizedLogger.php
+Log::info('User login successful', [
+    'user_id' => $user->id,
+    // Asla $request->all() basmayın!
+]);
+```

@@ -1,0 +1,35 @@
+---
+description: "Multi-Jurisdiction Collision Resolution: GDPR Erasure vs Statutory Tax/Clinical Retentions"
+globs: ["src/**/*.{ts,tsx}","app/api/**/*.{ts,tsx}","lib/**/*.{ts,tsx}","**/*.prisma"]
+alwaysApply: true
+---
+
+# [CompliRules] Multi-Jurisdiction Collision Resolution: GDPR Erasure vs Statutory Tax/Clinical Retentions
+**Severity:** `CRITICAL` | **Jurisdiction:** `GDPR_EU`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **Regulation (EU) 2016/679 (GDPR) (Article 17(3)(b) & Article 18)**: Right to erasure does not apply to the extent processing is necessary for compliance with a legal obligation.
+- **Turkish Tax Procedure Law & Commercial Code (VUK Madde 253 & TTK Madde 82)**: Mandatory 5-year (VUK) and 10-year (TTK) retention of accounting books and invoice records.
+
+## Rule Mandates
+- MUST: Never execute hard SQL cascade deletes on invoices, tax records, or medical charts upon user erasure requests.
+- MUST: Quarantine retained financial and clinical rows into restricted, read-only tables.
+- MUST: Attach automated TTL destruction timers matching exact statutory retention durations.
+
+## Forbidden Anti-Patterns
+- NEVER: Hard CASCADE deletion between User and Invoice/Billing tables
+
+## Reference Compliant Code Snippets
+### Jurisdiction Conflict Resolver
+```typescript
+import { JurisdictionConflictResolver } from '@complirules/primitives';
+
+const resolution = resolver.resolveErasureVsRetention({
+  subjectId: user.id,
+  dataCategories: ['invoices', 'profile_data'],
+  jurisdictions: ['TR', 'EU'],
+  erasureRequestDate: new Date().toISOString()
+});
+```

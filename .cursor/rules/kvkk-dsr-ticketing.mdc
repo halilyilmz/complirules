@@ -1,0 +1,51 @@
+---
+description: "KVKK Data Subject Access Requests (DSR) & 30-Day SLA Ticketing Workflow"
+globs: ["**/api/**/*.ts","**/services/dsr*.ts","**/routes/**/*.ts","**/controllers/**/*.ts","**/*dsr*.py","**/*ticket*.go"]
+alwaysApply: false
+---
+
+# [CompliRules] KVKK Data Subject Access Requests (DSR) & 30-Day SLA Ticketing Workflow
+**Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **6698 Sayılı KVKK (Madde 13)**: Veri sorumlusuna başvuru taleplerinin en kısa sürede ve en geç otuz gün içinde ücretsiz olarak sonuçlandırılması zorunluluğu (Uzatılamaz kesin süre). *[Sanction: KVKK Md. 18 uyarınca ağır idari para cezası.]*
+- **6698 Sayılı KVKK (Madde 11 & Md. 11/1-f)**: İlgili kişinin hakları ve düzeltme/silme işlemlerinin verilerin aktarıldığı üçüncü kişilere bildirilmesi yükümlülüğü (Downstream Notification).
+- **Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ (Madde 5/2)**: Başvuruda ad-soyad, imza, TCKN/pasaport no, tebligat adresi, e-posta/telefon ve talep konusunun bulunması zorunludur.
+
+## Rule Mandates
+- MUST: Implement an automated DSR state machine (`SUBMITTED` -> `IDENTITY_VERIFIED` -> `IN_REVIEW` -> `COMPLETED`) with a strict 30-calendar-day countdown.
+- MUST: Validate mandatory applicant identity fields (Turkish National ID / TCKN for citizens, passport number for foreign nationals, residential address, email, telephone) per Communiqué Art. 5/2.
+- MUST: Upon completing an erasure or anonymization request, trigger downstream webhook notifications to all third-party data processors (Stripe, Resend, CRM).
+- MUST: Record immutable audit log entries for every status transition and notification delivery.
+
+## Forbidden Anti-Patterns
+- NEVER: Permitting DSR ticket resolution beyond the strict 30-day statutory SLA window without escalating to DPO
+- NEVER: Accepting data subject applications lacking mandatory identity validation fields (TCKN/Passport, Address)
+- NEVER: Completing a deletion request internally without dispatching downstream erasure notifications to third-party processors
+
+## Reference Compliant Code Snippets
+### TypeScript / Node.js DSR Başvuru ve Downstream Bildirim
+```ts
+import { DsrEngine } from '@complirules/primitives';
+
+export async function handleKvkkDsrRequest(payload: any) {
+  // 1. Tebliğ Md. 5/2 zorunlu alan kontrolü
+  const validation = DsrEngine.validateKvkkApplicantPayload(payload);
+  if (!validation.valid) {
+    throw new Error(`Eksik başvuru unsurları: ${validation.missingFields.join(', ')}`);
+  }
+
+  // 2. 30 Günlük kesin SLA bileti oluştur
+  const ticket = DsrEngine.createTicket({
+    jurisdiction: 'KVKK_TR',
+    requestType: 'ERASURE',
+    applicant: payload
+  });
+
+  // 3. Downstream sistemleri bilgilendir (KVKK Md. 11/1-f)
+  const updatedTicket = DsrEngine.notifyDownstreamProcessors(ticket, ['Stripe', 'HubSpot', 'PostHog']);
+  return updatedTicket;
+}
+```

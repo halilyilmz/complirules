@@ -1,0 +1,52 @@
+---
+description: "KVKK & Commercial Electronic Communication (ETK) Granular Consent and Pre-ticked Box Prohibition"
+globs: ["**/*.tsx","**/*.jsx","**/*.vue","**/components/forms/**/*.ts"]
+alwaysApply: false
+---
+
+# [CompliRules] KVKK & Commercial Electronic Communication (ETK) Granular Consent and Pre-ticked Box Prohibition
+**Severity:** `CRITICAL` | **Jurisdiction:** `KVKK_TR`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **6698 Sayılı KVKK (Madde 3 & Md. 5 (Kurul İlke Kararı 2019/09))**: Açık rızanın belirli bir konuya ilişkin olması ve hizmet şartına bağlanamaması (Bundled Consent yasağı).
+- **6563 Sayılı Elektronik Ticaretin Düzenlenmesi Hakkında Kanun (ETK) (Madde 6)**: Ticari elektronik ileti gönderimi için alıcının önceden onayının alınması (İYS uyumu).
+
+## Rule Mandates
+- MUST: Separate Privacy Policy / Terms acknowledgment from Commercial Marketing (ETK / İYS) consent into two distinct checkboxes.
+- MUST: All consent checkboxes MUST be unchecked by default (`defaultChecked={false}`); pre-ticked checkboxes are strictly prohibited (Board Decision 2019/09).
+- MUST: Service access (registration, purchase, newsletter) MUST NOT be conditioned upon granting commercial communication consent (Prohibition of Bundled Consent / KVKK Art. 5).
+- MUST: Record explicit audit metadata for every consent granted: timestamp, consent version, IP address, and acceptance state in a `UserConsent` model.
+- MUST: Provide an accessible opt-out mechanism within user settings allowing one-click withdrawal of consent at any time (KVKK Art. 11).
+
+## Forbidden Anti-Patterns
+- NEVER: <input type="checkbox" defaultChecked={true} /> on any consent or marketing checkbox
+- NEVER: Bundling privacy policy and marketing consent into a single unified checkbox
+- NEVER: Disabling the signup submit button until the user agrees to marketing emails
+- NEVER: Sending promotional emails or SMS without an explicit opt-in timestamp logged in the database
+
+## Reference Compliant Code Snippets
+### React/TSX Form Bileşeni (KVKK & ETK Uyumlu)
+```tsx
+// Aydınlatma metni bilgilendirme metnidir; checkbox gerektirmez.
+<p className="text-sm text-neutral-600">
+  Kişisel verileriniz{" "}
+  <a href="/aydinlatma-metni" target="_blank" className="underline font-medium">
+    KVKK Aydınlatma Metni
+  </a>{" "}
+  kapsamında işlenmektedir.
+</p>
+
+// 1. Zorunlu Sözleşme Onayı (Açık rıza DEĞİL, sözleşmenin ifası)
+<label className="flex items-center gap-2 text-sm">
+  <input type="checkbox" required name="termsAccepted" className="w-4 h-4" />
+  <span><a href="/terms" className="underline">Kullanıcı Sözleşmesini</a> okudum ve kabul ediyorum.</span>
+</label>
+
+// 2. İhtiyari ETK / Pazarlama Onayı (ZORUNLU OLAMAZ, PRE-TICKED OLAMAZ)
+<label className="flex items-center gap-2 text-sm">
+  <input type="checkbox" name="marketingConsent" defaultChecked={false} className="w-4 h-4" />
+  <span>Kampanya, indirim ve bülten iletilerini SMS/E-posta ile almayı kabul ediyorum. (İsteğe bağlı)</span>
+</label>
+```

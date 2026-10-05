@@ -1,0 +1,46 @@
+---
+description: "EU AI Act (Reg. 2024/1689) Article 5 Prohibited AI Practices Invariants"
+globs: ["**/ml/**","**/ai/**","**/services/hr/**","**/proctoring/**","**/*.py","**/services/face*.*","**/services/scrape*.*"]
+alwaysApply: false
+---
+
+# [CompliRules] EU AI Act (Reg. 2024/1689) Article 5 Prohibited AI Practices Invariants
+**Severity:** `CRITICAL` | **Jurisdiction:** `AI_ACT_EU`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **Regulation (EU) 2024/1689 (EU Artificial Intelligence Act) (Article 5(1)(f))**: Prohibition of AI systems to infer emotions of a natural person in the areas of workplace and education institutions. *[Sanction: Article 99(3) administrative fines up to €35,000,000 or 7% of total worldwide annual turnover. Effective date: 2 February 2025.]*
+- **Regulation (EU) 2024/1689 (EU Artificial Intelligence Act) (Article 5(1)(e))**: Prohibition of creating or expanding facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage.
+- **Regulation (EU) 2024/1689 (EU Artificial Intelligence Act) (Article 5(1)(c))**: Prohibition of AI-driven social scoring evaluating trustworthiness based on social conduct or personality traits.
+
+## Rule Mandates
+- MUST: NEVER implement emotion recognition models (e.g. DeepFace.analyze(actions=["emotion"]), AWS Rekognition Emotions, Affectiva) in workplace, recruitment, or educational software (Art. 5(1)(f)).
+- MUST: NEVER build scrapers harvesting profile pictures or facial images from public web pages into facial recognition vector databases (Art. 5(1)(e)).
+- MUST: NEVER implement social trustworthiness scoring algorithms evaluating individuals based on social conduct (Art. 5(1)(c)).
+- MUST: MUST raise ProhibitedPracticeViolation on attempts to deploy prohibited capabilities in sensitive contexts.
+
+## Forbidden Anti-Patterns
+- NEVER: Emotion recognition classification in HR/recruitment or education proctoring
+- NEVER: Untargeted web scraping of facial images for biometric recognition databases
+- NEVER: Social scoring algorithms evaluating individual conduct
+
+## Reference Compliant Code Snippets
+### EU AI Act Article 5 Compliance Enforcer
+```typescript
+export class AIActComplianceEnforcer {
+  static validateInferenceRequest(capability: string, context: string) {
+    if (capability === 'EMOTION_RECOGNITION' && ['WORKPLACE_HR', 'EDUCATION'].includes(context)) {
+      throw new Error(
+        'FATAL: EU AI Act Article 5(1)(f) violation. Emotion recognition in workplace/education is strictly prohibited under Regulation (EU) 2024/1689.'
+      );
+    }
+    if (capability === 'UNTARGETED_FACIAL_SCRAPING') {
+      throw new Error(
+        'FATAL: EU AI Act Article 5(1)(e) violation. Untargeted scraping of facial images from the internet is prohibited.'
+      );
+    }
+    return true;
+  }
+}
+```

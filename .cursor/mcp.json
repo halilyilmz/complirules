@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "complirules": {
+      "command": "npx",
+      "args": [
+        "@complirules/mcp-server"
+      ]
+    }
+  }
+}

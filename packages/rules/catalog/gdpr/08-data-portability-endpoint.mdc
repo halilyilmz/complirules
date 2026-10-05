@@ -1,0 +1,71 @@
+---
+description: "GDPR Article 20 Right to Data Portability Machine-Readable Export Standard"
+globs: ["**/api/user/**","**/api/dsr/**","**/controllers/user*.*","**/routes/user*.*","**/api/v1/user/**"]
+alwaysApply: false
+---
+
+# [CompliRules] GDPR Article 20 Right to Data Portability Machine-Readable Export Standard
+**Severity:** `HIGH` | **Jurisdiction:** `GDPR_EU`
+
+<!-- NOTICE: CompliRules provides automated AST guardrails under CompliRules Free-to-Use License without warranty (See DISCLAIMER.md). Documentation: https://halilyilmz.github.io/complirules/ -->
+
+## Legal Citations
+- **Regulation (EU) 2016/679 (GDPR) (Article 20)**: Right to data portability: The data subject shall have the right to receive personal data concerning them in a structured, commonly used and machine-readable format (JSON/CSV). *[Sanction: GDPR Art. 83(5) administrative fines up to €20,000,000 or 4% of total worldwide annual turnover.]*
+- **European Data Protection Board (EDPB) (Guidelines WP 242 rev.01)**: Portability standard: Static human-readable prints (PDF or HTML) do not satisfy Article 20 requirements; data must be structured for automated ingestion.
+
+## Rule Mandates
+- MUST: MUST expose an authenticated endpoint (e.g. GET /api/v1/user/data-portability or GET /api/dsr/export) permitting users to download their personal data in structured, machine-readable format (JSON or CSV).
+- MUST: MUST include user-provided data, profile attributes, order history, activity logs, and consent records.
+- MUST: NEVER restrict data portability exports exclusively to static human-readable formats (PDF or HTML prints).
+- MUST: MUST protect data portability endpoints with authentication and rate limiting (e.g. sliding window max 2 exports / 24h) to prevent exfiltration.
+- MUST: MUST return proper Content-Disposition: attachment; filename=... and Content-Type: application/json headers.
+
+## Forbidden Anti-Patterns
+- NEVER: Restricting data portability exports to PDF or HTML prints only
+- NEVER: Unauthenticated or unlimited data export endpoints lacking rate limiting
+
+## Reference Compliant Code Snippets
+### Next.js Machine-Readable Data Portability Endpoint
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { verifyAuthSession } from '@/lib/auth';
+
+export async function GET(req: NextRequest) {
+  const session = await verifyAuthSession(req);
+  if (!session?.userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const userData = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      createdAt: true,
+      orders: true,
+      consents: true
+    }
+  });
+
+  const exportPayload = {
+    $schema: 'https://complirules.org/schemas/gdpr-art20-portability-v1.json',
+    exportMetadata: {
+      generatedAt: new Date().toISOString(),
+      dataSubjectId: session.userId,
+      formatVersion: '1.0.0'
+    },
+    personalData: userData
+  };
+
+  return new NextResponse(JSON.stringify(exportPayload, null, 2), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Disposition': `attachment; filename="data-export-${session.userId}.json"`,
+      'Cache-Control': 'no-store, no-cache, must-revalidate, private'
+    }
+  });
+}
+```

@@ -1648,6 +1648,309 @@ const resolution = resolver.resolveErasureVsRetention({
   ]
 };
 
+export const GDPR_DATA_PORTABILITY_RULE: RuleDefinition = {
+  id: 'gdpr-data-portability-endpoint',
+  title: 'GDPR Article 20 Right to Data Portability Machine-Readable Export Standard',
+  jurisdiction: 'GDPR_EU',
+  severity: 'HIGH',
+  globs: [
+    '**/api/user/**',
+    '**/api/dsr/**',
+    '**/controllers/user*.*',
+    '**/routes/user*.*',
+    '**/api/v1/user/**'
+  ],
+  alwaysApply: false,
+  legalCitations: [
+    {
+      law: 'Regulation (EU) 2016/679 (GDPR)',
+      article: 'Article 20',
+      description: 'Right to data portability: The data subject shall have the right to receive personal data concerning them in a structured, commonly used and machine-readable format (JSON/CSV).',
+      penaltyContext: 'GDPR Art. 83(5) administrative fines up to €20,000,000 or 4% of total worldwide annual turnover.'
+    },
+    {
+      law: 'European Data Protection Board (EDPB)',
+      article: 'Guidelines WP 242 rev.01',
+      description: 'Portability standard: Static human-readable prints (PDF or HTML) do not satisfy Article 20 requirements; data must be structured for automated ingestion.'
+    }
+  ],
+  summary: 'Provide an authenticated, rate-limited endpoint allowing users to download all their personal profile and activity data in machine-readable JSON or CSV format. Never restrict data portability to static PDF/HTML prints.',
+  instructions: [
+    'MUST expose an authenticated endpoint (e.g. GET /api/v1/user/data-portability or GET /api/dsr/export) permitting users to download their personal data in structured, machine-readable format (JSON or CSV).',
+    'MUST include user-provided data, profile attributes, order history, activity logs, and consent records.',
+    'NEVER restrict data portability exports exclusively to static human-readable formats (PDF or HTML prints).',
+    'MUST protect data portability endpoints with authentication and rate limiting (e.g. sliding window max 2 exports / 24h) to prevent exfiltration.',
+    'MUST return proper Content-Disposition: attachment; filename=... and Content-Type: application/json headers.'
+  ],
+  forbiddenPatterns: [
+    'Restricting data portability exports to PDF or HTML prints only',
+    'Unauthenticated or unlimited data export endpoints lacking rate limiting'
+  ],
+  compliantCodeSnippets: [
+    {
+      title: 'Next.js Machine-Readable Data Portability Endpoint',
+      language: 'typescript',
+      code: `import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { verifyAuthSession } from '@/lib/auth';
+
+export async function GET(req: NextRequest) {
+  const session = await verifyAuthSession(req);
+  if (!session?.userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const userData = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      createdAt: true,
+      orders: true,
+      consents: true
+    }
+  });
+
+  const exportPayload = {
+    $schema: 'https://complirules.org/schemas/gdpr-art20-portability-v1.json',
+    exportMetadata: {
+      generatedAt: new Date().toISOString(),
+      dataSubjectId: session.userId,
+      formatVersion: '1.0.0'
+    },
+    personalData: userData
+  };
+
+  return new NextResponse(JSON.stringify(exportPayload, null, 2), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Disposition': \`attachment; filename="data-export-\${session.userId}.json"\`,
+      'Cache-Control': 'no-store, no-cache, must-revalidate, private'
+    }
+  });
+}`
+    }
+  ]
+};
+
+export const HIPAA_BAA_SERVICE_ISOLATION_RULE: RuleDefinition = {
+  id: 'hipaa-baa-telemetry-isolation',
+  title: 'HIPAA 45 CFR § 164.502(e) Business Associate Agreement (BAA) & Telemetry Guard',
+  jurisdiction: 'HIPAA_US',
+  severity: 'CRITICAL',
+  globs: [
+    '**/lib/sentry*.*',
+    '**/lib/monitoring/**',
+    '**/lib/ai/**',
+    '**/services/*.*',
+    '**/config/sentry*.*'
+  ],
+  alwaysApply: false,
+  legalCitations: [
+    {
+      law: 'HIPAA Privacy & Security Rules (45 CFR)',
+      article: '45 CFR § 164.502(e) & § 164.504(e)',
+      description: 'Disclosures to Business Associates: Covered entities may disclose PHI only to vendors with executed BAAs establishing permitted uses and strict security safeguards.',
+      penaltyContext: 'Tier 3/4 HIPAA civil monetary penalties up to $2,067,813 per violation category per year.'
+    },
+    {
+      law: 'HHS OCR Resolution Agreements',
+      article: 'Enforcement Precedents',
+      description: 'OCR v. Raleigh Orthopaedic ($750k fine) and cloud enforcement cases penalizing un-sanitized exception dumps or PHI transmissions without BAAs.'
+    }
+  ],
+  summary: 'Never send un-scrubbed request bodies or PII to third-party crash reporters (Sentry/Datadog). Set sendDefaultPii: false, redact MRNs/SSNs/emails in beforeSend, and guard third-party LLM/cloud APIs with BAA execution flags.',
+  instructions: [
+    'MUST set sendDefaultPii: false in Sentry and crash reporting configurations.',
+    'MUST implement beforeSend scrubbing filters redacting SSNs, MRNs (Medical Record Numbers), emails, and patient identifiers from error messages.',
+    'NEVER initialize third-party LLM or telemetry APIs without verifying process.env.HIPAA_BAA_EXECUTED === "true" or an active enterprise BAA.',
+    'MUST strip request cookies and authorization headers from outbound crash report payloads.'
+  ],
+  forbiddenPatterns: [
+    'Sentry.init with sendDefaultPii: true in healthcare applications',
+    'Streaming un-sanitized patient notes or raw exception traces to cloud telemetry without BAA'
+  ],
+  compliantCodeSnippets: [
+    {
+      title: 'HIPAA-Compliant Sentry & PHI Scrubber',
+      language: 'typescript',
+      code: `import * as Sentry from '@sentry/nextjs';
+
+const PHI_PATTERNS = {
+  ssn: /\\b\\d{3}-\\d{2}-\\d{4}\\b/g,
+  mrn: /\\bMRN[-:]?\\s*\\d{6,10}\\b/gi,
+  email: /\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b/g
+};
+
+export function initCompliantSentry() {
+  Sentry.init({
+    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    sendDefaultPii: false,
+    beforeSend(event) {
+      if (event.exception?.values) {
+        event.exception.values.forEach(exception => {
+          if (exception.value) {
+            exception.value = exception.value
+              .replace(PHI_PATTERNS.ssn, '[REDACTED-SSN]')
+              .replace(PHI_PATTERNS.mrn, '[REDACTED-MRN]')
+              .replace(PHI_PATTERNS.email, '[REDACTED-EMAIL]');
+          }
+        });
+      }
+      if (event.request) {
+        delete event.request.cookies;
+        delete event.request.headers?.['authorization'];
+        delete event.request.headers?.['cookie'];
+      }
+      return event;
+    }
+  });
+}`
+    }
+  ]
+};
+
+export const EAA_ACCESSIBLE_CHECKOUT_MFA_RULE: RuleDefinition = {
+  id: 'eaa-accessible-checkout-mfa',
+  title: 'EAA 2025 & EN 301 549 Multi-Modal Accessible Authentication & Checkout Standards',
+  jurisdiction: 'EAA_EU',
+  severity: 'CRITICAL',
+  globs: [
+    '**/components/**/*auth*.*',
+    '**/components/**/*mfa*.*',
+    '**/components/**/*checkout*.*',
+    '**/app/checkout/**',
+    '**/app/auth/**'
+  ],
+  alwaysApply: false,
+  legalCitations: [
+    {
+      law: 'Directive (EU) 2019/882 (European Accessibility Act - EAA 2025)',
+      article: 'Annex I, Section I & III',
+      description: 'E-commerce services and identification methods must provide accessible, perceivable, and operable user interfaces without discriminatory technical barriers.'
+    },
+    {
+      law: 'Harmonised European Standard EN 301 549 v3.2.1',
+      article: 'Clause 5.3 (Biometrics)',
+      description: 'Where ICT uses biological characteristics for authentication, it shall not rely on any single biological characteristic and shall provide at least one non-biometric alternative.'
+    }
+  ],
+  summary: 'Provide parallel accessible non-biometric authentication alternatives (TOTP/SMS/security key) whenever biometric Passkey/FaceID is offered. Ensure checkout forms and error states are fully keyboard operable with visible focus rings.',
+  instructions: [
+    'MUST provide at least one non-biometric authentication alternative (TOTP authenticator app, accessible code, or password) on the same tier whenever biometric/passkey auth is offered (EN 301 549 Clause 5.3).',
+    'NEVER create a biometric-only lockout for users unable to provide facial or fingerprint scans.',
+    'MUST maintain visible, unobscured focus rings (:focus-visible) across all interactive checkout and authentication controls.',
+    'MUST announce form errors via role="alert" and inline error text next to the offending input.'
+  ],
+  forbiddenPatterns: [
+    'Biometric-only 2FA or passkey flow without accessible fallback',
+    'outline: none or outline: 0 without visible focus replacement on checkout buttons'
+  ],
+  compliantCodeSnippets: [
+    {
+      title: 'Accessible Multi-Modal MFA Switcher',
+      language: 'typescript',
+      code: `export function AccessibleMfaSelector({ selectedModality, onSelect }: { 
+  selectedModality: 'BIOMETRIC' | 'TOTP_APP'; 
+  onSelect: (m: 'BIOMETRIC' | 'TOTP_APP') => void;
+}) {
+  return (
+    <div role="tablist" aria-label="Authentication Modalities" className="grid grid-cols-2 gap-2">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={selectedModality === 'BIOMETRIC'}
+        onClick={() => onSelect('BIOMETRIC')}
+        className="p-2.5 text-xs font-semibold rounded-md border focus-visible:ring-2 focus-visible:ring-blue-500"
+      >
+        Biometrics / Passkey
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={selectedModality === 'TOTP_APP'}
+        onClick={() => onSelect('TOTP_APP')}
+        className="p-2.5 text-xs font-semibold rounded-md border focus-visible:ring-2 focus-visible:ring-blue-500"
+      >
+        Authenticator Code (TOTP)
+      </button>
+    </div>
+  );
+}`
+    }
+  ]
+};
+
+export const AI_ACT_PROHIBITED_PRACTICES_RULE: RuleDefinition = {
+  id: 'ai-act-prohibited-practices',
+  title: 'EU AI Act (Reg. 2024/1689) Article 5 Prohibited AI Practices Invariants',
+  jurisdiction: 'AI_ACT_EU',
+  severity: 'CRITICAL',
+  globs: [
+    '**/ml/**',
+    '**/ai/**',
+    '**/services/hr/**',
+    '**/proctoring/**',
+    '**/*.py',
+    '**/services/face*.*',
+    '**/services/scrape*.*'
+  ],
+  alwaysApply: false,
+  legalCitations: [
+    {
+      law: 'Regulation (EU) 2024/1689 (EU Artificial Intelligence Act)',
+      article: 'Article 5(1)(f)',
+      description: 'Prohibition of AI systems to infer emotions of a natural person in the areas of workplace and education institutions.',
+      penaltyContext: 'Article 99(3) administrative fines up to €35,000,000 or 7% of total worldwide annual turnover. Effective date: 2 February 2025.'
+    },
+    {
+      law: 'Regulation (EU) 2024/1689 (EU Artificial Intelligence Act)',
+      article: 'Article 5(1)(e)',
+      description: 'Prohibition of creating or expanding facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage.'
+    },
+    {
+      law: 'Regulation (EU) 2024/1689 (EU Artificial Intelligence Act)',
+      article: 'Article 5(1)(c)',
+      description: 'Prohibition of AI-driven social scoring evaluating trustworthiness based on social conduct or personality traits.'
+    }
+  ],
+  summary: 'Prohibit emotion recognition models in workplace, hiring, or education tools. Never scrape public web pages or CCTV into facial recognition vector databases. Enforce strict safety exceptions and compliance gating.',
+  instructions: [
+    'NEVER implement emotion recognition models (e.g. DeepFace.analyze(actions=["emotion"]), AWS Rekognition Emotions, Affectiva) in workplace, recruitment, or educational software (Art. 5(1)(f)).',
+    'NEVER build scrapers harvesting profile pictures or facial images from public web pages into facial recognition vector databases (Art. 5(1)(e)).',
+    'NEVER implement social trustworthiness scoring algorithms evaluating individuals based on social conduct (Art. 5(1)(c)).',
+    'MUST raise ProhibitedPracticeViolation on attempts to deploy prohibited capabilities in sensitive contexts.'
+  ],
+  forbiddenPatterns: [
+    'Emotion recognition classification in HR/recruitment or education proctoring',
+    'Untargeted web scraping of facial images for biometric recognition databases',
+    'Social scoring algorithms evaluating individual conduct'
+  ],
+  compliantCodeSnippets: [
+    {
+      title: 'EU AI Act Article 5 Compliance Enforcer',
+      language: 'typescript',
+      code: `export class AIActComplianceEnforcer {
+  static validateInferenceRequest(capability: string, context: string) {
+    if (capability === 'EMOTION_RECOGNITION' && ['WORKPLACE_HR', 'EDUCATION'].includes(context)) {
+      throw new Error(
+        'FATAL: EU AI Act Article 5(1)(f) violation. Emotion recognition in workplace/education is strictly prohibited under Regulation (EU) 2024/1689.'
+      );
+    }
+    if (capability === 'UNTARGETED_FACIAL_SCRAPING') {
+      throw new Error(
+        'FATAL: EU AI Act Article 5(1)(e) violation. Untargeted scraping of facial images from the internet is prohibited.'
+      );
+    }
+    return true;
+  }
+}`
+    }
+  ]
+};
+
 export const ALL_RULES: RuleDefinition[] = [
   KVKK_RETENTION_RULE,
   KVKK_UI_CONSENT_RULE,
@@ -1672,7 +1975,11 @@ export const ALL_RULES: RuleDefinition[] = [
   EPRIVACY_CONSENT_RULE,
   SCHREMS_II_TIA_RULE,
   BIPA_BIOMETRIC_RULE,
-  JURISDICTION_CONFLICT_RULE
+  JURISDICTION_CONFLICT_RULE,
+  GDPR_DATA_PORTABILITY_RULE,
+  HIPAA_BAA_SERVICE_ISOLATION_RULE,
+  EAA_ACCESSIBLE_CHECKOUT_MFA_RULE,
+  AI_ACT_PROHIBITED_PRACTICES_RULE
 ];
 
 export const RULE_PACKS: RulePack[] = [
@@ -1707,7 +2014,10 @@ export const RULE_PACKS: RulePack[] = [
       GDPR_TWO_CLICK_EMBED_RULE,
       GDPR_PRIVACY_CAPTCHA_RULE,
       EAA_ACCESSIBILITY_RULE, 
-      AI_ACT_TRANSPARENCY_RULE, 
+      GDPR_DATA_PORTABILITY_RULE,
+      EAA_ACCESSIBLE_CHECKOUT_MFA_RULE,
+      AI_ACT_TRANSPARENCY_RULE,
+      AI_ACT_PROHIBITED_PRACTICES_RULE,
       SEC_AUTH_RATE_LIMIT_RULE,
       PII_LOGGER_GUARD_RULE
     ]
@@ -1718,7 +2028,7 @@ export const RULE_PACKS: RulePack[] = [
     jurisdiction: 'HIPAA_US',
     description: 'HIPAA 45 CFR § 164.312 technical safeguards, PHI isolation, immutable audit trails, emergency break-glass access, and FTC health tracker pixel bans.',
     version: '1.1.0',
-    rules: [HIPAA_TECHNICAL_SAFEGUARDS_RULE, HIPAA_BREAKGLASS_RULE, HIPAA_FTC_SENSITIVE_PIXEL_RULE, PII_LOGGER_GUARD_RULE]
+    rules: [HIPAA_TECHNICAL_SAFEGUARDS_RULE, HIPAA_BREAKGLASS_RULE, HIPAA_FTC_SENSITIVE_PIXEL_RULE, HIPAA_BAA_SERVICE_ISOLATION_RULE, PII_LOGGER_GUARD_RULE]
   },
   {
     id: 'us-privacy-compliance',

@@ -74,6 +74,10 @@ describe('Static Informative Website & 24 Rules Explorer', () => {
     expect(js).toContain('gdpr-right-to-be-forgotten');
     expect(js).toContain('hipaa-phi-technical-safeguards');
     expect(js).toContain('bipa-biometric-retention');
+    expect(js).toContain('gdpr-data-portability-endpoint');
+    expect(js).toContain('hipaa-baa-telemetry-isolation');
+    expect(js).toContain('eaa-accessible-checkout-mfa');
+    expect(js).toContain('ai-act-prohibited-practices');
   });
 });
 
