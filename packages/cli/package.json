@@ -9,6 +9,31 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halilyilmz/complirules.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://complirules.vercel.app",
+  "keywords": [
+    "compliance",
+    "cursor",
+    "claude-code",
+    "windsurf",
+    "gdpr",
+    "kvkk",
+    "hipaa",
+    "eaa-2025",
+    "mcp",
+    "legal-as-code",
+    "vibe-coding"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc && esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm --banner:js=\"import { createRequire } from 'module'; import { fileURLToPath } from 'url'; import { dirname } from 'path'; const require = createRequire(import.meta.url); const __filename = fileURLToPath(import.meta.url); const __dirname = dirname(__filename);\" --outfile=dist/index.js",
     "typecheck": "tsc --noEmit"

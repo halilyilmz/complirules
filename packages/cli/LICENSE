@@ -1,0 +1,68 @@
+CompliRules Free-to-Use Software License & Liability Waiver
+(Telif Korumalı Ücretsiz Kullanım Lisansı)
+
+Copyright (c) 2026 İbrahim Halil Yılmaz & CompliRules. All Rights Reserved.
+Her Hakkı Saklıdır.
+
+---
+
+### 1. GRANT OF FREE USE LICENSE (Ücretsiz Kullanım İzni)
+Subject to the terms of this License, the Copyright Holder hereby grants to any
+individual, software developer, startup, or commercial enterprise a non-exclusive,
+worldwide, royalty-free license to:
+- Download, install, execute, and use CompliRules, its command-line interface,
+  AST linter, Model Context Protocol (MCP) server, and rule catalog (`.cursor/rules/*.mdc`)
+  solely for internal software development, testing, and compliance guardrails within
+  their own applications and codebases, completely free of charge.
+
+---
+
+### 2. STRICT PROHIBITIONS & RESTRICTIONS (Kopyalama, Yeniden Dağıtım ve Satış Yasağı)
+This software is FREE TO USE, but it is NOT public domain or permissive open source.
+You are STRICTLY PROHIBITED from:
+1. RE-DISTRIBUTION & FORKING: You may NOT copy, redistribute, mirror, re-host,
+   sublicense, publish, or publicly distribute the source code, rule catalog,
+   AST engine, or documentation, in whole or in part, under this or any other name.
+2. NO RESALE OR COMMERCIALIZATION: You may NOT sell, rent, lease, or monetize
+   CompliRules, its rule definitions, or its primitives as a commercial product,
+   service, paid extension, or API.
+3. NO WHITE-LABELING & NO DERIVATIVE COMPETING PRODUCTS: You may NOT re-brand,
+   white-label, repackage, scrape, or extract the rule database or AST visitors
+   to build, market, or offer a competing compliance linter, rule pack, or AI guardrail.
+
+---
+
+### 3. INTELLECTUAL PROPERTY (Fikri Mülkiyet ve Telif Hakları)
+All title, ownership rights, trademarks, and intellectual property rights in and
+to CompliRules (including but not limited to the 24 MDC rule definitions,
+AST compiler visitors, enterprise primitives, and documentation) are and shall
+remain the exclusive property of İbrahim Halil Yılmaz (CompliRules). Any unauthorized
+duplication, plagiarism, or commercial exploitation will be subject to civil
+and criminal copyright prosecution under applicable international copyright treaties
+and local statutory laws (including Turkish FSEK Law No. 5846).
+
+---
+
+### 4. DISCLAIMER OF WARRANTY & ZERO LIABILITY WAIVER (Sorumluluk Reddi)
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+1. NOT LEGAL COUNSEL:
+   CompliRules is an automated Abstract Syntax Tree (AST) heuristic and engineering
+   guardrail tool. It does NOT constitute legal, financial, accounting, or
+   certified cybersecurity advice. Use of CompliRules does not create an
+   attorney-client or auditor-client relationship.
+
+2. ZERO LIABILITY FOR FINES & BREACHES:
+   Under no circumstances shall the Copyright Holder or contributors be held
+   liable for any administrative fines, regulatory sanctions (including but not
+   limited to penalties levied under GDPR, KVKK, HIPAA, BIPA, CCPA, or EU AI Act),
+   data breaches, security incidents, loss of profits, or legal costs arising from
+   reliance upon the heuristic checks, primitives, or documentation provided herein.
+
+3. MANDATORY INDEPENDENT AUDIT:
+   Automated rules cannot substitute for formal Data Protection Officer (DPO) audits,
+   penetration testing (pentest), or statutory regulatory filings (such as
+   VERBİS or ROPA registers). Production systems processing sensitive personal data
+   must be reviewed by licensed human professionals.
