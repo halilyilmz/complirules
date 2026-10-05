@@ -18,7 +18,7 @@ export function executeRemove(target: string, targetDir = '.'): void {
   }
 
   const cursorRulesDir = path.join(targetDir, '.cursor', 'rules');
-  if (!fs.existsSync(cursorRulesDir)) {
+  if (!fs.existsSync(cursorRulesDir) || !fs.statSync(cursorRulesDir).isDirectory()) {
     console.log(`ℹ️ No installed rules found in project (.cursor/rules directory does not exist).\n`);
     return;
   }

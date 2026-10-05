@@ -6,7 +6,7 @@ export function executeList(targetDir = '.'): void {
   const cursorRulesDir = path.join(targetDir, '.cursor', 'rules');
   const installedIds = new Set<string>();
 
-  if (fs.existsSync(cursorRulesDir)) {
+  if (fs.existsSync(cursorRulesDir) && fs.statSync(cursorRulesDir).isDirectory()) {
     const files = fs.readdirSync(cursorRulesDir).filter(f => f.endsWith('.mdc'));
     for (const file of files) {
       installedIds.add(file.replace('.mdc', ''));

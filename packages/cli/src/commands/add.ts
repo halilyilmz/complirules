@@ -21,7 +21,21 @@ export function executeAdd(target: string, targetDir = '.'): void {
   }
 
   const cursorRulesDir = path.join(targetDir, '.cursor', 'rules');
-  fs.mkdirSync(cursorRulesDir, { recursive: true });
+  if (fs.existsSync(cursorRulesDir)) {
+    const stat = fs.statSync(cursorRulesDir);
+    if (!stat.isDirectory()) {
+      const legacyPath = path.join(targetDir, '.cursor', 'rules.legacy');
+      try {
+        fs.renameSync(cursorRulesDir, legacyPath);
+        console.log(`  ℹ Legacy file '.cursor/rules' detected and backed up to '.cursor/rules.legacy'`);
+      } catch {
+        fs.unlinkSync(cursorRulesDir);
+      }
+      fs.mkdirSync(cursorRulesDir, { recursive: true });
+    }
+  } else {
+    fs.mkdirSync(cursorRulesDir, { recursive: true });
+  }
 
   for (const rule of matchedRules) {
     const mdcContent = renderMdcRule(rule);

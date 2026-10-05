@@ -5,7 +5,17 @@ import { handleGenerateRopa } from '@complirules/mcp-server';
 export function executeRopa(schemaPath?: string): void {
   let targetSchema = schemaPath;
   if (!targetSchema) {
-    const candidates = ['prisma/schema.prisma', 'schema.prisma', 'src/db/schema.ts', 'drizzle/schema.ts'];
+    const candidates = [
+      'prisma/schema.prisma',
+      'packages/prisma/schema.prisma',
+      'packages/database/prisma/schema.prisma',
+      'packages/db/prisma/schema.prisma',
+      'packages/database/schema.prisma',
+      'packages/db/schema.prisma',
+      'schema.prisma',
+      'src/db/schema.ts',
+      'drizzle/schema.ts'
+    ];
     for (const c of candidates) {
       if (fs.existsSync(c)) {
         targetSchema = c;

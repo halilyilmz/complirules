@@ -203,17 +203,72 @@ export function detectProjectStack(projectRoot: string): DetectedStack {
       else if (deps['mongoose']) orm = 'mongoose';
 
       if (deps['tailwindcss']) hasTailwind = true;
+
+      // Monorepo desteği (Turbo / pnpm / yarn / npm workspaces)
+      if (framework === 'node') {
+        const candidateSubAppDirs = [
+          'apps/web',
+          'apps/frontend',
+          'apps/app',
+          'apps/site',
+          'apps/client',
+          'packages/web',
+          'packages/app'
+        ];
+
+        for (const subDir of candidateSubAppDirs) {
+          const subPkgPath = path.join(projectRoot, subDir, 'package.json');
+          if (fs.existsSync(subPkgPath)) {
+            try {
+              const subPkg = JSON.parse(fs.readFileSync(subPkgPath, 'utf-8'));
+              const subDeps = { ...subPkg.dependencies, ...subPkg.devDependencies };
+              if (subDeps['next']) { framework = 'nextjs'; break; }
+              else if (subDeps['vue'] || subDeps['nuxt']) { framework = 'vue'; break; }
+              else if (subDeps['react']) { framework = 'react'; break; }
+              if (subDeps['@prisma/client'] || subDeps['prisma']) orm = 'prisma';
+              if (subDeps['tailwindcss']) hasTailwind = true;
+            } catch {
+              // Ignore invalid sub-package.json
+            }
+          }
+        }
+      }
     } catch {
       // Ignored
     }
   }
 
-  // Prisma şeması kontrolü
-  const standardPrismaPath = path.join(projectRoot, 'prisma', 'schema.prisma');
-  if (fs.existsSync(standardPrismaPath)) {
-    hasPrismaSchema = true;
-    prismaSchemaPath = standardPrismaPath;
-    orm = 'prisma';
+  // Next.js config dosya kontrolü (root veya apps/web altında)
+  const nextConfigFiles = [
+    'next.config.js', 'next.config.mjs', 'next.config.ts',
+    'apps/web/next.config.js', 'apps/web/next.config.mjs', 'apps/web/next.config.ts'
+  ];
+  for (const cfg of nextConfigFiles) {
+    if (fs.existsSync(path.join(projectRoot, cfg))) {
+      framework = 'nextjs';
+      break;
+    }
+  }
+
+  // Prisma şeması kontrolü (Root & Monorepo yolları)
+  const candidatePrismaPaths = [
+    path.join(projectRoot, 'prisma', 'schema.prisma'),
+    path.join(projectRoot, 'packages', 'prisma', 'schema.prisma'),
+    path.join(projectRoot, 'packages', 'database', 'prisma', 'schema.prisma'),
+    path.join(projectRoot, 'packages', 'db', 'prisma', 'schema.prisma'),
+    path.join(projectRoot, 'packages', 'database', 'schema.prisma'),
+    path.join(projectRoot, 'packages', 'db', 'schema.prisma'),
+    path.join(projectRoot, 'schema.prisma'),
+    path.join(projectRoot, 'db', 'schema.prisma')
+  ];
+
+  for (const pPath of candidatePrismaPaths) {
+    if (fs.existsSync(pPath)) {
+      hasPrismaSchema = true;
+      prismaSchemaPath = pPath;
+      orm = 'prisma';
+      break;
+    }
   }
 
   return {
