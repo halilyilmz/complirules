@@ -11,3 +11,6 @@ coverage/
 dist-pro/
 *.zip
 *.html
+
+.wrangler
+
