@@ -49,9 +49,9 @@
         </div>
 
         <nav class="flex items-center gap-5 text-xs font-bold uppercase tracking-[0.15em] text-[#EDEAE4]/60">
-          <a href="#pricing" class="text-[#E5484D] font-black transition-colors hover:underline">
-            Pricing
-          </a>
+          <button type="button" onclick="document.getElementById('install-cmd-text').scrollIntoView({behavior: 'smooth'})" class="text-xs font-bold uppercase tracking-[0.15em] text-[#EDEAE4]/70 transition-colors hover:text-[#E5484D] font-mono">
+            npx init
+          </button>
           <button type="button" class="open-disclaimer-trigger transition-colors hover:text-[#E5484D] uppercase font-bold text-xs tracking-[0.15em]">
             <span data-i18n="nav_disclaimer">Disclaimer</span>
           </button>
@@ -233,85 +233,63 @@
         </ol>
       </section>
 
-      <!-- Pricing Section (Community vs PRO) -->
-      <section class="border-t-2 border-[#EDEAE4]/15 py-16" id="pricing">
-        <div class="text-center sm:text-left">
-          <span class="inline-block border border-[#E5484D] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] text-[#E5484D]">
-            Pricing
+      <!-- Open Source / Community Section -->
+      <section class="border-t-2 border-[#EDEAE4]/15 py-16" id="open-source">
+        <div>
+          <span class="inline-block border border-[#EDEAE4]/30 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-[0.2em] text-[#EDEAE4]/70" data-i18n="oss_badge">
+            Open Source
           </span>
           <h2 class="mt-4 text-3xl font-black uppercase tracking-tight sm:text-4xl">
-            <span data-i18n="pricing_title_1">Simple,</span> <span class="text-[#E5484D]" data-i18n="pricing_title_2">Zero-Surprise Pricing</span>
+            <span data-i18n="oss_title_1">100% Free &amp;</span> <span class="text-[#E5484D]" data-i18n="oss_title_2">Open Source</span>
           </h2>
+          <p class="mt-3 max-w-xl text-sm leading-relaxed text-[#EDEAE4]/70" data-i18n="oss_sub">
+            Zero paywalls. Every regulatory rule pack (KVKK, GDPR, EAA 2025, HIPAA, AI Act), TypeScript primitive, and CLI tool is completely free under the MIT license.
+          </p>
         </div>
 
-        <div class="mt-10 grid gap-6 sm:grid-cols-2">
-          <!-- Free Community Tier -->
-          <div class="border-2 border-[#EDEAE4]/20 bg-[#1A1917] p-8 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-black uppercase tracking-wide" data-i18n="tier_free_title">Community Edition</h3>
-                <span class="border border-[#EDEAE4]/30 px-2 py-0.5 text-[10px] font-mono text-[#EDEAE4]/70" data-i18n="tier_free_badge">Forever Free</span>
-              </div>
-              <div class="mt-4 flex items-baseline gap-2">
-                <span class="text-4xl font-black text-[#EDEAE4]" data-i18n="tier_free_price">$0</span>
-              </div>
-              <p class="mt-2 text-xs text-[#EDEAE4]/60 leading-relaxed" data-i18n="tier_free_sub">
-                For solo vibe-coders and open-source prototypes.
-              </p>
-              <ul class="mt-6 space-y-3 text-xs text-[#EDEAE4]/80 font-mono">
-                <li data-i18n="tier_free_f1">✓ Core Privacy &amp; Security Guardrails</li>
-                <li data-i18n="tier_free_f2">✓ Terminal Linter (complirules check)</li>
-                <li data-i18n="tier_free_f3">✓ Cursor, Windsurf &amp; Claude Code Support</li>
-                <li data-i18n="tier_free_f4">✓ Zero Dependency CLI</li>
-              </ul>
-            </div>
-            <div class="mt-8">
-              <button 
-                type="button"
-                onclick="document.getElementById('install-cmd-text').scrollIntoView({behavior: 'smooth'})"
-                class="w-full border-2 border-[#EDEAE4]/30 py-3 text-xs font-black uppercase tracking-[0.15em] text-[#EDEAE4] transition-colors hover:border-[#EDEAE4] hover:bg-[#EDEAE4]/5"
-              >
-                npx complirules init
-              </button>
-            </div>
+        <div class="mt-10 grid gap-4 sm:grid-cols-2">
+          <div class="border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-5">
+            <h3 class="text-sm font-black uppercase text-[#EDEAE4]" data-i18n="oss_f1_title">Multi-Jurisdiction Rules</h3>
+            <p class="mt-2 text-xs leading-relaxed text-[#EDEAE4]/60" data-i18n="oss_f1_desc">
+              Pre-built guardrails for KVKK, GDPR, EAA 2025, HIPAA, and EU AI Act.
+            </p>
           </div>
+          <div class="border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-5">
+            <h3 class="text-sm font-black uppercase text-[#EDEAE4]" data-i18n="oss_f2_title">Universal IDE Support</h3>
+            <p class="mt-2 text-xs leading-relaxed text-[#EDEAE4]/60" data-i18n="oss_f2_desc">
+              Auto-detected by Cursor, Claude Code, Windsurf, and GitHub Copilot.
+            </p>
+          </div>
+          <div class="border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-5">
+            <h3 class="text-sm font-black uppercase text-[#EDEAE4]" data-i18n="oss_f3_title">Deterministic Linter</h3>
+            <p class="mt-2 text-xs leading-relaxed text-[#EDEAE4]/60" data-i18n="oss_f3_desc">
+              Instant AST terminal analysis with <code class="text-[#E5484D]">complirules check</code> and report generator.
+            </p>
+          </div>
+          <div class="border-2 border-[#EDEAE4]/15 bg-[#1A1917] p-5">
+            <h3 class="text-sm font-black uppercase text-[#EDEAE4]" data-i18n="oss_f4_title">MIT Licensed &amp; Local</h3>
+            <p class="mt-2 text-xs leading-relaxed text-[#EDEAE4]/60" data-i18n="oss_f4_desc">
+              No telemetry, no remote lock-in. Runs 100% offline in your own environment.
+            </p>
+          </div>
+        </div>
 
-          <!-- PRO Tier -->
-          <div class="relative border-2 border-[#E5484D] bg-[#1A1917] p-8 flex flex-col justify-between brutalist-shadow">
-            <div class="absolute -top-3 right-6 bg-[#E5484D] px-3 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] text-[#121110]" data-i18n="tier_pro_badge">
-              Launch Special (Lifetime)
-            </div>
-            <div>
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-black uppercase tracking-wide text-[#E5484D]" data-i18n="tier_pro_title">CompliRules PRO</h3>
-              </div>
-              <div class="mt-4 flex items-baseline gap-2">
-                <span class="text-4xl font-black text-[#EDEAE4]" data-i18n="tier_pro_price">$19</span>
-                <span class="text-xs text-[#EDEAE4]/50 line-through">$49</span>
-                <span class="text-[11px] text-[#EDEAE4]/60">one-time / ömür boyu</span>
-              </div>
-              <p class="mt-2 text-xs text-[#EDEAE4]/60 leading-relaxed" data-i18n="tier_pro_sub">
-                For production SaaS, e-commerce, and venture-backed startups.
-              </p>
-              <ul class="mt-6 space-y-3 text-xs text-[#EDEAE4]/90 font-mono">
-                <li data-i18n="tier_pro_f1">✓ Complete Multi-Jurisdiction Regulatory Rules (KVKK, GDPR, EAA 2025, HIPAA, AI Act)</li>
-                <li data-i18n="tier_pro_f2">✓ Production-Ready TypeScript Primitives (Crypto-Shredding, DSR, Cookies)</li>
-                <li data-i18n="tier_pro_f3">✓ Executive HTML/PDF Technical Audit Report Generator</li>
-                <li data-i18n="tier_pro_f4">✓ CI/CD GitHub Actions Guardrail Workflow</li>
-                <li data-i18n="tier_pro_f5">✓ Direct .zip Bundle Download</li>
-              </ul>
-            </div>
-            <div class="mt-8">
-              <a 
-                href="https://complirules.lemonsqueezy.com/buy/pro"
-                id="btn-buy-pro"
-                target="_blank"
-                class="block w-full text-center bg-[#E5484D] py-3 text-xs font-black uppercase tracking-[0.15em] text-[#121110] transition-transform hover:-translate-y-0.5 active:scale-95"
-              >
-                <span data-i18n="btn_buy_pro">Get Pro Bundle ($19) →</span>
-              </a>
-            </div>
-          </div>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <button 
+            type="button"
+            onclick="document.getElementById('install-cmd-text').scrollIntoView({behavior: 'smooth'})"
+            class="flex items-center justify-center gap-2 bg-[#E5484D] px-6 py-3 text-xs font-black uppercase tracking-[0.15em] text-[#121110] transition-transform hover:-translate-y-0.5"
+          >
+            <span data-i18n="btn_install_cli">Install via npx →</span>
+          </button>
+          <a 
+            href="https://github.com/medusajs/medusa/pull/17137" 
+            target="_blank" 
+            rel="noreferrer"
+            class="flex items-center justify-center gap-2 border-2 border-[#EDEAE4]/30 px-6 py-3 text-xs font-black uppercase tracking-[0.15em] text-[#EDEAE4] transition-colors hover:border-[#EDEAE4] hover:bg-[#EDEAE4]/5"
+          >
+            <span data-i18n="proof_btn">View Live Medusa PR #17137 →</span>
+          </a>
         </div>
       </section>
 
@@ -343,9 +321,9 @@
           © 2026 İbrahim Halil Yılmaz (CompliRules). Free to Use for Vibe Coders &amp; Engineering Teams.
         </p>
         <div class="flex items-center gap-5 text-xs font-bold uppercase tracking-[0.15em] text-[#EDEAE4]/60">
-          <a href="#pricing" class="transition-colors hover:text-[#E5484D]">
-            Pricing
-          </a>
+          <button type="button" onclick="document.getElementById('install-cmd-text').scrollIntoView({behavior: 'smooth'})" class="text-xs font-bold uppercase tracking-[0.15em] text-[#EDEAE4]/70 transition-colors hover:text-[#E5484D] font-mono">
+            npx init
+          </button>
           <button type="button" class="open-disclaimer-trigger uppercase font-bold text-xs tracking-[0.15em] transition-colors hover:text-[#E5484D]">
             <span data-i18n="nav_disclaimer">Disclaimer</span>
           </button>
