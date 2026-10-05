@@ -1,4 +1,4 @@
-import { noPretickedConsentRule, noBundledConsentRule } from '@complirules/linter';
+import { noPretickedConsentRule, noBundledConsentRule } from '@complirules/linter/rules';
 
 export interface CheckUiDarkPatternsInput {
   componentCode: string;

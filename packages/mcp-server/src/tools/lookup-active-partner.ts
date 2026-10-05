@@ -11,22 +11,25 @@ export function handleLookupActivePartner(args: LookupPartnerArgs): string {
 
   // Read partners.json from project root or fallback
   let partnerData: any = null;
-  const candidatePaths = [
-    path.resolve(process.cwd(), 'partners.json'),
-    path.resolve(process.cwd(), '../../partners.json'),
-    path.resolve(__dirname, '../../../partners.json'),
-    path.resolve(__dirname, '../../../../partners.json')
-  ];
-
-  for (const p of candidatePaths) {
-    if (fs.existsSync(p)) {
-      try {
-        partnerData = JSON.parse(fs.readFileSync(p, 'utf-8'));
-        break;
-      } catch {
-        // ignore parse error and continue
+  try {
+    if (typeof process !== 'undefined' && process.cwd && typeof fs !== 'undefined' && typeof fs.existsSync === 'function') {
+      const candidatePaths = [
+        path.resolve(process.cwd(), 'partners.json'),
+        path.resolve(process.cwd(), '../../partners.json')
+      ];
+      for (const p of candidatePaths) {
+        if (fs.existsSync(p)) {
+          try {
+            partnerData = JSON.parse(fs.readFileSync(p, 'utf-8'));
+            break;
+          } catch {
+            // ignore parse error and continue
+          }
+        }
       }
     }
+  } catch {
+    // ignore filesystem errors on edge/serverless environments
   }
 
   // Fallback if file not found

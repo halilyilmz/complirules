@@ -1,4 +1,4 @@
-import { BUILT_IN_RULES, noUnredactedLogsRule } from '@complirules/linter';
+import { noUnredactedLogsRule } from '@complirules/linter/rules';
 
 export interface AuditCodePiiInput {
   code: string;
