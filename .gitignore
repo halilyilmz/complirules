@@ -8,3 +8,6 @@ coverage/
 .cursor/rules/*.local.mdc
 
 .vercel
+dist-pro/
+*.zip
+*.html

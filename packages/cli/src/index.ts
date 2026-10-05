@@ -7,6 +7,7 @@ import { executeRopa } from './commands/ropa.js';
 import { executeAdd } from './commands/add.js';
 import { executeRemove } from './commands/remove.js';
 import { executeList } from './commands/list.js';
+import { executeReport } from './commands/report.js';
 import { getRulePacks } from '@complirules/rules';
 
 const program = new Command();
@@ -58,11 +59,26 @@ program
   .command('check')
   .description('Kod tabanında deterministik AST ve yasal uyumluluk denetimi yapar')
   .argument('[path]', 'Denetlenecek dizin veya dosya', '.')
-  .action((targetPath) => {
+  .option('-r, --report [output]', 'Denetim sonuçlarını HTML / PDF raporu olarak dışa aktar')
+  .action((targetPath, options) => {
     const passed = executeCheck(targetPath);
+    if (options.report) {
+      const outPath = typeof options.report === 'string' ? options.report : undefined;
+      executeReport(targetPath, { output: outPath });
+    }
     if (!passed) {
       process.exit(1);
     }
+  });
+
+program
+  .command('report')
+  .description('Kod tabanının renkli, grafikli ve PDF baskıya hazır Yönetici Teknik Uyumluluk Raporunu (HTML) üretir')
+  .argument('[path]', 'Denetlenecek dizin', '.')
+  .option('-o, --output <file>', 'Rapor çıktı dosya yolu', 'COMPLIANCE_AUDIT_REPORT.html')
+  .option('-n, --name <name>', 'Proje veya şirket adı')
+  .action((targetPath, options) => {
+    executeReport(targetPath, { output: options.output, projectName: options.name });
   });
 
 program
