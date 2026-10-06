@@ -1,0 +1,27 @@
+# Source files and build configuration
+src/
+tests/
+__tests__/
+*.test.*
+*.spec.*
+*.snap
+*.tsbuildinfo
+tsconfig.json
+
+# Development dependencies
+node_modules/
+.git/
+.gitignore/
+.github/
+
+# Documentation and metadata (keep README & LICENSE)
+*.md
+!README.md
+!LICENSE
+
+# Build and coverage artifacts
+coverage/
+.nyc_output/
+.vitest/
+.env*
+*.log
