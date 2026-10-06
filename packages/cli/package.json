@@ -1,52 +1,55 @@
-{
-  "name": "complirules",
-  "version": "1.0.0",
-  "description": "Compliance-as-Code & Legal AI Guardrail CLI for Cursor, Claude Code, and Windsurf",
-  "bin": {
-    "complirules": "./dist/index.js",
-    "legal-rules": "./dist/index.js"
-  },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "type": "module",
-  "license": "SEE LICENSE IN LICENSE",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/halilyilmz/complirules.git",
-    "directory": "packages/cli"
-  },
-  "homepage": "https://complirules.vercel.app",
-  "keywords": [
-    "compliance",
-    "cursor",
-    "claude-code",
-    "windsurf",
-    "gdpr",
-    "kvkk",
-    "hipaa",
-    "eaa-2025",
-    "mcp",
-    "legal-as-code",
-    "vibe-coding"
-  ],
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "scripts": {
-    "build": "tsc && esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm --banner:js=\"import { createRequire } from 'module'; import { fileURLToPath } from 'url'; import { dirname } from 'path'; const require = createRequire(import.meta.url); const __filename = fileURLToPath(import.meta.url); const __dirname = dirname(__filename);\" --outfile=dist/index.js",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "@complirules/rules": "*",
-    "@complirules/linter": "*",
-    "@complirules/primitives": "*",
-    "@complirules/mcp-server": "*",
-    "commander": "^13.0.0",
-    "@types/node": "^22.10.2",
-    "esbuild": "^0.21.5",
-    "typescript": "^5.7.2"
+import fs from 'fs';
+import path from 'path';
+import {
+  resolveRulesFromQuery,
+  renderAgentsMd,
+  renderClaudeMd,
+  getAllRules,
+  type RuleDefinition
+} from '@complirules/rules';
+
+export function executeRemove(target: string, targetDir = '.'): void {
+  console.log(`\n🗑️  Removing Modular Rule Pack: "${target}"...\n`);
+
+  const matchedRules = resolveRulesFromQuery(target);
+  if (matchedRules.length === 0) {
+    console.log(`❌ No matching rules found for query "${target}".\n`);
+    return;
   }
+
+  const cursorRulesDir = path.join(targetDir, '.cursor', 'rules');
+  if (!fs.existsSync(cursorRulesDir) || !fs.statSync(cursorRulesDir).isDirectory()) {
+    console.log(`ℹ️ No installed rules found in project (.cursor/rules directory does not exist).\n`);
+    return;
+  }
+
+  let removedCount = 0;
+  for (const rule of matchedRules) {
+    const filePath = path.join(cursorRulesDir, `${rule.id}.mdc`);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      console.log(`  ✓ Removed: .cursor/rules/${rule.id}.mdc`);
+      removedCount++;
+    }
+  }
+
+  const remainingFiles = fs.readdirSync(cursorRulesDir)
+    .filter(f => f.endsWith('.mdc'))
+    .map(f => f.replace('.mdc', ''));
+
+  const remainingRules: RuleDefinition[] = [];
+  for (const ruleId of remainingFiles) {
+    const r = getAllRules().find(item => item.id === ruleId);
+    if (r) remainingRules.push(r);
+  }
+
+  if (remainingRules.length > 0) {
+    fs.writeFileSync(path.join(targetDir, 'AGENTS.md'), renderAgentsMd(remainingRules), 'utf-8');
+    fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), renderClaudeMd(remainingRules), 'utf-8');
+    console.log(`  ✓ Updated: AGENTS.md and CLAUDE.md (${remainingRules.length} rules remaining)`);
+  } else {
+    console.log('ℹ️ No rules remain. Leaving AGENTS.md and CLAUDE.md untouched to avoid destructive cleanup.');
+  }
+
+  console.log(`\n✨ Done: ${removedCount} rule file(s) removed.\n`);
 }

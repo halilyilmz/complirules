@@ -1,24 +1,64 @@
 import fs from 'fs';
 import path from 'path';
-import { 
-  resolveRulesFromQuery, 
-  renderMdcRule, 
-  renderAgentsMd, 
-  renderClaudeMd, 
+import { detectProjectStack } from '../detectors/stack-detector.js';
+import {
   getAllRules,
-  RuleDefinition 
+  renderAgentsMd,
+  renderClaudeMd,
+  renderMdcRule,
+  type Jurisdiction,
+  type RuleDefinition
 } from '@complirules/rules';
 
-export function executeAdd(target: string, targetDir = '.'): void {
-  console.log(`\n📦 Downloading Modular Rule Pack: "${target}"...\n`);
+export interface InitOptions {
+  jurisdiction?: string;
+  all?: boolean;
+  force?: boolean;
+}
 
-  const matchedRules = resolveRulesFromQuery(target);
-  if (matchedRules.length === 0) {
-    console.log(`❌ No rules or jurisdiction packs matched query "${target}".`);
-    console.log(`   Available Aliases: tr, kvkk, eu, gdpr, eaa, us, hipaa, ccpa, ai-act, sec`);
-    console.log(`   To view all available packs: \`complirules list\`\n`);
+function writeAgentFiles(targetDir: string, rulesToApply: RuleDefinition[], force: boolean): void {
+  const agentsPath = path.join(targetDir, 'AGENTS.md');
+  const claudePath = path.join(targetDir, 'CLAUDE.md');
+  const hasExistingFiles = fs.existsSync(agentsPath) || fs.existsSync(claudePath);
+
+  if (hasExistingFiles && !force) {
+    console.warn('⚠️ Existing AGENTS.md or CLAUDE.md detected. Refusing to overwrite automatically. Re-run with --force to proceed.');
     return;
   }
+
+  if (hasExistingFiles) {
+    console.warn('⚠️ Overwriting existing AGENTS.md / CLAUDE.md because --force was supplied.');
+  }
+
+  fs.writeFileSync(agentsPath, renderAgentsMd(rulesToApply), 'utf-8');
+  fs.writeFileSync(claudePath, renderClaudeMd(rulesToApply), 'utf-8');
+  console.log('  ✓ Generated: AGENTS.md and CLAUDE.md');
+}
+
+export function executeInit(targetDir: string, options: InitOptions = {}): void {
+  console.log('\n🛡️  CompliRules — Initializing Legal-as-Code & Compliance Guardrail...\n');
+
+  const stack = detectProjectStack(targetDir);
+  console.log(`📦 Detected Stack: Framework=${stack.framework.toUpperCase()}, ORM=${stack.orm.toUpperCase()}, TS=${stack.hasTypeScript}`);
+
+  const jurisdictions: Jurisdiction[] = [];
+  if (options.all) {
+    jurisdictions.push('KVKK_TR', 'GDPR_EU', 'EAA_EU', 'HIPAA_US', 'CCPA_US', 'AI_ACT_EU');
+  } else if (options.jurisdiction) {
+    const raw = options.jurisdiction.toUpperCase();
+    if (raw.includes('TR') || raw.includes('KVKK')) jurisdictions.push('KVKK_TR');
+    if (raw.includes('EU') || raw.includes('GDPR')) jurisdictions.push('GDPR_EU', 'EAA_EU', 'AI_ACT_EU');
+    if (raw.includes('US') || raw.includes('HIPAA')) jurisdictions.push('HIPAA_US', 'CCPA_US');
+  } else {
+    // Default: KVKK + GDPR + EAA
+    jurisdictions.push('KVKK_TR', 'GDPR_EU', 'EAA_EU');
+  }
+
+  console.log(`🎯 Target Jurisdictions: ${jurisdictions.join(', ')}`);
+
+  const rulesToApply = getAllRules().filter(
+    (r: RuleDefinition) => jurisdictions.includes(r.jurisdiction) || r.jurisdiction === 'GLOBAL_SEC'
+  );
 
   const cursorRulesDir = path.join(targetDir, '.cursor', 'rules');
   if (fs.existsSync(cursorRulesDir)) {
@@ -37,44 +77,14 @@ export function executeAdd(target: string, targetDir = '.'): void {
     fs.mkdirSync(cursorRulesDir, { recursive: true });
   }
 
-  for (const rule of matchedRules) {
+  for (const rule of rulesToApply) {
     const mdcContent = renderMdcRule(rule);
     const fileName = `${rule.id}.mdc`;
     fs.writeFileSync(path.join(cursorRulesDir, fileName), mdcContent, 'utf-8');
-    console.log(`  ✓ Downloaded & Installed: .cursor/rules/${fileName} [${rule.jurisdiction}]`);
+    console.log(`  ✓ Generated: .cursor/rules/${fileName}`);
   }
 
-  // Scan all currently installed rules and update AGENTS.md / CLAUDE.md
-  const allInstalledRuleIds = fs.readdirSync(cursorRulesDir)
-    .filter(f => f.endsWith('.mdc'))
-    .map(f => f.replace('.mdc', ''));
+  writeAgentFiles(targetDir, rulesToApply, Boolean(options.force));
 
-  const activeRules: RuleDefinition[] = [];
-  for (const ruleId of allInstalledRuleIds) {
-    const r = getAllRules().find(item => item.id === ruleId);
-    if (r) activeRules.push(r);
-  }
-
-  if (activeRules.length > 0) {
-    fs.writeFileSync(path.join(targetDir, 'AGENTS.md'), renderAgentsMd(activeRules), 'utf-8');
-    fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), renderClaudeMd(activeRules), 'utf-8');
-    console.log(`  ✓ Updated: AGENTS.md and CLAUDE.md (${activeRules.length} active rules)`);
-  }
-
-  // Configure .cursor/mcp.json if not present
-  const cursorMcpJsonPath = path.join(targetDir, '.cursor', 'mcp.json');
-  if (!fs.existsSync(cursorMcpJsonPath)) {
-    const mcpConfig = {
-      mcpServers: {
-        complirules: {
-          command: "npx",
-          args: ["@complirules/mcp-server"]
-        }
-      }
-    };
-    fs.writeFileSync(cursorMcpJsonPath, JSON.stringify(mcpConfig, null, 2), 'utf-8');
-    console.log(`  ✓ Configured: .cursor/mcp.json`);
-  }
-
-  console.log(`\n✨ Success! ${matchedRules.length} modular rule(s) added to your project for "${target}".\n`);
+  console.log('\n✨ Initialization complete. Local-only MCP config is intentionally not generated to avoid registry-scope drift.\n');
 }

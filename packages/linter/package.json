@@ -1,29 +1,52 @@
 {
-  "name": "@complirules/linter",
+  "name": "complirules",
   "version": "1.0.0",
-  "description": "Deterministic AST and pattern linter for regulatory compliance (KVKK, GDPR, EAA 2025, HIPAA)",
+  "description": "Compliance-as-Code & Legal AI Guardrail CLI for Cursor, Claude Code, and Windsurf",
+  "bin": {
+    "complirules": "./dist/index.js",
+    "legal-rules": "./dist/index.js"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./rules": {
-      "types": "./dist/rules/index.d.ts",
-      "import": "./dist/rules/index.js"
-    }
-  },
   "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halilyilmz/complirules.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://halilyilmz.github.io/complirules/",
+  "keywords": [
+    "compliance",
+    "cursor",
+    "claude-code",
+    "windsurf",
+    "gdpr",
+    "kvkk",
+    "hipaa",
+    "eaa-2025",
+    "mcp",
+    "legal-as-code",
+    "vibe-coding"
+  ],
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@complirules/rules": "*",
-    "typescript": "^5.7.2"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^22.10.2"
+    "@complirules/rules": "workspace:*",
+    "@complirules/linter": "workspace:*",
+    "@complirules/primitives": "workspace:*",
+    "@complirules/mcp-server": "workspace:*",
+    "commander": "^13.0.0",
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.21.5",
+    "typescript": "^5.7.2"
   }
 }
