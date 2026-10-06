@@ -7,7 +7,6 @@ export * from './tools/audit-code-pii.js';
 export * from './tools/check-ui-dark-patterns.js';
 export * from './tools/generate-ropa.js';
 export * from './tools/lookup-legal-citation.js';
-export * from './tools/lookup-active-partner.js';
 export * from './tools/verify-transfer-adequacy.js';
 export * from './tools/generate-dpia.js';
 export * from './tools/check-dependency-privacy.js';

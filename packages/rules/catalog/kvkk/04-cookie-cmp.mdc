@@ -27,7 +27,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### React/Next.js Simetrik Çerez CMP Bileşeni
 ```tsx
-import { CookieConsentManager } from '@complirules/primitives';
+import { CookieConsentManager } from 'complirules/primitives';
 
 export function CookieBanner({ onAcceptAll, onRejectAll }: Props) {
   const config = CookieConsentManager.getSymmetricBannerConfig();

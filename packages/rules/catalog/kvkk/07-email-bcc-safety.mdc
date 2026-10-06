@@ -27,7 +27,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### Alıcı Başına Ayrı Zarf (Node.js)
 ```ts
-import { buildSafeBulkEnvelopes, validateBulkEmailOptions, stripTrackingBeacons } from '@complirules/primitives';
+import { buildSafeBulkEnvelopes, validateBulkEmailOptions, stripTrackingBeacons } from 'complirules/primitives';
 
 const envelopes = buildSafeBulkEnvelopes(recipients, {
   from: 'duyuru@sirket.com',

@@ -58,6 +58,7 @@ describe('CompliRules CLI Commands', () => {
     expect(fs.existsSync(mcpJsonPath)).toBe(true);
     const mcpConfig = JSON.parse(fs.readFileSync(mcpJsonPath, 'utf-8'));
     expect(mcpConfig.mcpServers.complirules).toBeDefined();
+    expect(mcpConfig.mcpServers.complirules.args).toEqual(["-y", "complirules", "mcp"]);
   });
 
   it('complirules add ve remove komutları ile ülke bazlı modüler kurulum ve kaldırma yapılabilir', async () => {

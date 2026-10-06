@@ -2,9 +2,9 @@
 # ==============================================================================
 # CompliRules: Zero-Dependency Linux/macOS Rule Installer
 # Usage:
-#   curl -fsSL https://rules.complirules.dev/install.sh | bash
-#   curl -fsSL https://rules.complirules.dev/install.sh | bash -s -- --pack kvkk
-#   curl -fsSL https://rules.complirules.dev/install.sh | bash -s -- --pack gdpr
+#   curl -fsSL https://raw.githubusercontent.com/halilyilmz/complirules/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/halilyilmz/complirules/main/scripts/install.sh | bash -s -- --pack kvkk
+#   curl -fsSL https://raw.githubusercontent.com/halilyilmz/complirules/main/scripts/install.sh | bash -s -- --pack gdpr
 # ==============================================================================
 
 set -e
@@ -19,7 +19,7 @@ echo "📂 Hedef Dizin: $TARGET_DIR"
 
 mkdir -p "$RULES_DIR"
 
-BASE_URL="https://raw.githubusercontent.com/complirules/complirules/main/packages/rules/catalog"
+BASE_URL="https://raw.githubusercontent.com/halilyilmz/complirules/main/packages/rules/catalog"
 
 case "$PACK" in
   "tr"|"kvkk")

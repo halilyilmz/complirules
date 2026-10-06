@@ -10,6 +10,7 @@ import {
   Jurisdiction,
   RuleDefinition
 } from '@complirules/rules';
+import { safelyWriteAgentFile } from '../utils/agent-merger.js';
 
 export interface InitOptions {
   jurisdiction?: string;
@@ -67,22 +68,22 @@ export function executeInit(targetDir: string, options: InitOptions = {}): void 
     console.log(`  ✓ Generated: .cursor/rules/${fileName}`);
   }
 
-  // 2. Write AGENTS.md and CLAUDE.md to root
+  // 2. Safely merge AGENTS.md and CLAUDE.md without destroying existing user instructions
   const agentsMdContent = renderAgentsMd(rulesToApply);
-  fs.writeFileSync(path.join(targetDir, 'AGENTS.md'), agentsMdContent, 'utf-8');
-  console.log(`  ✓ Generated: AGENTS.md (for Claude Code, Windsurf, Copilot)`);
+  const agentsRes = safelyWriteAgentFile(targetDir, 'AGENTS.md', agentsMdContent);
+  console.log(`  ✓ ${agentsRes.merged ? 'Merged into existing' : 'Generated'}: AGENTS.md (for Claude Code, Windsurf, Copilot)`);
 
   const claudeMdContent = renderClaudeMd(rulesToApply);
-  fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), claudeMdContent, 'utf-8');
-  console.log(`  ✓ Generated: CLAUDE.md`);
+  const claudeRes = safelyWriteAgentFile(targetDir, 'CLAUDE.md', claudeMdContent);
+  console.log(`  ✓ ${claudeRes.merged ? 'Merged into existing' : 'Generated'}: CLAUDE.md`);
 
-  // 3. Configure .cursor/mcp.json
+  // 3. Configure .cursor/mcp.json using official registered npm binary
   const cursorMcpJsonPath = path.join(targetDir, '.cursor', 'mcp.json');
   const mcpConfig = {
     mcpServers: {
       complirules: {
         command: "npx",
-        args: ["@complirules/mcp-server"]
+        args: ["-y", "complirules", "mcp"]
       }
     }
   };

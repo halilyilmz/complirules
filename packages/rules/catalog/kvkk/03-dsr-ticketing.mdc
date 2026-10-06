@@ -28,7 +28,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### TypeScript / Node.js DSR Başvuru ve Downstream Bildirim
 ```ts
-import { DsrEngine } from '@complirules/primitives';
+import { DsrEngine } from 'complirules/primitives';
 
 export async function handleKvkkDsrRequest(payload: any) {
   // 1. Tebliğ Md. 5/2 zorunlu alan kontrolü

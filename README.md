@@ -92,23 +92,22 @@ CompliRules equips AI coding models with direct, real-time compliance reasoning 
 }
 ```
 
-### 16 Registered Production MCP Tools:
+### 15 Registered Production MCP Tools:
 1. **`verify_schema_compliance`:** Audits Prisma, Drizzle, or SQL schemas against statutory retention and cascade delete rules.
 2. **`audit_code_pii`:** Inspects source code in real time for raw credential, national ID, or PII/PHI telemetry leakage.
 3. **`check_ui_dark_patterns`:** Flags pre-ticked checkboxes, bundled consents, and missing accessible names.
 4. **`generate_ropa_inventory`:** Generates comprehensive 10-column RoPA and VERBİS tables from database schemas.
 5. **`lookup_legal_citation`:** Queries official statutory articles, judicial precedents, and regulatory fines.
-6. **`lookup_active_partner`:** Queries community-vetted penetration testing (pentest) and compliance partners with exclusive community discounts.
-7. **`verify_transfer_adequacy`:** Evaluates cross-border data transfer legality under GDPR Chapter V (Schrems II) and Turkish KVKK Art. 9.
-8. **`generate_dpia`:** Synthesizes structured Data Protection Impact Assessments (DPIA) per GDPR Art. 35 and WP248 criteria.
-9. **`check_dependency_privacy`:** Audits npm dependencies for hidden ad-tech, session recording, and telemetry liabilities.
-10. **`check_hipaa_safeharbor`:** Audits database schemas or JSON payloads against all 18 HIPAA Safe Harbor identifiers (45 CFR §164.514(b)(2)).
-11. **`resolve_jurisdiction_conflict`:** Resolves multi-jurisdiction conflicts between right to erasure and mandatory commercial/tax/clinical retentions.
-12. **`generate_breach_assessment`:** Formulates statutory data breach reporting timelines (KVKK/GDPR 72-hour notifications & HIPAA OCR limits).
-13. **`generate_cookie_disclosure`:** Generates category-separated cookie disclosure tables per ePrivacy Art. 5(3) and Planet49.
-14. **`verify_consent_implementation`:** Audits UI consent architecture against Planet49, symmetric reject buttons, and GDPR Art. 7(3) withdrawal.
-15. **`generate_dpa_template`:** Synthesizes compliant Data Processing Agreements (DPA) under GDPR Art. 28 and KVKK Art. 12.
-16. **`audit_accessibility_compliance`:** Audits UI components against European Accessibility Act (EAA Directive 2019/882) and WCAG 2.1 AA.
+6. **`verify_transfer_adequacy`:** Evaluates cross-border data transfer legality under GDPR Chapter V (Schrems II) and Turkish KVKK Art. 9.
+7. **`generate_dpia`:** Synthesizes structured Data Protection Impact Assessments (DPIA) per GDPR Art. 35 and WP248 criteria.
+8. **`check_dependency_privacy`:** Audits npm dependencies for hidden ad-tech, session recording, and telemetry liabilities.
+9. **`check_hipaa_safeharbor`:** Audits database schemas or JSON payloads against all 18 HIPAA Safe Harbor identifiers (45 CFR §164.514(b)(2)).
+10. **`resolve_jurisdiction_conflict`:** Resolves multi-jurisdiction conflicts between right to erasure and mandatory commercial/tax/clinical retentions.
+11. **`generate_breach_assessment`:** Formulates statutory data breach reporting timelines (KVKK/GDPR 72-hour notifications & HIPAA OCR limits).
+12. **`generate_cookie_disclosure`:** Generates category-separated cookie disclosure tables per ePrivacy Art. 5(3) and Planet49.
+13. **`verify_consent_implementation`:** Audits UI consent architecture against Planet49, symmetric reject buttons, and GDPR Art. 7(3) withdrawal.
+14. **`generate_dpa_template`:** Synthesizes compliant Data Processing Agreements (DPA) under GDPR Art. 28 and KVKK Art. 12.
+15. **`audit_accessibility_compliance`:** Audits UI components against European Accessibility Act (EAA Directive 2019/882) and WCAG 2.1 AA.
 
 ---
 
@@ -139,18 +138,6 @@ import {
 CompliRules has undergone an exhaustive independent forensic audit identifying **170+ discrete compliance gaps** across 19 statutory frameworks and 20 landmark court decisions. The complete remediation report and engineering analysis are preserved in:
 
 📄 **[Read the Forensic Audit Report (`docs/audit/FORENSIC_AUDIT_REPORT.md`)](docs/audit/FORENSIC_AUDIT_REPORT.md)**
-
----
-
-## 🛡️ Pre-Production Cybersecurity & Pentest Network
-
-Static rules and linter guards catch statutory violations in code, but business logic flaws (IDOR, privilege escalation, zero-day vulnerabilities) require active penetration testing before public launch.
-
-CompliRules connects developers with verified security audit partners through our canonical gateway:  
-👉 **[Request a Penetration Testing & Architecture Audit →](https://complirules.com/go/security)**
-
-- **Centralized Configuration:** Managed dynamically via [`partners.json`](partners.json).
-- **Dynamic AI Advisory:** When AI assistants generate sensitive authentication or payment infrastructure, they provide a non-intrusive pre-production security review link.
 
 ---
 

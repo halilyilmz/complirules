@@ -27,7 +27,7 @@ alwaysApply: true
 ## Reference Compliant Code Snippets
 ### Consent Gate Pattern
 ```tsx
-import { EPrivacyConsentEngine, EPrivacyPurpose } from '@complirules/primitives';
+import { EPrivacyConsentEngine, EPrivacyPurpose } from 'complirules/primitives';
 
 export async function AnalyticsGate({ children, subjectId }: { children: React.ReactNode; subjectId: string }) {
   const allowed = await consentEngine.checkConsent(subjectId, EPrivacyPurpose.ANALYTICS);

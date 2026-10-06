@@ -37,7 +37,7 @@ alwaysApply: false
 
 ### EU AI Act Article 14 Human-in-the-loop & Eskalasyon Mekanizması
 ```ts
-import { evaluateAiDecisionWithOversight } from '@complirules/primitives';
+import { evaluateAiDecisionWithOversight } from 'complirules/primitives';
 
 export async function processAutomatedDecision(userApplication: any) {
   const aiResult = await runModelInference(userApplication);

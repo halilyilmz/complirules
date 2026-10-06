@@ -24,7 +24,7 @@ alwaysApply: true
 ## Reference Compliant Code Snippets
 ### Schrems II TIA Evaluation
 ```typescript
-import { SchremsIITIAEvaluator, DataCategory } from '@complirules/primitives';
+import { SchremsIITIAEvaluator, DataCategory } from 'complirules/primitives';
 
 const tia = new SchremsIITIAEvaluator().evaluate({
   dataCategories: [DataCategory.IDENTITY],

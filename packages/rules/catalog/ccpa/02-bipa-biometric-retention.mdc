@@ -24,7 +24,7 @@ alwaysApply: true
 ## Reference Compliant Code Snippets
 ### BIPA Biometric Guard Check
 ```typescript
-import { BIPABiometricGuard, BiometricIdentifierType } from '@complirules/primitives';
+import { BIPABiometricGuard, BiometricIdentifierType } from 'complirules/primitives';
 
 const auth = await bipaGuard.authorizeOperation({
   subjectId: user.id,

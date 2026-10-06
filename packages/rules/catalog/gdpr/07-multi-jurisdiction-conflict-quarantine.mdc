@@ -24,7 +24,7 @@ alwaysApply: true
 ## Reference Compliant Code Snippets
 ### Jurisdiction Conflict Resolver
 ```typescript
-import { JurisdictionConflictResolver } from '@complirules/primitives';
+import { JurisdictionConflictResolver } from 'complirules/primitives';
 
 const resolution = resolver.resolveErasureVsRetention({
   subjectId: user.id,

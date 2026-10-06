@@ -26,7 +26,7 @@ alwaysApply: true
 ## Reference Compliant Code Snippets
 ### TypeScript / Node.js (Redaksiyonlu Logger)
 ```ts
-import { createRedactedLogger } from '@complirules/primitives';
+import { createRedactedLogger } from 'complirules/primitives';
 
 export const logger = createRedactedLogger({
   redactKeys: ['password', 'tckn', 'creditCard', 'token', 'authorization']

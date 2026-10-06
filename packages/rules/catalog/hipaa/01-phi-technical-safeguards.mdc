@@ -45,7 +45,7 @@ export async function logPhiAccess(actorId: string, patientId: string, action: '
 
 ### HIPAA Minimum Necessary (Alan Kısıtlı Projeksiyon) & 15 Dk Timeout
 ```ts
-import { isHipaaSessionExpired, HIPAA_MAX_INACTIVITY_MS } from '@complirules/primitives';
+import { isHipaaSessionExpired, HIPAA_MAX_INACTIVITY_MS } from 'complirules/primitives';
 
 // 1. Minimum Necessary Sorgu (ASLA SELECT * KULLANMAYIN!)
 export async function getPatientVitals(patientId: string) {

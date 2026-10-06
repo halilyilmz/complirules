@@ -25,9 +25,9 @@ alwaysApply: false
 - NEVER: <img src="https://images.unsplash.com/..." /> without next/image optimization or asset proxying
 
 ## Reference Compliant Code Snippets
-### Güvenli Resim Proxy Entegrasyonu (React / Next.js & @complirules/primitives)
+### Güvenli Resim Proxy Entegrasyonu (React / Next.js & complirules/primitives)
 ```tsx
-import { createSecureAssetProxyUrl } from '@complirules/primitives';
+import { createSecureAssetProxyUrl } from 'complirules/primitives';
 
 export function SafeUserAvatar({ rawAvatarUrl, userName }: { rawAvatarUrl: string; userName: string }) {
   // Kullanıcının IP adresini korumak için doğrudan Gravatar/Unsplash URL'i yerine imzalı yerel proxy kullanılır

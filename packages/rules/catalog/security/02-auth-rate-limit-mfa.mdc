@@ -27,7 +27,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### Rate Limit + Kilitleme (Express)
 ```ts
-import { RateLimitShield } from '@complirules/primitives';
+import { RateLimitShield } from 'complirules/primitives';
 
 const shield = new RateLimitShield({ maxAttempts: 5, windowMs: 15 * 60_000, lockoutMs: 15 * 60_000 });
 

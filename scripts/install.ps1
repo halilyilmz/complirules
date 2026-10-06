@@ -1,8 +1,8 @@
 # ==============================================================================
 # CompliRules: Zero-Dependency Windows PowerShell Rule Installer
 # Usage:
-#   irm https://rules.complirules.dev/install.ps1 | iex
-#   & ([scriptblock]::Create((irm https://rules.complirules.dev/install.ps1))) -Pack kvkk
+#   irm https://raw.githubusercontent.com/halilyilmz/complirules/main/scripts/install.ps1 | iex
+#   & ([scriptblock]::Create((irm https://raw.githubusercontent.com/halilyilmz/complirules/main/scripts/install.ps1))) -Pack kvkk
 # ==============================================================================
 
 param(
@@ -15,7 +15,7 @@ if (-not (Test-Path $rulesDir)) {
     New-Item -ItemType Directory -Path $rulesDir -Force | Out-Null
 }
 
-$baseUrl = "https://raw.githubusercontent.com/complirules/complirules/main/packages/rules/catalog"
+$baseUrl = "https://raw.githubusercontent.com/halilyilmz/complirules/main/packages/rules/catalog"
 
 Write-Host "🛡️  CompliRules — Zero-Dependency Rule Installer (Windows)" -ForegroundColor Cyan
 Write-Host "📦 Seçilen Paket: $Pack" -ForegroundColor Yellow

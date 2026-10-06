@@ -15,8 +15,8 @@ import {
 } from '../packages/mcp-server/src/index.js';
 
 describe('Hardened MCP Compliance Server Tools', () => {
-  it('exposes all 16 compliance tools in MCP_TOOLS catalog', () => {
-    expect(MCP_TOOLS.length).toBe(16);
+  it('exposes all 15 compliance tools in MCP_TOOLS catalog', () => {
+    expect(MCP_TOOLS.length).toBe(15);
     const toolNames = MCP_TOOLS.map(t => t.name);
     expect(toolNames).toContain('verify_transfer_adequacy');
     expect(toolNames).toContain('generate_dpia');

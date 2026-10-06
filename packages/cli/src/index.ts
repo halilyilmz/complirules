@@ -111,4 +111,12 @@ program
     }
   });
 
+program
+  .command('mcp')
+  .description('Model Context Protocol (MCP) sunucusunu stdio üzerinden başlatır')
+  .action(async () => {
+    const { startMcpServer } = await import('@complirules/mcp-server');
+    startMcpServer();
+  });
+
 program.parse(process.argv);

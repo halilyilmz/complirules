@@ -27,7 +27,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### Sunucu Tarafı GPC Değerlendirmesi (Next.js Middleware)
 ```ts
-import { evaluateGpcSignal, applyGpcToPreferences, CookieConsentManager } from '@complirules/primitives';
+import { evaluateGpcSignal, applyGpcToPreferences, CookieConsentManager } from 'complirules/primitives';
 
 export function middleware(req: Request) {
   const gpc = evaluateGpcSignal(req.headers, { isAuthenticated: Boolean(getSession(req)) });

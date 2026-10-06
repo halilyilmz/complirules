@@ -27,7 +27,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### Rıza Kontrollü Captcha Yükleme
 ```tsx
-import { CookieConsentManager } from '@complirules/primitives';
+import { CookieConsentManager } from 'complirules/primitives';
 
 export function Captcha({ prefs }: { prefs: Parameters<typeof CookieConsentManager.isCategoryAllowed>[0] }) {
   // Rıza yoksa telemetri göndermeyen, yerel Proof-of-Work doğrulamasına düşülür

@@ -7,6 +7,7 @@ import {
   getAllRules,
   RuleDefinition 
 } from '@complirules/rules';
+import { safelyWriteAgentFile, safelyRemoveFromAgentFile } from '../utils/agent-merger.js';
 
 export function executeRemove(target: string, targetDir = '.'): void {
   console.log(`\n🗑️  Removing Modular Rule Pack: "${target}"...\n`);
@@ -45,16 +46,19 @@ export function executeRemove(target: string, targetDir = '.'): void {
   }
 
   if (remainingRules.length > 0) {
-    fs.writeFileSync(path.join(targetDir, 'AGENTS.md'), renderAgentsMd(remainingRules), 'utf-8');
-    fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), renderClaudeMd(remainingRules), 'utf-8');
+    safelyWriteAgentFile(targetDir, 'AGENTS.md', renderAgentsMd(remainingRules));
+    safelyWriteAgentFile(targetDir, 'CLAUDE.md', renderClaudeMd(remainingRules));
     console.log(`  ✓ Updated: AGENTS.md and CLAUDE.md (${remainingRules.length} rules remaining)`);
   } else {
-    // If no rules remain, clean up AGENTS.md and CLAUDE.md
-    const agentsPath = path.join(targetDir, 'AGENTS.md');
-    const claudePath = path.join(targetDir, 'CLAUDE.md');
-    if (fs.existsSync(agentsPath)) fs.unlinkSync(agentsPath);
-    if (fs.existsSync(claudePath)) fs.unlinkSync(claudePath);
-    console.log(`  ✓ Removed AGENTS.md and CLAUDE.md since no active rules remain.`);
+    // If no rules remain, safely clean up CompliRules content from AGENTS.md and CLAUDE.md
+    const agentsRes = safelyRemoveFromAgentFile(targetDir, 'AGENTS.md');
+    const claudeRes = safelyRemoveFromAgentFile(targetDir, 'CLAUDE.md');
+
+    if (agentsRes.deletedFile && claudeRes.deletedFile) {
+      console.log(`  ✓ Removed AGENTS.md and CLAUDE.md since no active rules remain.`);
+    } else {
+      console.log(`  ✓ Cleaned CompliRules rules from AGENTS.md / CLAUDE.md (preserved custom instructions).`);
+    }
   }
 
   console.log(`\n✨ Done: ${removedCount} rule file(s) removed.\n`);

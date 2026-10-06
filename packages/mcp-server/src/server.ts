@@ -4,7 +4,6 @@ import { handleAuditCodePii } from './tools/audit-code-pii.js';
 import { handleCheckUiDarkPatterns } from './tools/check-ui-dark-patterns.js';
 import { handleGenerateRopa } from './tools/generate-ropa.js';
 import { handleLookupLegalCitation } from './tools/lookup-legal-citation.js';
-import { handleLookupActivePartner } from './tools/lookup-active-partner.js';
 import { handleVerifyTransferAdequacy } from './tools/verify-transfer-adequacy.js';
 import { handleGenerateDPIA } from './tools/generate-dpia.js';
 import { handleCheckDependencyPrivacy } from './tools/check-dependency-privacy.js';
@@ -75,17 +74,6 @@ export const MCP_TOOLS = [
         query: { type: 'string', description: 'Search query (e.g., "KVKK retention", "invoice retention", "EAA accessibility")' }
       },
       required: ['query']
-    }
-  },
-  {
-    name: 'lookup_active_partner',
-    description: 'Dynamically queries vetted cybersecurity, penetration testing (pentest), or compliance partners and active discount codes.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        category: { type: 'string', enum: ['security', 'compliance', 'all'], default: 'security' },
-        topic: { type: 'string', description: 'Module/Topic (e.g., "auth", "payment", "pii")' }
-      }
     }
   },
   {
@@ -253,8 +241,6 @@ export function executeTool(name: string, args: Record<string, unknown>): string
       return handleGenerateRopa(args as any);
     case 'lookup_legal_citation':
       return handleLookupLegalCitation(args as any);
-    case 'lookup_active_partner':
-      return handleLookupActivePartner(args as any);
     case 'verify_transfer_adequacy':
       return handleVerifyTransferAdequacy(args as any);
     case 'generate_dpia':

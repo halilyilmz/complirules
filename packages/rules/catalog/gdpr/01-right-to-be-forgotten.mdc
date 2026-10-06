@@ -52,7 +52,7 @@ export async function executeRightToBeForgotten(userId: string) {
 
 ### GDPR Article 20 Taşınabilir Veri Dışa Aktarma (JSON Export)
 ```ts
-import { generateDataPortabilityBundle } from '@complirules/primitives';
+import { generateDataPortabilityBundle } from 'complirules/primitives';
 
 // GET /api/user/export
 export async function exportUserDataHandler(req: Request) {

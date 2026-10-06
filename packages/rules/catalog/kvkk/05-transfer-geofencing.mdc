@@ -27,7 +27,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### Geo-Routing ve SCC Bildirim Denetleyicisi
 ```ts
-import { GeoRouter } from '@complirules/primitives';
+import { GeoRouter } from 'complirules/primitives';
 
 export function routeUserDataTransfer(userCountry: 'TR', destinationCountry: 'US', hasScc: boolean) {
   const decision = GeoRouter.evaluateTransfer({

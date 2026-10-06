@@ -26,10 +26,10 @@ alwaysApply: false
 - NEVER: Hotlinking video preview thumbnails from `https://i.ytimg.com/...` in two-click placeholders
 
 ## Reference Compliant Code Snippets
-### İki Tıklamalı YouTube Embed (React & @complirules/primitives)
+### İki Tıklamalı YouTube Embed (React & complirules/primitives)
 ```tsx
 import { useState } from 'react';
-import { createTwoClickEmbed, activateTwoClickEmbed } from '@complirules/primitives';
+import { createTwoClickEmbed, activateTwoClickEmbed } from 'complirules/primitives';
 
 export function SafeVideo({ videoId }: { videoId: string }) {
   const embed = createTwoClickEmbed('https://www.youtube-nocookie.com/embed/' + videoId, {

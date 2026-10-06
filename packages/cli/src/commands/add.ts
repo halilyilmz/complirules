@@ -8,6 +8,7 @@ import {
   getAllRules,
   RuleDefinition 
 } from '@complirules/rules';
+import { safelyWriteAgentFile } from '../utils/agent-merger.js';
 
 export function executeAdd(target: string, targetDir = '.'): void {
   console.log(`\n📦 Downloading Modular Rule Pack: "${target}"...\n`);
@@ -56,8 +57,8 @@ export function executeAdd(target: string, targetDir = '.'): void {
   }
 
   if (activeRules.length > 0) {
-    fs.writeFileSync(path.join(targetDir, 'AGENTS.md'), renderAgentsMd(activeRules), 'utf-8');
-    fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), renderClaudeMd(activeRules), 'utf-8');
+    safelyWriteAgentFile(targetDir, 'AGENTS.md', renderAgentsMd(activeRules));
+    safelyWriteAgentFile(targetDir, 'CLAUDE.md', renderClaudeMd(activeRules));
     console.log(`  ✓ Updated: AGENTS.md and CLAUDE.md (${activeRules.length} active rules)`);
   }
 
@@ -68,7 +69,7 @@ export function executeAdd(target: string, targetDir = '.'): void {
       mcpServers: {
         complirules: {
           command: "npx",
-          args: ["@complirules/mcp-server"]
+          args: ["-y", "complirules", "mcp"]
         }
       }
     };

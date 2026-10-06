@@ -29,7 +29,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### Rota Bazlı İzleme Engeli
 ```ts
-import { shouldBlockCommercialTracking } from '@complirules/primitives';
+import { shouldBlockCommercialTracking } from 'complirules/primitives';
 
 export function loadTracker(pathname: string, provider: 'meta-pixel' | 'google-ads') {
   const decision = shouldBlockCommercialTracking(pathname, provider);

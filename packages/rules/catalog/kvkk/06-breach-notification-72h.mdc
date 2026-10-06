@@ -27,7 +27,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### 72 Saatlik İhlal Takibi ve Kurul JSON Form Üretimi
 ```ts
-import { BreachNotifier, InternalIncidentRegister } from '@complirules/primitives';
+import { BreachNotifier, InternalIncidentRegister } from 'complirules/primitives';
 
 export function handleSecurityIncident(incidentData: any) {
   const register = new InternalIncidentRegister();

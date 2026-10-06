@@ -28,7 +28,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### OTP Doğrulama ve Rızanın Ayrı Yönetimi
 ```ts
-import { assertOtpEffectsAreSeparated, buildOtpSmsText } from '@complirules/primitives';
+import { assertOtpEffectsAreSeparated, buildOtpSmsText } from 'complirules/primitives';
 
 app.post('/api/auth/verify-otp', async (req, res) => {
   const { userId, code } = req.body;

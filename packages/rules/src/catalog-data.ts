@@ -301,7 +301,7 @@ export const GDPR_RIGHT_TO_ERASURE_RULE: RuleDefinition = {
     {
       title: 'GDPR Article 20 Taşınabilir Veri Dışa Aktarma (JSON Export)',
       language: 'ts',
-      code: `import { generateDataPortabilityBundle } from '@complirules/primitives';
+      code: `import { generateDataPortabilityBundle } from 'complirules/primitives';
 
 // GET /api/user/export
 export async function exportUserDataHandler(req: Request) {
@@ -459,7 +459,7 @@ export const HIPAA_TECHNICAL_SAFEGUARDS_RULE: RuleDefinition = {
     {
       title: 'HIPAA Minimum Necessary (Alan Kısıtlı Projeksiyon) & 15 Dk Timeout',
       language: 'ts',
-      code: `import { isHipaaSessionExpired, HIPAA_MAX_INACTIVITY_MS } from '@complirules/primitives';
+      code: `import { isHipaaSessionExpired, HIPAA_MAX_INACTIVITY_MS } from 'complirules/primitives';
 
 // 1. Minimum Necessary Sorgu (ASLA SELECT * KULLANMAYIN!)
 export async function getPatientVitals(patientId: string) {
@@ -544,7 +544,7 @@ export const AI_ACT_TRANSPARENCY_RULE: RuleDefinition = {
     {
       title: 'EU AI Act Article 14 Human-in-the-loop & Eskalasyon Mekanizması',
       language: 'ts',
-      code: `import { evaluateAiDecisionWithOversight } from '@complirules/primitives';
+      code: `import { evaluateAiDecisionWithOversight } from 'complirules/primitives';
 
 export async function processAutomatedDecision(userApplication: any) {
   const aiResult = await runModelInference(userApplication);
@@ -607,7 +607,7 @@ export const PII_LOGGER_GUARD_RULE: RuleDefinition = {
     {
       title: 'TypeScript / Node.js (Redaksiyonlu Logger)',
       language: 'ts',
-      code: `import { createRedactedLogger } from '@complirules/primitives';
+      code: `import { createRedactedLogger } from 'complirules/primitives';
 
 export const logger = createRedactedLogger({
   redactKeys: ['password', 'tckn', 'creditCard', 'token', 'authorization']
@@ -719,7 +719,7 @@ export const KVKK_DSR_TICKETING_RULE: RuleDefinition = {
     {
       title: 'TypeScript / Node.js DSR Başvuru ve Downstream Bildirim',
       language: 'ts',
-      code: `import { DsrEngine } from '@complirules/primitives';
+      code: `import { DsrEngine } from 'complirules/primitives';
 
 export async function handleKvkkDsrRequest(payload: any) {
   // 1. Tebliğ Md. 5/2 zorunlu alan kontrolü
@@ -785,7 +785,7 @@ export const KVKK_COOKIE_CMP_RULE: RuleDefinition = {
     {
       title: 'React/Next.js Simetrik Çerez CMP Bileşeni',
       language: 'tsx',
-      code: `import { CookieConsentManager } from '@complirules/primitives';
+      code: `import { CookieConsentManager } from 'complirules/primitives';
 
 export function CookieBanner({ onAcceptAll, onRejectAll }: Props) {
   const config = CookieConsentManager.getSymmetricBannerConfig();
@@ -852,7 +852,7 @@ export const KVKK_TRANSFER_GEOFENCING_RULE: RuleDefinition = {
     {
       title: 'Geo-Routing ve SCC Bildirim Denetleyicisi',
       language: 'ts',
-      code: `import { GeoRouter } from '@complirules/primitives';
+      code: `import { GeoRouter } from 'complirules/primitives';
 
 export function routeUserDataTransfer(userCountry: 'TR', destinationCountry: 'US', hasScc: boolean) {
   const decision = GeoRouter.evaluateTransfer({
@@ -915,7 +915,7 @@ export const KVKK_BREACH_NOTIFICATION_RULE: RuleDefinition = {
     {
       title: '72 Saatlik İhlal Takibi ve Kurul JSON Form Üretimi',
       language: 'ts',
-      code: `import { BreachNotifier, InternalIncidentRegister } from '@complirules/primitives';
+      code: `import { BreachNotifier, InternalIncidentRegister } from 'complirules/primitives';
 
 export function handleSecurityIncident(incidentData: any) {
   const register = new InternalIncidentRegister();
@@ -982,7 +982,7 @@ export const HIPAA_BREAKGLASS_RULE: RuleDefinition = {
     {
       title: 'HIPAA Break-Glass Acil Durum Erişimi',
       language: 'ts',
-      code: `import { HipaaEmergencyService } from '@complirules/primitives';
+      code: `import { HipaaEmergencyService } from 'complirules/primitives';
 
 export async function emergencyClinicAccess(req: Request) {
   const { doctorId, patientId, reason, department } = await req.json();
@@ -1042,9 +1042,9 @@ export const GDPR_NO_UNPROXIED_ASSETS_RULE: RuleDefinition = {
   ],
   compliantCodeSnippets: [
     {
-      title: 'Güvenli Resim Proxy Entegrasyonu (React / Next.js & @complirules/primitives)',
+      title: 'Güvenli Resim Proxy Entegrasyonu (React / Next.js & complirules/primitives)',
       language: 'tsx',
-      code: `import { createSecureAssetProxyUrl } from '@complirules/primitives';
+      code: `import { createSecureAssetProxyUrl } from 'complirules/primitives';
 
 export function SafeUserAvatar({ rawAvatarUrl, userName }: { rawAvatarUrl: string; userName: string }) {
   // Kullanıcının IP adresini korumak için doğrudan Gravatar/Unsplash URL'i yerine imzalı yerel proxy kullanılır
@@ -1104,10 +1104,10 @@ export const GDPR_TWO_CLICK_EMBED_RULE: RuleDefinition = {
   ],
   compliantCodeSnippets: [
     {
-      title: 'İki Tıklamalı YouTube Embed (React & @complirules/primitives)',
+      title: 'İki Tıklamalı YouTube Embed (React & complirules/primitives)',
       language: 'tsx',
       code: `import { useState } from 'react';
-import { createTwoClickEmbed, activateTwoClickEmbed } from '@complirules/primitives';
+import { createTwoClickEmbed, activateTwoClickEmbed } from 'complirules/primitives';
 
 export function SafeVideo({ videoId }: { videoId: string }) {
   const embed = createTwoClickEmbed('https://www.youtube-nocookie.com/embed/' + videoId, {
@@ -1167,7 +1167,7 @@ export const GDPR_PRIVACY_CAPTCHA_RULE: RuleDefinition = {
     {
       title: 'Rıza Kontrollü Captcha Yükleme',
       language: 'tsx',
-      code: `import { CookieConsentManager } from '@complirules/primitives';
+      code: `import { CookieConsentManager } from 'complirules/primitives';
 
 export function Captcha({ prefs }: { prefs: Parameters<typeof CookieConsentManager.isCategoryAllowed>[0] }) {
   // Rıza yoksa telemetri göndermeyen, yerel Proof-of-Work doğrulamasına düşülür
@@ -1216,7 +1216,7 @@ export const KVKK_EMAIL_BCC_RULE: RuleDefinition = {
     {
       title: 'Alıcı Başına Ayrı Zarf (Node.js)',
       language: 'ts',
-      code: `import { buildSafeBulkEnvelopes, validateBulkEmailOptions, stripTrackingBeacons } from '@complirules/primitives';
+      code: `import { buildSafeBulkEnvelopes, validateBulkEmailOptions, stripTrackingBeacons } from 'complirules/primitives';
 
 const envelopes = buildSafeBulkEnvelopes(recipients, {
   from: 'duyuru@sirket.com',
@@ -1274,7 +1274,7 @@ export const KVKK_OTP_DECOUPLING_RULE: RuleDefinition = {
     {
       title: 'OTP Doğrulama ve Rızanın Ayrı Yönetimi',
       language: 'ts',
-      code: `import { assertOtpEffectsAreSeparated, buildOtpSmsText } from '@complirules/primitives';
+      code: `import { assertOtpEffectsAreSeparated, buildOtpSmsText } from 'complirules/primitives';
 
 app.post('/api/auth/verify-otp', async (req, res) => {
   const { userId, code } = req.body;
@@ -1326,7 +1326,7 @@ export const SEC_AUTH_RATE_LIMIT_RULE: RuleDefinition = {
     {
       title: 'Rate Limit + Kilitleme (Express)',
       language: 'ts',
-      code: `import { RateLimitShield } from '@complirules/primitives';
+      code: `import { RateLimitShield } from 'complirules/primitives';
 
 const shield = new RateLimitShield({ maxAttempts: 5, windowMs: 15 * 60_000, lockoutMs: 15 * 60_000 });
 
@@ -1397,7 +1397,7 @@ export const HIPAA_FTC_SENSITIVE_PIXEL_RULE: RuleDefinition = {
     {
       title: 'Rota Bazlı İzleme Engeli',
       language: 'ts',
-      code: `import { shouldBlockCommercialTracking } from '@complirules/primitives';
+      code: `import { shouldBlockCommercialTracking } from 'complirules/primitives';
 
 export function loadTracker(pathname: string, provider: 'meta-pixel' | 'google-ads') {
   const decision = shouldBlockCommercialTracking(pathname, provider);
@@ -1447,7 +1447,7 @@ export const CCPA_GPC_RULE: RuleDefinition = {
     {
       title: 'Sunucu Tarafı GPC Değerlendirmesi (Next.js Middleware)',
       language: 'ts',
-      code: `import { evaluateGpcSignal, applyGpcToPreferences, CookieConsentManager } from '@complirules/primitives';
+      code: `import { evaluateGpcSignal, applyGpcToPreferences, CookieConsentManager } from 'complirules/primitives';
 
 export function middleware(req: Request) {
   const gpc = evaluateGpcSignal(req.headers, { isAuthenticated: Boolean(getSession(req)) });
@@ -1501,7 +1501,7 @@ export const EPRIVACY_CONSENT_RULE: RuleDefinition = {
     {
       title: 'Consent Gate Pattern',
       language: 'tsx',
-      code: `import { EPrivacyConsentEngine, EPrivacyPurpose } from '@complirules/primitives';
+      code: `import { EPrivacyConsentEngine, EPrivacyPurpose } from 'complirules/primitives';
 
 export async function AnalyticsGate({ children, subjectId }: { children: React.ReactNode; subjectId: string }) {
   const allowed = await consentEngine.checkConsent(subjectId, EPrivacyPurpose.ANALYTICS);
@@ -1544,7 +1544,7 @@ export const SCHREMS_II_TIA_RULE: RuleDefinition = {
     {
       title: 'Schrems II TIA Evaluation',
       language: 'typescript',
-      code: `import { SchremsIITIAEvaluator, DataCategory } from '@complirules/primitives';
+      code: `import { SchremsIITIAEvaluator, DataCategory } from 'complirules/primitives';
 
 const tia = new SchremsIITIAEvaluator().evaluate({
   dataCategories: [DataCategory.IDENTITY],
@@ -1591,7 +1591,7 @@ export const BIPA_BIOMETRIC_RULE: RuleDefinition = {
     {
       title: 'BIPA Biometric Guard Check',
       language: 'typescript',
-      code: `import { BIPABiometricGuard, BiometricIdentifierType } from '@complirules/primitives';
+      code: `import { BIPABiometricGuard, BiometricIdentifierType } from 'complirules/primitives';
 
 const auth = await bipaGuard.authorizeOperation({
   subjectId: user.id,
@@ -1636,7 +1636,7 @@ export const JURISDICTION_CONFLICT_RULE: RuleDefinition = {
     {
       title: 'Jurisdiction Conflict Resolver',
       language: 'typescript',
-      code: `import { JurisdictionConflictResolver } from '@complirules/primitives';
+      code: `import { JurisdictionConflictResolver } from 'complirules/primitives';
 
 const resolution = resolver.resolveErasureVsRetention({
   subjectId: user.id,

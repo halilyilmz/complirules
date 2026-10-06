@@ -27,7 +27,7 @@ alwaysApply: false
 ## Reference Compliant Code Snippets
 ### HIPAA Break-Glass Acil Durum Erişimi
 ```ts
-import { HipaaEmergencyService } from '@complirules/primitives';
+import { HipaaEmergencyService } from 'complirules/primitives';
 
 export async function emergencyClinicAccess(req: Request) {
   const { doctorId, patientId, reason, department } = await req.json();
